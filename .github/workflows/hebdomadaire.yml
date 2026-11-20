@@ -1,0 +1,123 @@
+name: Agent Top 7 - brouillons Instagram uniquement
+on:
+  schedule:
+    - cron: '0 15,16 * * 5' # 17h Paris en ete / en hiver, selon le changement d'heure
+  workflow_dispatch:
+concurrency:
+  group: top7-instagram
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  declenchement:
+    runs-on: ubuntu-latest
+    outputs:
+      go: ${{ steps.verifier.outputs.go }}
+    steps:
+      - id: verifier
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python - <<'PY'
+          import datetime as dt,os
+          from zoneinfo import ZoneInfo
+          local=dt.datetime.now(ZoneInfo('Europe/Paris'))
+          go = os.getenv('EVENT_NAME') == 'workflow_dispatch' or (local.weekday()==4 and local.hour==17)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('go='+str(go).lower()+'\n')
+          print('Déclenchement autorisé :', go, 'heure Paris :', local.isoformat())
+          PY
+  preparer:
+    needs: declenchement
+    if: needs.declenchement.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -v
+      - name: Collecter les classements et creer les carrousels
+        run: python agent.py --sortie sorties/hebdomadaire
+      - name: Preparer les media de brouillons uniquement
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+        run: |
+          python - <<'PY'
+          import json,os,shutil,hashlib
+          from pathlib import Path
+          root=Path('sorties/hebdomadaire');week=os.getenv('GITHUB_RUN_ID');ready=[]
+          if not os.getenv('BUFFER_API_KEY') or not os.getenv('BUFFER_CHANNEL_ID'):
+              Path('ready_categories.json').write_text('[]')
+              print('Buffer non configuré : aucune image rendue publiquement accessible; ZIP uniquement')
+              raise SystemExit(0)
+          for folder in root.iterdir():
+              manifest_file=folder/'post_manifest.json'
+              if not manifest_file.exists():continue
+              manifest=json.loads(manifest_file.read_text(encoding='utf8'))
+              if not manifest.get('ready_to_stage'):continue
+              source=(folder/'classement_source.json').read_bytes()
+              key=hashlib.sha256(source).hexdigest()[:20]
+              receipt=Path('buffer_receipts')/(folder.name+'_'+key+'.json')
+              if receipt.exists():
+                  print(folder.name,'déjà déposé chez Buffer (reçu persistant)')
+                  continue
+              if os.getenv('REPOSITORY_PRIVATE') == 'true':
+                  raise RuntimeError('Depot GitHub privé : Buffer requiert des URL publiques, dépôt des brouillons suspendu')
+              target=Path('public_media')/week/folder.name
+              target.mkdir(parents=True,exist_ok=True)
+              for name in manifest['pages']:shutil.copy2(folder/name,target/name)
+              ready.append((folder.name,str(receipt)))
+          Path('ready_categories.json').write_text(json.dumps(ready))
+          print('Publications prêtes pour un brouillon Buffer :',ready)
+          PY
+      - name: Heberger les images sur le depot GitHub public
+        run: |
+          if [ -n "$(git status --porcelain public_media)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add public_media
+            git commit -m "Médias des brouillons Instagram (sans publication)"
+            git push
+          fi
+      - name: Deposer brouillons (aucune programmation / publication)
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ -z "${BUFFER_API_KEY}" ] || [ -z "${BUFFER_CHANNEL_ID}" ]; then
+            echo "Buffer non connecté : dossiers à télécharger, aucun brouillon distant"
+            exit 0
+          fi
+          python - <<'PY'
+          import json,os,subprocess,shutil
+          from pathlib import Path
+          ready=json.loads(Path('ready_categories.json').read_text())
+          for category,receipt in ready:
+              folder=Path('sorties/hebdomadaire')/category
+              base=f'https://raw.githubusercontent.com/{os.environ["GITHUB_REPOSITORY"]}/{os.environ["GITHUB_REF_NAME"]}/public_media/{os.environ["GITHUB_RUN_ID"]}/{category}/'
+              subprocess.run(['python','buffer_client.py','--send','--folder',str(folder),'--public-base-url',base],check=True)
+              target=Path(receipt);target.parent.mkdir(parents=True,exist_ok=True)
+              shutil.copy2(folder/'RECU_BUFFER.json',target)
+          PY
+          if [ -n "$(git status --porcelain buffer_receipts)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add buffer_receipts
+            git commit -m "Accusés de réception des brouillons Buffer"
+            git push
+          fi
+      - name: Livrer les 8 PNG, les legendes, les sources et les recus
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dossiers-a-valider
+          path: sorties/hebdomadaire/
+          retention-days: 30
