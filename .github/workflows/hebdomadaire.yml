@@ -40,6 +40,25 @@ jobs:
       - run: python -m unittest discover -s tests -v
       - name: Collecter les classements et creer les carrousels
         run: python agent.py --sortie sorties/hebdomadaire
+      - name: Vérifier qu'au moins un carrousel a été généré
+        run: |
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          p=Path('sorties/hebdomadaire/rapport.json')
+          if not p.is_file():
+              print('::error::Rapport absent; collecte ou création interrompue')
+              sys.exit(1)
+          data=json.loads(p.read_text(encoding='utf-8'))
+          if not data.get('dossiers'):
+              print('::error::Aucun carrousel produit : consulter le rapport dans Artifacts')
+              for line in data.get('journal',[]):print('DIAGNOSTIC :',line)
+              sys.exit(1)
+          print('Carrousels produits :', [x['categorie'] for x in data['dossiers']])
+          for item in data['dossiers']:
+              if item.get('couvertures', 0)<7:
+                  print('::warning::'+item['categorie']+' : seulement '+str(item.get('couvertures',0))+'/7 couvertures vérifiées. Brouillon non prêt à publier.')
+          PY
       - name: Preparer les media de brouillons uniquement
         env:
           GITHUB_RUN_ID: ${{ github.run_id }}
