@@ -34,25 +34,52 @@ def latest_bdzoom_url(html):
     for a in soup.select('a[href]'):
         title=norm(a.get_text(' ',strip=True))
         href=urljoin(BDZOOM,a['href'])
-        if re.search(r'zoom sur les meilleures ventes de bd du',title) and urlparse(href).hostname in ('www.bdzoom.com','bdzoom.com'):
-            links.append(href)
+        if 'zoom sur les meilleures ventes de bd du' in title and urlparse(href).hostname in ('www.bdzoom.com','bdzoom.com'):
+            match=re.search(r'zoom-sur-les-meilleures-ventes-de-bd-du-(\d{1,2})-([a-z]+)-(20\d{2})',norm(href))
+            published=None
+            if match:
+                day,month,year=match.groups()
+                if month in MONTHS:
+                    try: published=dt.date(int(year),MONTHS[month],int(day))
+                    except ValueError:pass
+            if href not in [u for _,u in links]:
+                links.append((published,href))
     if not links: raise SourceError('Aucun lien vers le dernier classement BD sur la page source')
-    # L'archive est chronologique : ne pas classer par texte de date où les années peuvent être différentes.
-    return links[0]
+    dated=[(date,url) for date,url in links if date is not None and date<=dt.date.today()]
+    if dated:return max(dated,key=lambda item:item[0])[1]
+    return links[0][1]
 
 def dates_semaine(s):
-    cleaned=norm(s.replace('\xa0',' ').replace('1er','1')).replace('1 er','1')
-    # La date de publication n'est PAS utilisée comme période de ventes.
-    p=r'top\s*20\s*bd.{0,160}?du\s+(\d{1,2})\s*([a-z]+)?\s+au\s+(\d{1,2})\s+([a-z]+)\s+(20\d{2})'
-    m=re.search(p,cleaned,re.I|re.S)
-    if not m: raise SourceError('Impossible de lire les dates EXACTES des ventes du Top 20 BD')
-    sday,smonth,eday,emonth,year=m.groups()
-    smonth=smonth or emonth
-    if smonth not in MONTHS or emonth not in MONTHS: raise SourceError('Mois inconnu dans la période de ventes')
-    end=dt.date(int(year),MONTHS[emonth],int(eday))
-    start=dt.date(int(year)-(MONTHS[smonth]>MONTHS[emonth]),MONTHS[smonth],int(sday))
-    if not 0<=(end-start).days<=14: raise SourceError('Période de ventes incohérente')
-    return start.isoformat(),end.isoformat()
+    """Cherche une période de VENTES explicite, jamais la date de publication.
+
+    Tolère les paragraphes, espaces insécables et légendes WordPress.
+    """
+    cleaned=' '.join(norm(str(s)).replace('\xa0',' ').replace('1er','1').replace('1 er','1').split())
+    # Variantes réelles : "Top 20 BD (copyright GfK/Livres Hebdo) du 2 au 8 novembre 2026"
+    # et "Top 20 BD du 26 octobre au 1er novembre 2026".
+    patterns=(
+        r'top\s*20\s*(?:des\s*ventes\s*de\s*)?bd\b.{0,220}?\bdu\s+(\d{1,2})(?:\s+([a-z]+))?\s+au\s+(\d{1,2})\s+([a-z]+)\s+(20\d{2})',
+        r'(?:gfk\s*/\s*livres\s*hebdo|palmares\s+bd).{0,180}?\bdu\s+(\d{1,2})(?:\s+([a-z]+))?\s+au\s+(\d{1,2})\s+([a-z]+)\s+(20\d{2})'
+    )
+    matches=[]
+    for pattern in patterns:
+        for m in re.finditer(pattern,cleaned,re.I):
+            sday,smonth,eday,emonth,year=m.groups()
+            smonth=smonth or emonth
+            if smonth not in MONTHS or emonth not in MONTHS:
+                continue
+            try:
+                end=dt.date(int(year),MONTHS[emonth],int(eday))
+                start=dt.date(int(year)-(MONTHS[smonth]>MONTHS[emonth]),MONTHS[smonth],int(sday))
+            except ValueError:
+                continue
+            if (end-start).days==6:  # semaine complète de 7 jours
+                matches.append((start.isoformat(),end.isoformat()))
+    unique=list(dict.fromkeys(matches))
+    if len(unique)==1:return unique[0]
+    if not unique:
+        raise SourceError('Impossible de lire les dates EXACTES des ventes du Top 20 BD')
+    raise SourceError('Plusieurs périodes de ventes BD différentes détectées : vérification humaine nécessaire')
 
 def mouvement(s):
     s=norm(s).strip(' ()')
@@ -68,55 +95,93 @@ def parse_bdzoom(html,url):
     headline=soup.find('h1')
     if headline and 'meilleures ventes' not in norm(headline.get_text(' ',strip=True)):
         raise SourceError('L’article lu ne semble pas être un classement des ventes')
-    article=soup.select_one('article .entry-content') or soup.select_one('.entry-content') or soup.select_one('article') or soup
-    text=article.get_text(' ',strip=True)
-    beginning,end=dates_semaine(text)
+    # Certaines pages WordPress placent le titre de tableau hors .entry-content.
+    # On essaie d'abord l'article, puis le texte complet, mais sans mélanger
+    # des périodes différentes. Aucun rang n'est supposé.
+    regions=[]
+    for part in (soup.select_one('main article'),soup.select_one('article .entry-content'),
+                 soup.select_one('.entry-content'),soup.select_one('main'),soup):
+        if part is not None and all(id(part)!=id(x) for x in regions):regions.append(part)
+    beginning=end=None
+    for part in regions:
+        try:
+            beginning,end=dates_semaine(part.get_text(' ',strip=True))
+            break
+        except SourceError:
+            continue
+    if not beginning:
+        raise SourceError('Période du Top 20 BD introuvable, même après recherche dans toute la page')
+
+    tables=[]
+    for part in regions:
+        for table in part.find_all('table'):
+            if id(table) not in {id(t) for t in tables}:tables.append(table)
     best=[]
-    for table in article.find_all('table'):
+    for table in tables:
         possible=[]
         for row in table.select('tr'):
             cells=row.find_all(['td','th'],recursive=False)
-            values=[c.get_text(' ',strip=True) for c in cells]
-            if len(values)<5:continue
-            match=re.match(r'^\s*(\d{1,2})\s*(?:er|e|ème|eme|re)?\s*$',norm(values[0]))
-            if not match: continue
-            rank=int(match.group(1))
+            vals=[c.get_text(' ',strip=True).replace('\xa0',' ').strip() for c in cells]
+            if len(vals)<4:continue
+            matched=re.match(r'^\s*(\d{1,2})\s*(?:er|e|eme|re)?\s*$',norm(vals[0]))
+            if not matched:continue
+            rank=int(matched.group(1))
             if not 1<=rank<=20:continue
-            title=values[2].strip()
+            # La variation peut être dans une cellule séparée OU avec le rang.
+            if len(vals)>=5:
+                m=norm(vals[1]).strip(' ()')
+                has_variation=bool(re.fullmatch(r'[+\-−]\s*\d+|=|nouveau|retour|stable|idem',m))
+                offset=2 if has_variation else 1
+                change=vals[1] if has_variation else ''
+            else:
+                offset=1;change=''
+            if len(vals)<offset+3:continue
+            title=vals[offset]
             if not 3<len(title)<220:continue
-            possible.append({'rang':rank,'titre':title,'auteurs':values[3],'editeur':values[4], 'mouvement':mouvement(values[1])})
+            possible.append({'rang':rank,'titre':title,'auteurs':vals[offset+1],
+                             'editeur':vals[offset+2],'mouvement':mouvement(change)})
         ranked=sorted(possible,key=lambda x:x['rang'])
-        if len(ranked)>=10 and [v['rang'] for v in ranked[:10]]==list(range(1,11)):
-            best=ranked[:10];break
-    if not best:raise SourceError('Tableau national Top 10 BD absent ou HTML modifié')
-    return {'categorie':'BD','perimetre':'Top 20 BD GfK / Livres Hebdo — rangs 1 à 10, France',
+        # Validation stricte : 7 premiers obligatoires, sans doublon de rang.
+        if len(ranked)>=7 and [v['rang'] for v in ranked[:7]]==list(range(1,8)):
+            best=ranked[:10] if len(ranked)>=10 and [v['rang'] for v in ranked[:10]]==list(range(1,11)) else ranked[:7]
+            break
+    if not best:raise SourceError('Tableau national Top 7 BD absent ou HTML modifié')
+    confirmed=all(b['mouvement']!='NON DOCUMENTÉ' for b in best[:7])
+    return {'categorie':'BD','perimetre':'Top 20 BD GfK / Livres Hebdo — rangs 1 à '+str(len(best))+', France',
         'debut_ventes':beginning,'fin_ventes':end, 'source':'BDZoom / GfK-Livres Hebdo','url_source':url,
-        'statut':'À VALIDER — extraction du tableau original', 'variations_verifiees':True, 'titres':best}
+        'statut':'À VALIDER — extraction du tableau original', 'variations_verifiees':confirmed,'titres':best}
 
 def rangs_bede(html):
-    """Extrait le classement GÉNÉRAL, pas un classement manga/comics artificiel."""
+    """Lit les rangs EXPLICITES de l'index général Bédé.fr, sans les renuméroter."""
     soup=BeautifulSoup(html,'html.parser')
     headline=soup.get_text(' ',strip=True)
     md=re.search(r'palmar[eè]s\s+du\s+(\d{2}/\d{2}/\d{4})',headline,re.I)
     palmares=md.group(1) if md else ''
-    out=[];seen=set()
-    for li in soup.find_all('li'):
-        direct=li.get_text(' ',strip=True)
-        m=re.match(r'#?\s*(\d{1,3})\b',direct)
-        if not m: continue
-        rank=int(m.group(1))
-        if rank>600 or rank in seen:continue
-        img=li.find('img',alt=True)
+    out={}
+    # Les blocs modernes sont parfois des <div>, pas des <li>.
+    for container in soup.find_all(['li','article','div']):
+        imgs=container.find_all('img',alt=True)
+        if not imgs or len(imgs)>2:continue
+        img=next((i for i in imgs if i.get('alt','').strip()),None)
         if not img:continue
+        direct=container.get_text(' ',strip=True)
+        if len(direct)>700:continue
+        # Exiger #n comme sur l'index Edistat ; un numéro de tome n'est pas un rang.
+        m=re.search(r'(?:^|\s)#\s*(\d{1,3})\b',direct)
+        if not m:continue
+        rank=int(m.group(1))
+        if not 1<=rank<=600:continue
         alt=img.get('alt','').strip()
-        if not alt:continue
         cover=urljoin(BEDE,img.get('data-src') or img.get('data-lazy-src') or img.get('src') or '')
-        link=next((urljoin(BEDE,a.get('href','')) for a in li.select('a[href]') if 'bede.fr' in urljoin(BEDE,a['href']) and '/meilleures-ventes' not in a['href']), '')
-        out.append({'rang_general':rank,'titre_candidat':re.sub(r'^(BD|Manga|Comics)\s+','',alt,flags=re.I),
-                    'alt':alt,'couverture_url':cover,'fiche_url':link})
-        seen.add(rank)
+        links=[urljoin(BEDE,a['href']) for a in container.select('a[href]')
+               if urlparse(urljoin(BEDE,a.get('href',''))).hostname in ('bede.fr','www.bede.fr')
+               and urljoin(BEDE,a.get('href','')).rstrip('/')!=BEDE.rstrip('/')]
+        link=next((u for u in links if urlparse(u).path not in ('/meilleures-ventes','/')), '')
+        candidate={'rang_general':rank,'titre_candidat':re.sub(r'^(BD|Manga|Comics)\s+','',alt,flags=re.I),
+                   'alt':alt,'couverture_url':cover,'fiche_url':link}
+        if rank not in out or (not out[rank]['fiche_url'] and link):out[rank]=candidate
     return {'source':'Bédé.fr / palmarès général Edistat','url_source':BEDE, 'date_palmares':palmares,
-            'classement_general':sorted(out,key=lambda v:v['rang_general'])}
+            'classement_general':[out[k] for k in sorted(out)]}
 
 def categorie_fiche(html):
     """Ne reconnaît le genre que dans des breadcrumbs structurés, pas le menu du site."""
