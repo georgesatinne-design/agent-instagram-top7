@@ -20,7 +20,7 @@ class AgentTests(unittest.TestCase):
         self.assertEqual(len(d['titres']),10)
         self.assertEqual(d['fin_ventes'],'2026-11-08')
     def test_incomplete_table_rejected(self):
-        rows=''.join(f'<tr><td>{i}</td><td>=</td><td>Titre {i} complet</td><td>Auteur</td><td>Éditeur</td></tr>' for i in range(1,9))
+        rows=''.join(f'<tr><td>{i}</td><td>=</td><td>Titre {i} complet</td><td>Auteur</td><td>Éditeur</td></tr>' for i in range(1,7))
         html='<h1>Zoom sur les meilleures ventes de BD</h1><article><p>Top 20 BD du 2 au 8 novembre 2026</p><table>'+rows+'</table></article>'
         with self.assertRaises(SourceError):parse_bdzoom(html,'https://www.bdzoom.com/test/')
     def test_full_pipeline_from_supplied_data(self):
