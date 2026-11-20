@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse, datetime as dt, json, shutil, traceback, zipfile
 from pathlib import Path
 from sources.collecte import collect_bd, fetch, rangs_bede, top_par_genre_bede, BEDE
-from sources.couvertures import lookup_bede, download_cover
+from sources.couvertures import lookup_bede, search_bede_catalog, search_google_books, download_cover
 from studio import verifier, render
 from visual_top7 import render_top7
 
@@ -54,8 +54,20 @@ def run(output:Path, input_file:Path|None=None, *, allow_demo=False):
                 for book in entry['titres']:
                     if book.get('couverture_url') and book.get('couverture_titre'):
                         covers[book['rang']]={'url':book['couverture_url'],'reference':book['couverture_titre']}
+            # Une couverture peut figurer parmi les sorties de l'éditeur et non dans
+            # le classement général (qui évolue indépendamment du Top national).
+            if not input_file and cat=='BD':
+                extra,errors=search_bede_catalog(entry['titres'],index=index)
+                covers.update(extra)
+                log.append(f'BD : {len(covers)}/{len(entry["titres"])} couvertures candidates trouvées sur Bédé.fr.')
+                for err in errors:log.append('Catalogue couverture indisponible : '+err)
+            # Compléter depuis Google Books uniquement en cas d'appariement exact.
             for book in entry['titres']:
                 ok,message=download_cover(book,covers,coverdir)
+                if not ok and not input_file:
+                    backup=search_google_books(book)
+                    if backup:
+                        ok,message=download_cover(book,{book['rang']:backup},coverdir)
                 if not ok:log.append(f'{cat} #{book["rang"]}: couverture absente : {message}')
             # Un seul moteur graphique pour BD / MANGA / COMICS, trois fonds indépendants.
             # Sans les fichiers et couleurs transmis pour le genre, la génération est bloquée.
