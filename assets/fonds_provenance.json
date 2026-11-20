@@ -1,0 +1,29 @@
+{
+  "BD": {
+    "fichier": "assets/fond_bd_original.jpeg",
+    "sha256": "3117bfbf5f4dd4844a731493e7530d5dd80d464a9d32c84628fdae6b8ade392a",
+    "dimensions_originales": [
+      498,
+      585
+    ],
+    "original_nom": "IMG_5579.jpeg"
+  },
+  "MANGA": {
+    "fichier": "assets/fond_manga_original.png",
+    "sha256": "bff13e19a1863b5324cb1669885c5afbd545992bbd51777101838f089d9e7940",
+    "dimensions_originales": [
+      404,
+      612
+    ],
+    "original_nom": "IMG_5618.png"
+  },
+  "COMICS": {
+    "fichier": "assets/fond_comics_original.png",
+    "sha256": "d59d50c12d928276ca3bb47fc8ea199f374e1b500dbe753f8bcde32248f88ed3",
+    "dimensions_originales": [
+      566,
+      427
+    ],
+    "original_nom": "IMG_5617.png"
+  }
+}

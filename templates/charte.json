@@ -1,0 +1,31 @@
+{
+  "nom": "Top France v0 — proposition à approuver",
+  "format_px": [
+    1080,
+    1350
+  ],
+  "images_par_carrousel": 7,
+  "police": "DejaVu Sans (systeme, non incluse dans le ZIP)",
+  "couleurs": {
+    "fond": "#141D30",
+    "carte": "#21314D",
+    "texte": "#F8FAFC",
+    "secondaire": "#C0CEE0",
+    "accent": "#F8C955",
+    "hausse": "#77E0C5",
+    "baisse": "#FCADAE"
+  },
+  "mise_en_page": {
+    "marge": 72,
+    "espacement": 28,
+    "arrondi": 28,
+    "hauteur_carte": 400,
+    "pied_page_y": 1250
+  },
+  "categorie_couleur": {
+    "BD": "#F8C955",
+    "MANGA": "#77E0C5",
+    "COMICS": "#FCADAE"
+  },
+  "note": "La charte est un brouillon. La valider avant activation. Le programme ne réinvente pas le style à chaque exécution."
+}

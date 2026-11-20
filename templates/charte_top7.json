@@ -1,0 +1,58 @@
+{
+  "nom": "TOP 7 BD / MANGA / COMICS — charte visuelle 3 fonds reçus (v5)",
+  "format_px": [
+    1080,
+    1350
+  ],
+  "nombre_pages": 8,
+  "ordre_pages": [
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1,
+    "recapitulatif"
+  ],
+  "categorie_styles": {
+    "BD": {
+      "fond_original": "assets/fond_bd_original.jpeg",
+      "violet": "#5E376E",
+      "jaune": "#F7E952",
+      "blanc": "#FFFFFF",
+      "encre": "#40224E",
+      "statut": "APPROUVABLE",
+      "rond": "#F7E952"
+    },
+    "MANGA": {
+      "violet": "#171717",
+      "jaune": "#FFFFFF",
+      "rond": "#F7E952",
+      "blanc": "#FFFFFF",
+      "encre": "#171717",
+      "fond_original": "assets/fond_manga_original.png",
+      "statut": "PROPOSITION_A_VALIDER",
+      "fond_usage": "Original conservé à l’identique; ajustement au format portrait par cadrage lors du rendu"
+    },
+    "COMICS": {
+      "violet": "#970017",
+      "jaune": "#FFF9F0",
+      "rond": "#FFE45E",
+      "blanc": "#FFFFFF",
+      "encre": "#710013",
+      "fond_original": "assets/fond_comics_original.png",
+      "statut": "PROPOSITION_A_VALIDER",
+      "fond_usage": "Original conservé à l’identique; ajustement au format portrait par cadrage lors du rendu"
+    }
+  },
+  "evolution": {
+    "progression": "#13853C",
+    "recul": "#CB2434",
+    "stable": "#667085",
+    "nouveau": "#5E376E",
+    "indisponible": "#667085"
+  },
+  "regle_evolution": "Arrow plus count colored green for increases, arrow down plus count red for decreases; indicator on every page and in recap alongside album title. No missing data filled by guess.",
+  "fonds": "Images originales fournies par utilisateur, ni régénération ni substitution. Même logique des 8 pages pour les 3 catégories."
+}

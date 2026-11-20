@@ -1,0 +1,53 @@
+{
+  "categorie": "BD",
+  "perimetre": "MAQUETTE FICTIVE — aucune vente réelle",
+  "debut_ventes": "2026-11-02",
+  "fin_ventes": "2026-11-08",
+  "source": "Données fictives pour vérifier les couleurs",
+  "url_source": "https://example.com/demo",
+  "variations_verifiees": true,
+  "titres": [
+    {
+      "rang": 1,
+      "titre": "ALBUM FICTIF N° 1",
+      "editeur": "DÉMONSTRATION",
+      "mouvement": "+3 PL."
+    },
+    {
+      "rang": 2,
+      "titre": "ALBUM FICTIF N° 2",
+      "editeur": "DÉMONSTRATION",
+      "mouvement": "−2 PL."
+    },
+    {
+      "rang": 3,
+      "titre": "ALBUM FICTIF N° 3",
+      "editeur": "DÉMONSTRATION",
+      "mouvement": "= STABLE"
+    },
+    {
+      "rang": 4,
+      "titre": "ALBUM FICTIF N° 4",
+      "editeur": "DÉMONSTRATION",
+      "mouvement": "NOUVEAU"
+    },
+    {
+      "rang": 5,
+      "titre": "ALBUM FICTIF N° 5",
+      "editeur": "DÉMONSTRATION",
+      "mouvement": "+1 PL."
+    },
+    {
+      "rang": 6,
+      "titre": "ALBUM FICTIF N° 6",
+      "editeur": "DÉMONSTRATION",
+      "mouvement": "-1 PL."
+    },
+    {
+      "rang": 7,
+      "titre": "ALBUM FICTIF N° 7",
+      "editeur": "DÉMONSTRATION",
+      "mouvement": "NON DOCUMENTÉ"
+    }
+  ]
+}

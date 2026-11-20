@@ -1,0 +1,93 @@
+{
+  "categorie": "BD",
+  "perimetre": "Top 20 BD GfK / Livres Hebdo (France) - 10 premiers rangs",
+  "debut_ventes": "2026-11-02",
+  "fin_ventes": "2026-11-08",
+  "date_publication": "2026-11-18",
+  "source": "BDZoom / GfK-Livres Hebdo",
+  "url_source": "https://www.bdzoom.com/216589/meilleures-ventes/zoom-sur-les-meilleures-ventes-de-bd-du-18-novembre-2026/",
+  "statut_donnees": "DONNÉES DE MAQUETTE NON REVALIDÉES — watermark — pas pour publication",
+  "titres": [
+    {
+      "rang": 1,
+      "titre": "Saint Lucky Luke",
+      "detail": "Les Aventures de Lucky Luke · T12",
+      "editeur": "LUCKY COMICS",
+      "mouvement": "NOUVEAU",
+      "cover_url": ""
+    },
+    {
+      "rang": 2,
+      "titre": "Des boum et des paf",
+      "detail": "Gaston Lagaffe · T23",
+      "editeur": "DUPUIS",
+      "mouvement": "−1 PLACE",
+      "cover_url": ""
+    },
+    {
+      "rang": 3,
+      "titre": "Affaires classées",
+      "detail": "Blake et Mortimer · Hors-série",
+      "editeur": "BLAKE ET MORTIMER",
+      "mouvement": "−1 PLACE",
+      "cover_url": ""
+    },
+    {
+      "rang": 4,
+      "titre": "Les labyrinthes de papier",
+      "detail": "Mortelle Adèle",
+      "editeur": "MR TAN & CO",
+      "mouvement": "−1 PLACE",
+      "cover_url": ""
+    },
+    {
+      "rang": 5,
+      "titre": "Au pays du poisson cru",
+      "detail": "Ariol · T22",
+      "editeur": "BAYARD JEUNESSE",
+      "mouvement": "NOUVEAU",
+      "cover_url": ""
+    },
+    {
+      "rang": 6,
+      "titre": "L’Été de Bérénice",
+      "detail": "Émilie Tronche",
+      "editeur": "CASTERMAN",
+      "mouvement": "= STABLE",
+      "cover_url": ""
+    },
+    {
+      "rang": 7,
+      "titre": "La Cité d’Ys",
+      "detail": "Brume · T5",
+      "editeur": "GLÉNAT",
+      "mouvement": "−2 PLACES",
+      "cover_url": ""
+    },
+    {
+      "rang": 8,
+      "titre": "Intemporelle(s)",
+      "detail": "Elles · T4",
+      "editeur": "LE LOMBARD",
+      "mouvement": "−4 PLACES",
+      "cover_url": ""
+    },
+    {
+      "rang": 9,
+      "titre": "Lou ! Sonata · T3",
+      "detail": "Julien Neel",
+      "editeur": "GLÉNAT",
+      "mouvement": "−2 PLACES",
+      "cover_url": ""
+    },
+    {
+      "rang": 10,
+      "titre": "À l’ombre de Mithra",
+      "detail": "Murena · T14",
+      "editeur": "DARGAUD",
+      "mouvement": "NOUVEAU",
+      "cover_url": ""
+    }
+  ],
+  "variations_verifiees": false
+}
