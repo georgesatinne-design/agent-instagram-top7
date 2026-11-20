@@ -117,6 +117,27 @@ def draw_top_rank_circle(draw,box,rank,fill_color,text_color):
         draw_text_center(draw,(cx,cy-14),'TOP',17,text_color)
         draw_text_center(draw,(cx,cy+24),str(rank),40,text_color)
 
+
+def paste_cover_fit(im, source, box, bg_color='#F6F6F6', allow_upscale=True):
+    """Colle une couverture en l'agrandissant autant que possible dans le cadre."""
+    x0,y0,x1,y1=box
+    max_w=max(1,x1-x0)
+    max_h=max(1,y1-y0)
+    sw,sh=source.size
+    if sw<=0 or sh<=0:
+        return
+    ratio=min(max_w/sw, max_h/sh)
+    if not allow_upscale:
+        ratio=min(1.0, ratio)
+    new_size=(max(1,int(sw*ratio)), max(1,int(sh*ratio)))
+    res=Image.Resampling.LANCZOS if ratio>=1 else Image.Resampling.LANCZOS
+    fitted=source.resize(new_size, res)
+    canvas=Image.new('RGB',(max_w,max_h),bg_color)
+    px=(max_w-fitted.width)//2
+    py=(max_h-fitted.height)//2
+    canvas.paste(fitted,(px,py))
+    im.paste(canvas,(x0,y0))
+
 def render_top7(data,destination,cover_directory,*,use_watermark=False):
     verifier(data)
     count=len(data['titres'])
@@ -151,23 +172,26 @@ def render_top7(data,destination,cover_directory,*,use_watermark=False):
         content_h=len(title_lines)*lineheight
         for j,line in enumerate(title_lines):
             draw_text_center(d,(540,115-content_h/2+j*lineheight+lineheight/2),line,title_font.size,yellow)
-        # Bloc couverture très proche du cadrage de l'exemple.
+        # Éditeur affiché sur chaque page top, juste sous le titre.
+        editor=(book.get('editeur') or '').strip()
+        if editor:
+            pill(im,(292,186,788,228),white,stroke=purple,radius=12)
+            draw_text_center(d,(540,207),f'ÉDITEUR : {editor}',22,purple)
+        # Bloc couverture agrandi : la couverture doit occuper presque tout le cadre blanc.
         cv=cover_path(cover_directory,title)
-        x0,y0,x1,y1=155,196,931,1150
+        x0,y0,x1,y1=155,245,931,1138
         pill(im,(x0-8,y0-8,x1+8,y1+8),'#FFFFFF',stroke=purple,radius=8)
         if cv.exists():
             try:
                 source=Image.open(cv).convert('RGB')
-                source.thumbnail((x1-x0,y1-y0),Image.Resampling.LANCZOS)
-                x=x0+(x1-x0-source.width)//2;y=y0+(y1-y0-source.height)//2
-                im.paste(source,(x,y))
+                paste_cover_fit(im,source,(x0,y0,x1,y1),bg_color='#F2F2F2',allow_upscale=True)
             except Exception:
                 missing.append(title)
                 d=ImageDraw.Draw(im)
-                d.multiline_text((542,610),'COUVERTURE\nÀ VÉRIFIER',font=font(45,True),fill=purple,anchor='mm',align='center',spacing=10)
+                d.multiline_text((542,650),'COUVERTURE\nÀ VÉRIFIER',font=font(45,True),fill=purple,anchor='mm',align='center',spacing=10)
         else:
             missing.append(title)
-            d.multiline_text((542,610),'COUVERTURE\nNON DISPONIBLE',font=font(45,True),fill=purple,anchor='mm',align='center',spacing=10)
+            d.multiline_text((542,650),'COUVERTURE\nNON DISPONIBLE',font=font(45,True),fill=purple,anchor='mm',align='center',spacing=10)
         # Rond jaune et rang violet, superposé au côté gauche.
         d=ImageDraw.Draw(im)
         draw_top_rank_circle(d,(48,510,448,910),rank,rank_circle,purple)
@@ -191,12 +215,14 @@ def render_top7(data,destination,cover_directory,*,use_watermark=False):
         pill(im,(67,y,1013,y+115),white,radius=14)
         d=ImageDraw.Draw(im)
         draw_top_rank_circle(d,(84,y+12,175,y+103),book['rang'],rank_circle,purple)
-        # Badge de progression à droite du NOM, sur la même ligne récapitulative.
-        # Limiter le nom à sa zone protège le badge et évite tout chevauchement.
-        rows,f,lh=label(book['titre'],560,92,start=40,minimum=20,draw=d)
-        top_text=y+58 -len(rows)*lh/2
+        # Le récapitulatif affiche le nom + l'éditeur sur la même ligne visuelle.
+        rows,f,lh=label(book['titre'],585,64,start=36,minimum=16,draw=d)
+        top_text=y+40 -len(rows)*lh/2
         for j,line in enumerate(rows):
             d.text((203,top_text+j*lh),line,font=f,fill=ink)
+        editor=(book.get('editeur') or '').strip()
+        if editor:
+            d.text((203,y+83),f'Éditeur : {editor}',font=font(18,True),fill=purple)
         mv,long_short,state=movement_state(book,move_ok)
         indicator_color=evolution_colors[state]
         indicator=(803,y+31,998,y+85)
@@ -209,7 +235,13 @@ def render_top7(data,destination,cover_directory,*,use_watermark=False):
     caption=f'📚 TOP 7 {data["categorie"]} — {data["perimetre"]}\n📅 Ventes {period}\n\n'
     for book in top:
         mv=movement(book,move_ok)
-        caption+=f'#{book["rang"]} {book["titre"]}'+(f' ({mv})' if mv!='ÉVOLUTION NON DISPONIBLE' else '')+'\n'
+        publisher=(book.get('editeur') or '').strip()
+        caption+=f'#{book["rang"]} {book["titre"]}'
+        if publisher:
+            caption+=f' — {publisher}'
+        if mv!='ÉVOLUTION NON DISPONIBLE':
+            caption+=f' ({mv})'
+        caption+='\n'
     caption+='\nEt toi, lequel as-tu lu ? 👇\n\n'
     caption+=f'Source : {data["source"]}\n{data["url_source"]}\n'
     caption+=f'\n#BD #BandesDessinees #TopBD #Lecture #ClassementBD' if data['categorie']=='BD' else ('\n#Manga #ClassementManga #Lecture' if data['categorie']=='MANGA' else '\n#Comics #ClassementComics #Lecture')
