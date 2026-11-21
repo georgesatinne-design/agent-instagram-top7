@@ -37,7 +37,8 @@ class Top7Tests(unittest.TestCase):
             payload=draft_payload(folder,'https://raw.githubusercontent.com/u/r/main/public_media/week/BD/','channel-test')
             fields=payload['variables']['input']
             self.assertTrue(fields['saveToDraft'])
-            self.assertEqual(fields['mode'],'addToQueue')
+            self.assertEqual(fields['mode'],'customScheduled')
+            self.assertIn('dueAt',fields)
             self.assertEqual(len(fields['assets']),8)
             self.assertEqual(fields['assets'][0]['image']['url'].split('/')[-1],'01_rang_7.png')
             simulation=deposit_draft(folder,'https://raw.githubusercontent.com/u/r/main/public_media/week/BD/','channel-test','',send=False)
@@ -52,7 +53,7 @@ class Top7Tests(unittest.TestCase):
             manifest_path.write_text(json.dumps(manifest))
             class FakeResponse:
                 def raise_for_status(self):pass
-                def json(self):return {'data':{'createPost':{'__typename':'PostActionSuccess','post':{'id':'draft_123'}}}}
+                def json(self):return {'data':{'createPost':{'__typename':'PostActionSuccess','post':{'id':'draft_123','status':'draft'}}}}
             calls=[]
             def fake_post(url,**kwargs):
                 calls.append(kwargs['json']['variables']['input'])
@@ -61,7 +62,8 @@ class Top7Tests(unittest.TestCase):
             self.assertEqual(received['statut'],'BROUILLON_DEPOSE')
             self.assertEqual(len(calls),1)
             self.assertTrue(calls[0]['saveToDraft'])
-            self.assertNotIn('dueAt',calls[0])
+            self.assertIn('dueAt',calls[0])
+            self.assertEqual(calls[0]['mode'],'customScheduled')
             received_again=deposit_draft(p,'https://raw.githubusercontent.com/u/r/main/public_media/week/BD/','channel','dummy_token',send=True,check_images=False,post=fake_post)
             self.assertEqual(received_again['statut'],'DEJA_DEPOSE')
             self.assertEqual(len(calls),1)
