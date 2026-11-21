@@ -1,7 +1,8 @@
 name: Agent Top 7 - brouillons Instagram uniquement
 on:
   schedule:
-    - cron: '0 15,16 * * 5' # 17h Paris en ete / en hiver, selon le changement d'heure
+    - cron: '0 17 * * 4' # Jeudi 17h, Europe/Paris : préparer avant vendredi 17h
+      timezone: 'Europe/Paris'
   workflow_dispatch:
 concurrency:
   group: top7-instagram
@@ -22,7 +23,7 @@ jobs:
           import datetime as dt,os
           from zoneinfo import ZoneInfo
           local=dt.datetime.now(ZoneInfo('Europe/Paris'))
-          go = os.getenv('EVENT_NAME') == 'workflow_dispatch' or (local.weekday()==4 and local.hour==17)
+          go = os.getenv('EVENT_NAME') == 'workflow_dispatch' or (local.weekday()==3 and local.hour==17)
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('go='+str(go).lower()+'\n')
           print('Déclenchement autorisé :', go, 'heure Paris :', local.isoformat())
           PY
