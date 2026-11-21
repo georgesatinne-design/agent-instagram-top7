@@ -232,7 +232,7 @@ def render_top7(data,destination,cover_directory,*,use_watermark=False):
         draw_text_center(d,(900,y+58),long_short,badge_size,indicator_color)
     foot(im,8)
     path=target/'08_recapitulatif.png';im.save(path,optimize=True);slides.append(path)
-    caption=f'📚 TOP 7 {data["categorie"]} — {data["perimetre"]}\n📅 Ventes {period}\n\n'
+    caption=f'📚 TOP 7 {data["categorie"]} — Les meilleures ventes\n📅 Ventes {period}\n\n'
     for book in top:
         mv=movement(book,move_ok)
         publisher=(book.get('editeur') or '').strip()
@@ -243,10 +243,15 @@ def render_top7(data,destination,cover_directory,*,use_watermark=False):
             caption+=f' ({mv})'
         caption+='\n'
     caption+='\nEt toi, lequel as-tu lu ? 👇\n\n'
-    caption+=f'Source : {data["source"]}\n{data["url_source"]}\n'
     caption+=f'\n#BD #BandesDessinees #TopBD #Lecture #ClassementBD' if data['categorie']=='BD' else ('\n#Manga #ClassementManga #Lecture' if data['categorie']=='MANGA' else '\n#Comics #ClassementComics #Lecture')
     (target/'legende_instagram.txt').write_text(caption,encoding='utf-8')
-    (target/'classement_source.json').write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf-8')
+    # Dossier de publication : aucune référence bibliographique ou URL n'est exposée.
+    public_data={key:value for key,value in data.items() if key not in ('source','url_source','perimetre')}
+    public_data['titres']=[
+        {key:value for key,value in book.items() if 'url' not in key.lower() and 'source' not in key.lower()}
+        for book in data['titres']
+    ]
+    (target/'classement_donnees.json').write_text(json.dumps(public_data,ensure_ascii=False,indent=2),encoding='utf-8')
     # Vue d'ensemble
     preview=Image.new('RGB',(4*282,2*364),'#e6e3ec')
     for i,p in enumerate(slides):
@@ -255,7 +260,6 @@ def render_top7(data,destination,cover_directory,*,use_watermark=False):
     preview.save(target/'apercu.png')
     manifest={
         'category':data['categorie'], 'status':'DRAFT_ONLY', 'period':period,
-        'source':data['source'],'source_url':data['url_source'],'scope':data['perimetre'],
         'pages':[p.name for p in slides], 'caption_file':'legende_instagram.txt',
         'intended_post_date':None,'source_validated':not use_watermark,
         'covers_complete':len(missing)==0,'missing_covers':missing,
@@ -271,7 +275,7 @@ def render_top7(data,destination,cover_directory,*,use_watermark=False):
     (target/'A_VALIDER.md').write_text(
         f'# Publication {data["categorie"]} — à valider\n\n'
         f'- Pages : **8** (rangs 7 → 1 + récapitulatif)\n'
-        f'- Période : {period}\n- Source : {data["url_source"]}\n'
+        f'- Période : {period}\n'
         f'- Couvertures manquantes : **{len(missing)}**\n'
         f'- Fond original + charte SHA256 : `{fingerprint}`\n'
         f'- Envoi possible à Buffer : **{manifest["ready_to_stage"]}**\n'
