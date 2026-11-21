@@ -151,17 +151,17 @@ def render(data,destination,*,charte_path=CHARTE,cover_directory=None):
         view=Image.open(p);view.thumbnail((270,338),Image.Resampling.LANCZOS)
         overview.paste(view,((i%4)*282+6,(i//4)*357+6))
     overview.save(directory/'apercu.png')
-    caption=f"TOP {n} {data['categorie']} — {data['perimetre']} 🇫🇷\n{period(data)}\n\n"
+    caption=f"TOP {n} {data['categorie']} — Les meilleures ventes\n{period(data)}\n\n"
     for book in data['titres']:
         caption+=f"{book['rang']}. {book['titre']} — {book.get('editeur','')}\n"
-    caption+=f"\nSource : {data['source']}\n{data['url_source']}\n\nBrouillon soumis à validation avant publication."
+    caption+="\nBrouillon soumis à validation avant publication."
     (directory/'legende_instagram.txt').write_text(caption,encoding='utf-8')
-    (directory/'classement_source.json').write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf-8')
+    (directory/'classement_donnees.json').write_text(json.dumps({k:v for k,v in data.items() if k not in ('source','url_source','perimetre')},ensure_ascii=False,indent=2),encoding='utf-8')
     report=['# Dossier à valider','',f"- Catégorie : {data['categorie']}",f'- Périmètre (important) : {data["perimetre"]}',f'- Source : {data["source"]}',f'- Lien : {data["url_source"]}',f'- Période : {period(data)}',f'- Albums vérifiés : {n}',f'- Couvertures effectivement présentes : {n-len(missing)}/{n}',f'- Charte fixe SHA256 : {hashlib.sha256(chartbytes).hexdigest()}', '', '## Contrôles avant validation', '- [ ] Dates et rangs vérifiés', '- [ ] Périmètre national / enseigne correctement signalé', '- [ ] Couvertures manquantes ou ambiguës acceptées', '- [ ] Graphisme conforme à la charte', '- [ ] Légende approuvée', '', '**AUCUNE PUBLICATION AUTOMATIQUE.**']
     if missing: report += ['', '### Couvertures absentes', *[f'- {name}' for name in missing]]
     (directory/'A_VALIDER.md').write_text('\n'.join(report)+'\n',encoding='utf-8')
     # page de revue HTML autoportée, utile sur PC/téléphone après extraction de l'artefact.
     items=''.join(f'<figure><img src="{html.escape(p.name)}" alt="Diapositive {i+1}"><figcaption>Image {i+1}/{len(paths)}</figcaption></figure>' for i,p in enumerate(paths))
-    page=f'''<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dossier à valider — {data['categorie']}</title><style>body{{font:16px system-ui;background:#111827;color:white;margin:0;padding:20px}}h1{{max-width:1100px;margin:20px auto}}p{{max-width:1100px;margin:15px auto;color:#cad5e3}}main{{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;max-width:1200px;margin:auto}}figure{{margin:0}}img{{width:100%;border-radius:12px}}figcaption{{color:#cbd5e1;font-size:14px}}a{{color:#f8c955}}</style><h1>À valider : {data['categorie']}</h1><p>{html.escape(data['perimetre'])} • {html.escape(period(data))} • <a href="{html.escape(data['url_source'])}">Source</a></p><main>{items}</main><p>Aucune publication n'a été réalisée. Lire A_VALIDER.md avant utilisation.</p></html>'''
+    page=f'''<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dossier à valider — {data['categorie']}</title><style>body{{font:16px system-ui;background:#111827;color:white;margin:0;padding:20px}}h1{{max-width:1100px;margin:20px auto}}p{{max-width:1100px;margin:15px auto;color:#cad5e3}}main{{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;max-width:1200px;margin:auto}}figure{{margin:0}}img{{width:100%;border-radius:12px}}figcaption{{color:#cbd5e1;font-size:14px}}a{{color:#f8c955}}</style><h1>À valider : {data['categorie']}</h1><p>{html.escape(period(data))}</p><main>{items}</main><p>Aucune publication n'a été réalisée. Lire A_VALIDER.md avant utilisation.</p></html>'''
     (directory/'REVUE.html').write_text(page,encoding='utf-8')
     return {'pages':len(paths),'images':paths,'covers_found':n-len(missing),'charte_hash':hashlib.sha256(chartbytes).hexdigest()}
