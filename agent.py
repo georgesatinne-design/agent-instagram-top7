@@ -17,18 +17,18 @@ def run(output:Path, input_file:Path|None=None, *, allow_demo=False):
     if input_file:
         supplied=json.loads(input_file.read_text(encoding='utf-8'))
         data=supplied if isinstance(supplied,list) else [supplied]
-        log.append('Mode fichier fourni : la source du fichier n’est pas vérifiée par le collecteur.')
+        log.append('Mode fichier fourni : vérification des données désactivée.')
     else:
         try:
             data.append(collect_bd())
-            log.append('BDZoom : collecte du Top BD réussie.')
+            log.append('Collecte BD : classement reçu et contrôlé.')
         except Exception as exc:
-            log.append(f'BDZoom : échec explicite ({type(exc).__name__}: {exc}).')
+            log.append(f'Collecte BD : échec ({type(exc).__name__}).')
         try:
             index=rangs_bede(fetch(BEDE))
-            log.append(f'Bédé.fr : {len(index["classement_general"])} entrées générales repérées.')
+            log.append(f'Catalogue consulté : {len(index["classement_general"])} entrées repérées.')
             groups,errors=top_par_genre_bede(index)
-            log.append(f'Bédé.fr : {len(errors)} fiches non vérifiées.')
+            log.append(f'Catalogue consulté : {len(errors)} fiches non vérifiées.')
             for cat in ('MANGA','COMICS'):
                 books=groups[cat]
                 if books and index.get('date_palmares'):
@@ -37,7 +37,7 @@ def run(output:Path, input_file:Path|None=None, *, allow_demo=False):
                     'url_source':BEDE,'titres':books})
                 else:log.append(f'{cat}: aucune série de rangs vérifiables et datés; pas de carrousel inventé.')
         except Exception as exc:
-            log.append(f'Bédé.fr : échec explicite ({type(exc).__name__}: {exc}).')
+            log.append(f'Catalogue : échec ({type(exc).__name__}).')
     seen=set();result=[]
     for entry in data:
         cat=entry.get('categorie','INCONNUE')
@@ -59,7 +59,7 @@ def run(output:Path, input_file:Path|None=None, *, allow_demo=False):
             if not input_file and cat=='BD':
                 extra,errors=search_bede_catalog(entry['titres'],index=index)
                 covers.update(extra)
-                log.append(f'BD : {len(covers)}/{len(entry["titres"])} couvertures candidates trouvées sur Bédé.fr.')
+                log.append(f'BD : {len(covers)}/{len(entry["titres"])} couvertures candidates trouvées dans le catalogue.')
                 for err in errors:log.append('Catalogue couverture indisponible : '+err)
             # Compléter depuis Google Books uniquement en cas d'appariement exact.
             for book in entry['titres']:
@@ -75,7 +75,7 @@ def run(output:Path, input_file:Path|None=None, *, allow_demo=False):
             covers_found=7 - len(info['missing_covers'])
             checksum=info['visual_fingerprint']
             result.append({'categorie':cat,'titres':count,'diapositives':info['pages'],'couvertures':covers_found,
-                           'source':entry['url_source'],'perimetre':entry['perimetre'],'charte_sha256':checksum})
+                           'charte_sha256':checksum})
         except Exception as exc:
             log.append(f'{cat}: génération refusée : {type(exc).__name__}: {exc}')
     summary={'date_execution':dt.datetime.now(dt.timezone.utc).isoformat(),'mode':'fichier' if input_file else 'collecte_live',
