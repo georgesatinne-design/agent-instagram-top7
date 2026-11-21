@@ -10,12 +10,13 @@ from pathlib import Path
 from urllib.parse import quote, urlparse
 import requests
 from PIL import Image
+from calendrier import prochain_creneau
 
 API_URL='https://api.buffer.com'
 MUTATION='''mutation CreateDraftPost($input: CreatePostInput!) {
  createPost(input: $input) {
    __typename
-   ... on PostActionSuccess { post { id text dueAt } }
+   ... on PostActionSuccess { post { id text dueAt status } }
    ... on MutationError { message }
  }
 }'''
@@ -40,7 +41,23 @@ def construct_draft(folder,public_base_url):
         media.append({'image':{'url':public_base_url+quote(name)}})
     caption=(folder/manifest['caption_file']).read_text(encoding='utf-8').strip()
     if not caption or len(caption)>2200:raise ValueError('Légende manquante ou trop longue pour Instagram')
-    return {'text':caption,'schedulingType':'automatic','mode':'addToQueue','saveToDraft':True,'assets':media}
+    # Instagram exige explicitement le type de publication dans ses metadata.
+    # Huit images = carrousel dans le flux; saveToDraft=True garantit le brouillon.
+    payload = {
+        'text':caption,
+        'schedulingType':'automatic',
+        'mode':'addToQueue',
+        'saveToDraft':True,
+        'assets':media,
+        'metadata':{'instagram':{'type':'post','shouldShareToFeed':True}},
+    }
+    # Important : customScheduled + saveToDraft propose une date sans pouvoir publier.
+    # L'API Buffer devra encore confirmer ce comportement lors du premier test réel.
+    suggestion = prochain_creneau(manifest.get('category', 'BD'))
+    if suggestion:
+        payload['mode']='customScheduled'
+        payload['dueAt']=suggestion['dueAt']
+    return payload
 
 def draft_payload(folder,public_base_url,channel_id):
     if not channel_id:raise ValueError('BUFFER_CHANNEL_ID manquant')
@@ -69,13 +86,32 @@ def deposit_draft(folder,public_base_url,channel_id,api_key,*,send=False,check_i
     r=post(API_URL,json=payload,headers={'Content-Type':'application/json','Authorization':f'Bearer {api_key}'},timeout=35)
     r.raise_for_status()
     ans=r.json()
-    if ans.get('errors'):raise RuntimeError('Erreur GraphQL : '+str(ans['errors'])[:300])
+    # Les erreurs sont des types CONCRETS : InvalidInputError, UnauthorizedError,
+    # LimitReachedError... ; leur __typename n'est jamais 'MutationError'
+    # (MutationError est une interface). Ne jamais masquer le motif du refus.
+    def safe_message(message):
+        return str(message or '').replace(api_key,'[CLE_MASQUEE]')[:750]
+    if ans.get('errors'):
+        messages='; '.join(safe_message(x.get('message')) for x in ans['errors'] if isinstance(x,dict))
+        raise RuntimeError('Buffer GraphQL : '+(messages or 'Erreur non détaillée'))
     entry=(ans.get('data') or {}).get('createPost') or {}
-    if entry.get('__typename')=='MutationError':raise RuntimeError('Buffer a refusé le brouillon : '+str(entry.get('message')))
-    identifier=(entry.get('post') or {}).get('id')
-    if not identifier:raise RuntimeError('Buffer ne confirme pas la création du brouillon')
+    response_type=entry.get('__typename','inconnu')
+    if entry.get('message'):
+        raise RuntimeError(f'Buffer refuse le brouillon ({response_type}) : {safe_message(entry["message"])}')
+    post_record=entry.get('post') or {}
+    status=post_record.get('status')
+    if not status or str(status).lower() != 'draft':
+        # Fail closed : seul un statut explicitement brouillon vaut confirmation.
+        raise RuntimeError('ALERTE : Buffer ne confirme pas le statut brouillon : '+str(status)[:60]+'. Vérifier immédiatement dans Buffer.')
+    identifier=post_record.get('id')
+    if not identifier:
+        raise RuntimeError(
+            'Buffer ne confirme pas la création du brouillon; '
+            f'type de réponse : {response_type}. '
+            'Vérifier les brouillons dans Buffer avant toute nouvelle tentative.'
+        )
     # Réception d'une preuve concrète, sans jamais programmer ou publier.
-    out={'statut':'BROUILLON_DEPOSE','id_buffer':identifier,'publication':'NON','pages':8}
+    out={'statut':'BROUILLON_DEPOSE','id_buffer':identifier,'publication':'NON','pages':8, 'date_proposee_utc':payload['variables']['input'].get('dueAt')}
     receipt.write_text(json.dumps(out,indent=2,ensure_ascii=False),encoding='utf-8')
     return out
 
