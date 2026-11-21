@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "fuseau": "Europe/Paris",
+  "mode_validation": "brouillon_a_valider",
+  "delai_validation_heures": 12,
+  "preparation": {
+    "frequence": "hebdomadaire",
+    "jour": "jeudi",
+    "heure": "17:00",
+    "note": "Préparation du brouillon le jeudi à 17 h, 24 heures avant la publication prévue."
+  },
+  "publications": {
+    "BD": {
+      "active": true,
+      "frequence": "hebdomadaire",
+      "jour": "vendredi",
+      "heure": "17:00",
+      "commentaire": "Horaire de publication souhaité par l’utilisateur ; le brouillon exige toujours une validation manuelle dans Buffer."
+    },
+    "MANGA": {
+      "active": false,
+      "frequence": "hebdomadaire",
+      "jour": null,
+      "heure": null
+    },
+    "COMICS": {
+      "active": false,
+      "frequence": "hebdomadaire",
+      "jour": null,
+      "heure": null
+    },
+    "QUOTIDIEN": {
+      "active": false,
+      "frequence": "quotidienne",
+      "heure": null,
+      "commentaire": "Réservé aux publications quotidiennes quand leur format et source seront définis."
+    }
+  }
+}
