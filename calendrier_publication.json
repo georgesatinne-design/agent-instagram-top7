@@ -1,13 +1,11 @@
 {
-  "version": 1,
+  "version": 2,
   "fuseau": "Europe/Paris",
-  "mode_validation": "brouillon_a_valider",
-  "delai_validation_heures": 12,
+  "mode_validation": "programmation_automatique_en_queue",
   "preparation": {
-    "frequence": "hebdomadaire",
-    "jour": "jeudi",
-    "heure": "17:00",
-    "note": "Préparation du brouillon le jeudi à 17 h, 24 heures avant la publication prévue."
+    "frequence": "surveillance_horaire",
+    "cadence": "toutes_les_heures",
+    "note": "Une création seulement quand la source publie une nouvelle période de ventes BD."
   },
   "publications": {
     "BD": {
@@ -15,7 +13,7 @@
       "frequence": "hebdomadaire",
       "jour": "vendredi",
       "heure": "17:00",
-      "commentaire": "Horaire de publication souhaité par l’utilisateur ; le brouillon exige toujours une validation manuelle dans Buffer."
+      "commentaire": "Nouveau classement BD automatiquement placé dans Buffer Queue au prochain vendredi 17h Paris. Publication automatique sans validation préalable."
     },
     "MANGA": {
       "active": false,
@@ -35,5 +33,6 @@
       "heure": null,
       "commentaire": "Réservé aux publications quotidiennes quand leur format et source seront définis."
     }
-  }
+  },
+  "delai_minimum_minutes": 10
 }
