@@ -1,4 +1,5 @@
-"""Buffer GraphQL Free : crée uniquement un BROUILLON, jamais une publication programmée.
+"""Buffer GraphQL Free : programme directement le post dans la Queue Buffer.
+Aucun passage par les brouillons : l'agent dépose un carrousel programmé au créneau calculé.
 Documentation : https://developers.buffer.com/examples/create-draft-post.html
 Media : https://developers.buffer.com/guides/hosting-media.html
 """
@@ -13,7 +14,7 @@ from PIL import Image
 from calendrier import prochain_creneau
 
 API_URL='https://api.buffer.com'
-MUTATION='''mutation CreateDraftPost($input: CreatePostInput!) {
+MUTATION='''mutation CreatePost($input: CreatePostInput!) {
  createPost(input: $input) {
    __typename
    ... on PostActionSuccess { post { id text dueAt status } }
@@ -47,12 +48,11 @@ def construct_draft(folder,public_base_url):
         'text':caption,
         'schedulingType':'automatic',
         'mode':'addToQueue',
-        'saveToDraft':True,
         'assets':media,
         'metadata':{'instagram':{'type':'post','shouldShareToFeed':True}},
     }
-    # Important : customScheduled + saveToDraft propose une date sans pouvoir publier.
-    # L'API Buffer devra encore confirmer ce comportement lors du premier test réel.
+    # Créneau décidé par le calendrier interne : le post est envoyé directement
+    # dans la file Buffer au lieu d'être laissé en brouillon.
     suggestion = prochain_creneau(manifest.get('category', 'BD'))
     if suggestion:
         payload['mode']='customScheduled'
@@ -78,7 +78,7 @@ def check_urls(payload,*,getter=requests.get):
 def deposit_draft(folder,public_base_url,channel_id,api_key,*,send=False,check_images=True,post=requests.post):
     folder=Path(folder)
     payload=draft_payload(folder,public_base_url,channel_id)
-    if not send:return {'statut':'SIMULATION','publication':'INTERDITE','images':8,'texte':len(payload['variables']['input']['text']),'urls':[x['image']['url'] for x in payload['variables']['input']['assets']]}
+    if not send:return {'statut':'SIMULATION','publication':'QUEUE_BUFFER','images':8,'texte':len(payload['variables']['input']['text']),'date_programmee_utc':payload['variables']['input'].get('dueAt'),'urls':[x['image']['url'] for x in payload['variables']['input']['assets']]}
     if not api_key:raise ValueError('BUFFER_API_KEY manquant')
     receipt=folder/'RECU_BUFFER.json'
     if receipt.exists():return {'statut':'DEJA_DEPOSE','recu':json.loads(receipt.read_text(encoding='utf-8'))}
@@ -99,24 +99,29 @@ def deposit_draft(folder,public_base_url,channel_id,api_key,*,send=False,check_i
     if entry.get('message'):
         raise RuntimeError(f'Buffer refuse le brouillon ({response_type}) : {safe_message(entry["message"])}')
     post_record=entry.get('post') or {}
-    status=post_record.get('status')
-    if not status or str(status).lower() != 'draft':
-        # Fail closed : seul un statut explicitement brouillon vaut confirmation.
-        raise RuntimeError('ALERTE : Buffer ne confirme pas le statut brouillon : '+str(status)[:60]+'. Vérifier immédiatement dans Buffer.')
+    status=str(post_record.get('status') or '').lower()
     identifier=post_record.get('id')
     if not identifier:
         raise RuntimeError(
-            'Buffer ne confirme pas la création du brouillon; '
+            'Buffer ne confirme pas la création du post programmé; '
             f'type de réponse : {response_type}. '
-            'Vérifier les brouillons dans Buffer avant toute nouvelle tentative.'
+            'Vérifier la Queue Buffer avant toute nouvelle tentative.'
         )
-    # Réception d'une preuve concrète, sans jamais programmer ou publier.
-    out={'statut':'BROUILLON_DEPOSE','id_buffer':identifier,'publication':'NON','pages':8, 'date_proposee_utc':payload['variables']['input'].get('dueAt')}
+    if status == 'draft':
+        raise RuntimeError("Buffer a créé un brouillon au lieu d'un post en queue. Vérifier immédiatement la configuration.")
+    out={
+        'statut':'POST_PROGRAMME',
+        'id_buffer':identifier,
+        'publication':'QUEUE_BUFFER',
+        'status_buffer':status or 'inconnu',
+        'pages':8,
+        'date_programmee_utc':payload['variables']['input'].get('dueAt')
+    }
     receipt.write_text(json.dumps(out,indent=2,ensure_ascii=False),encoding='utf-8')
     return out
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser(description='Déposer un carrousel Top 7 comme BROUILLON Buffer seulement')
+    parser=argparse.ArgumentParser(description='Déposer un carrousel Top 7 directement dans la Queue Buffer')
     parser.add_argument('--folder',required=True)
     parser.add_argument('--public-base-url',required=True)
     parser.add_argument('--send',action='store_true',help='Effectuer réellement le dépôt; sans ce drapeau simulation uniquement')
