@@ -1,5 +1,5 @@
-"""Planification sécurisée des brouillons pour le compte Instagram.
-Le calendrier suggère un créneau, mais ne publie ni ne programme un post.
+"""Planification automatique des nouvelles éditions BD vers la Queue Buffer.
+Les posts programmés peuvent être publiés par Buffer à leur échéance.
 """
 from __future__ import annotations
 import datetime as dt
@@ -16,8 +16,8 @@ def prochain_creneau(categorie: str, *, now: dt.datetime | None = None, configur
     """Retourne la prochaine heure locale et UTC. Rien si le calendrier n'est pas activé."""
     if configuration is None:
         configuration=json.loads(CALENDRIER.read_text(encoding='utf-8'))
-    if configuration.get('mode_validation') != 'brouillon_a_valider':
-        raise ValueError('Planification refusée : approbation utilisateur non garantie')
+    if configuration.get('mode_validation') != 'programmation_automatique_en_queue':
+        raise ValueError('Mode de programmation automatique non activé')
     zone=ZoneInfo(configuration.get('fuseau', 'Europe/Paris'))
     now=now or dt.datetime.now(dt.timezone.utc)
     if now.tzinfo is None: raise ValueError('Date actuelle sans fuseau non autorisée')
@@ -37,9 +37,9 @@ def prochain_creneau(categorie: str, *, now: dt.datetime | None = None, configur
     if cadence=='hebdomadaire':
         day=JOURS.get(str(rule.get('jour','')).lower())
         if day is None: raise ValueError(f'Jour de publication manquant pour {categorie}')
-    marge=int(configuration.get('delai_validation_heures',12))
-    if not 1<=marge<=168:raise ValueError('Délai de validation doit être entre 1 et 168 heures')
-    minimum=local+dt.timedelta(hours=marge)
+    marge=int(configuration.get('delai_minimum_minutes',10))
+    if not 5<=marge<=1440:raise ValueError('Délai minimum doit être entre 5 et 1440 minutes')
+    minimum=local+dt.timedelta(minutes=marge)
     for ahead in range(0,16):
         date=local.date()+dt.timedelta(days=ahead)
         if day is not None and date.weekday()!=day: continue
@@ -50,13 +50,13 @@ def prochain_creneau(categorie: str, *, now: dt.datetime | None = None, configur
         if candidate > minimum:
             return {'categorie':categorie,'date_heure_paris':candidate.isoformat(),
                     'dueAt':candidate.astimezone(dt.timezone.utc).isoformat(timespec='milliseconds').replace('+00:00','Z'),
-                    'validation':'OBLIGATOIRE_AVANT_PROGRAMMATION'}
+                    'validation':'PROGRAMMATION_AUTOMATIQUE'}
     raise ValueError('Aucun créneau valide trouvé dans les 16 prochains jours')
 
 
 if __name__=='__main__':
     import argparse
-    parser=argparse.ArgumentParser(description='Prévisualiser la date proposée; ne programme rien')
+    parser=argparse.ArgumentParser(description='Prévisualiser la prochaine programmation du Top 7')
     parser.add_argument('--categorie',default='BD')
     args=parser.parse_args()
     print(json.dumps(prochain_creneau(args.categorie),ensure_ascii=False,indent=2))

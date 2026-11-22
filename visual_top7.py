@@ -259,7 +259,7 @@ def render_top7(data,destination,cover_directory,*,use_watermark=False):
         preview.paste(snap,((i%4)*282+6,(i//4)*364+6))
     preview.save(target/'apercu.png')
     manifest={
-        'category':data['categorie'], 'status':'DRAFT_ONLY', 'period':period,
+        'category':data['categorie'], 'status':'READY_FOR_QUEUE', 'period':period,
         'pages':[p.name for p in slides], 'caption_file':'legende_instagram.txt',
         'intended_post_date':None,'source_validated':not use_watermark,
         'covers_complete':len(missing)==0,'missing_covers':missing,
@@ -270,7 +270,7 @@ def render_top7(data,destination,cover_directory,*,use_watermark=False):
     (target/'post_manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False),encoding='utf-8')
     import html
     items=''.join(f'<figure><img src="{html.escape(p.name)}" alt="Page {i+1}"><figcaption>Page {i+1} / 8</figcaption></figure>' for i,p in enumerate(slides))
-    review=f'<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Top 7 {html.escape(data["categorie"])} à valider</title><style>body{{background:#eee8f3;color:#40224e;font:16px system-ui;margin:0;padding:18px}}h1,p{{max-width:1150px;margin:16px auto}}main{{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;max-width:1200px;margin:auto}}figure{{margin:0}}img{{width:100%;border-radius:8px;border:1px solid #a18ea8}}figcaption{{font-size:14px}}</style><h1>Top 7 {html.escape(data["categorie"])} — brouillon</h1><p>Période {html.escape(period)} • aucune publication ni programmation automatique</p><main>{items}</main></html>'
+    review=f'<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Top 7 {html.escape(data["categorie"])} — Queue Buffer automatique</title><style>body{{background:#eee8f3;color:#40224e;font:16px system-ui;margin:0;padding:18px}}h1,p{{max-width:1150px;margin:16px auto}}main{{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;max-width:1200px;margin:auto}}figure{{margin:0}}img{{width:100%;border-radius:8px;border:1px solid #a18ea8}}figcaption{{font-size:14px}}</style><h1>Top 7 {html.escape(data["categorie"])} — à programmer automatiquement</h1><p>Période {html.escape(period)} • dépôt automatique dans la Queue Buffer si le Top 7 est complet</p><main>{items}</main></html>'
     (target/'REVUE.html').write_text(review,encoding='utf-8')
     (target/'A_VALIDER.md').write_text(
         f'# Publication {data["categorie"]} — à valider\n\n'
@@ -279,6 +279,6 @@ def render_top7(data,destination,cover_directory,*,use_watermark=False):
         f'- Couvertures manquantes : **{len(missing)}**\n'
         f'- Fond original + charte SHA256 : `{fingerprint}`\n'
         f'- Envoi possible à Buffer : **{manifest["ready_to_stage"]}**\n'
-        '- L’agent ne programme et ne publie jamais le post automatiquement.\n'
-        '- Le passage du brouillon à la programmation exige une action humaine dans Buffer.\n',encoding='utf-8')
+        '- Si le Top 7 est complet, le workflow le programme automatiquement dans Buffer Queue.\n'
+        '- Buffer peut publier à la date prévue sans approbation humaine.\n',encoding='utf-8')
     return {'pages':8,'images':[str(p) for p in slides], 'missing_covers':missing,'manifest':str(target/'post_manifest.json'),'visual_fingerprint':fingerprint}

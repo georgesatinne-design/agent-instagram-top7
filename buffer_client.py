@@ -25,7 +25,7 @@ MUTATION='''mutation CreatePost($input: CreatePostInput!) {
 def construct_draft(folder,public_base_url):
     folder=Path(folder)
     manifest=json.loads((folder/'post_manifest.json').read_text(encoding='utf-8'))
-    if manifest.get('status')!='DRAFT_ONLY':raise ValueError('Manifest non sécurisé')
+    if manifest.get('status')!='READY_FOR_QUEUE':raise ValueError('Manifest non autorisé pour programmation en Queue')
     if not manifest.get('ready_to_stage'):raise ValueError('Carrousel incomplet ou démonstration, dépôt Buffer refusé')
     slides=manifest.get('pages',[])
     if len(slides)!=8:raise ValueError('Un carrousel Top 7 doit avoir exactement 8 pages')
@@ -43,20 +43,22 @@ def construct_draft(folder,public_base_url):
     caption=(folder/manifest['caption_file']).read_text(encoding='utf-8').strip()
     if not caption or len(caption)>2200:raise ValueError('Légende manquante ou trop longue pour Instagram')
     # Instagram exige explicitement le type de publication dans ses metadata.
-    # Huit images = carrousel dans le flux; saveToDraft=True garantit le brouillon.
+    # Huit images = carrousel dans le flux. Aucun brouillon ni approbation Buffer.
     payload = {
         'text':caption,
         'schedulingType':'automatic',
         'mode':'addToQueue',
+        'needsApproval':False,
         'assets':media,
         'metadata':{'instagram':{'type':'post','shouldShareToFeed':True}},
     }
     # Créneau décidé par le calendrier interne : le post est envoyé directement
     # dans la file Buffer au lieu d'être laissé en brouillon.
     suggestion = prochain_creneau(manifest.get('category', 'BD'))
-    if suggestion:
-        payload['mode']='customScheduled'
-        payload['dueAt']=suggestion['dueAt']
+    if not suggestion:
+        raise ValueError('Aucune règle de programmation active pour cette catégorie : dépôt interdit')
+    payload['mode']='customScheduled'
+    payload['dueAt']=suggestion['dueAt']
     return payload
 
 def draft_payload(folder,public_base_url,channel_id):
@@ -97,7 +99,7 @@ def deposit_draft(folder,public_base_url,channel_id,api_key,*,send=False,check_i
     entry=(ans.get('data') or {}).get('createPost') or {}
     response_type=entry.get('__typename','inconnu')
     if entry.get('message'):
-        raise RuntimeError(f'Buffer refuse le brouillon ({response_type}) : {safe_message(entry["message"])}')
+        raise RuntimeError(f'Buffer refuse la programmation ({response_type}) : {safe_message(entry["message"])}')
     post_record=entry.get('post') or {}
     status=str(post_record.get('status') or '').lower()
     identifier=post_record.get('id')
@@ -107,8 +109,8 @@ def deposit_draft(folder,public_base_url,channel_id,api_key,*,send=False,check_i
             f'type de réponse : {response_type}. '
             'Vérifier la Queue Buffer avant toute nouvelle tentative.'
         )
-    if status == 'draft':
-        raise RuntimeError("Buffer a créé un brouillon au lieu d'un post en queue. Vérifier immédiatement la configuration.")
+    if status not in ('scheduled','buffer'):
+        raise RuntimeError(f'Buffer ne confirme pas la programmation en Queue (statut : {status or "absent"}). Vérifier Buffer avant une nouvelle tentative.')
     out={
         'statut':'POST_PROGRAMME',
         'id_buffer':identifier,
