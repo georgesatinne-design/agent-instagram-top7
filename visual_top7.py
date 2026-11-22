@@ -103,16 +103,16 @@ def base_image(background):
 def draw_text_center(d,xy,value,sz,color,bold=True):
     d.text(xy,value,font=font(sz,bold),fill=color,anchor='mm',stroke_width=0)
 
-def draw_top_rank_circle(draw,box,rank,fill_color,text_color):
-    """Dessine un rond de classement avec 'TOP' + numéro."""
+def draw_top_rank_circle(draw,box,rank,fill_color,text_color,*,outline_color='#FFFFFF'):
+    """Dessine un rond de classement lisible mais moins intrusif sur la couverture."""
     x0,y0,x1,y1=box
-    draw.ellipse(box,fill=fill_color)
+    draw.ellipse(box,fill=fill_color,outline=outline_color,width=6)
     cx=(x0+x1)//2
     cy=(y0+y1)//2
     h=y1-y0
-    if h>=300:
-        draw_text_center(draw,(cx,cy-80),'TOP',58,text_color)
-        draw_text_center(draw,(cx,cy+62),str(rank),190,text_color)
+    if h>=260:
+        draw_text_center(draw,(cx,cy-54),'TOP',46,text_color)
+        draw_text_center(draw,(cx,cy+44),str(rank),150,text_color)
     else:
         draw_text_center(draw,(cx,cy-14),'TOP',17,text_color)
         draw_text_center(draw,(cx,cy+24),str(rank),40,text_color)
@@ -192,9 +192,9 @@ def render_top7(data,destination,cover_directory,*,use_watermark=False):
         else:
             missing.append(title)
             d.multiline_text((542,650),'COUVERTURE\nNON DISPONIBLE',font=font(45,True),fill=purple,anchor='mm',align='center',spacing=10)
-        # Rond jaune et rang violet, superposé au côté gauche.
+        # Rond jaune réduit et légèrement plus à gauche pour moins masquer la couverture.
         d=ImageDraw.Draw(im)
-        draw_top_rank_circle(d,(48,510,448,910),rank,rank_circle,purple)
+        draw_top_rank_circle(d,(20,555,330,865),rank,rank_circle,purple)
         # Évolution : couleur de l'indicateur (flèche ET nombre) selon la direction.
         move,compact,status=movement_state(book,move_ok)
         move_color=evolution_colors[status]
