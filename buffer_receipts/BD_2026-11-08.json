@@ -1,7 +1,10 @@
 {
-  "statut": "RESERVATION_AVANT_ENVOI",
+  "statut": "POST_PROGRAMME",
+  "id_buffer": "6b0255e6c72676f5e9f9e49f",
+  "publication": "QUEUE_BUFFER",
+  "status_buffer": "scheduled",
+  "pages": 8,
+  "date_programmee_utc": "2026-11-27T16:00:00.000Z",
   "edition": "BD_2026-11-08",
-  "empreinte_classement": "cb5f07e7ca043ecb3c9cc8436856e5304e991248dcb719c54a0c84faf1cb1b0f",
-  "run_id": "44977007113",
-  "note": "Si le run échoue à cette étape, vérifier la Queue avant de supprimer la réservation."
+  "empreinte_classement": "cb5f07e7ca043ecb3c9cc8436856e5304e991248dcb719c54a0c84faf1cb1b0f"
 }
