@@ -1,4 +1,4 @@
-name: Diagnostic, verification et enquete sources manga (sans publication)
+name: Diagnostic et maquette Top 7 manga (sans publication)
 
 on:
   workflow_dispatch:
@@ -9,29 +9,31 @@ permissions:
   contents: read
 
 jobs:
-  verifier_sources_manga:
+  verifier_et_preparer_manga:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 18
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Installer les bibliotheques gratuites
-        run: python -m pip install requests beautifulsoup4
-      - name: Tester les diagnostics manga
+        run: python -m pip install -r requirements.txt
+      - name: Tester tous les modules manga
         run: python -m unittest discover -s tests -p 'test_*manga*.py' -v
-      - name: Examiner les sources initiales
+      - name: Diagnostiquer les sources de ventes
         run: python audit_manga_sources.py
-      - name: Verification de coherence V2
+      - name: Verifier la coherence des sept candidats
         run: python verifier_manga.py
-      - name: Enquete croisee sur les sources V3
+      - name: Enqueter sur les sources complementaires
         run: python enquete_manga_v3.py
-      - name: Enregistrer les rapports uniquement (aucun envoi Buffer)
+      - name: Generer huit images de MAQUETTE, sans publication
+        run: python maquette_manga_v4.py
+      - name: Telecharger les rapports et les maquettes (aucun appel Buffer)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: audit-sources-manga
+          name: diagnostic-et-maquette-manga
           path: rapports_manga/
           if-no-files-found: warn
           retention-days: 14
