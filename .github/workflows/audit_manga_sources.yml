@@ -1,4 +1,4 @@
-name: Manga V6 - classements, semaine de ventes et couvertures (sans publication)
+name: Manga V7 - bilan complet, couvertures et semaine (sans publication)
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ concurrency:
 jobs:
   verifier_manga:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,7 +30,7 @@ jobs:
           key: manga-observation-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             manga-observation-
-      - name: Tester les modules manga V1 a V6
+      - name: Tester les modules manga V1 a V7
         run: python -m unittest discover -s tests -p 'test_*manga*.py' -v
       - name: Observer les sources de classements
         run: python audit_manga_sources.py
@@ -44,6 +44,8 @@ jobs:
         run: python enrichissement_manga_v5.py
       - name: Valider la periode de ventes et evaluer les couvertures (aucun envoi Buffer)
         run: python controle_manga_v6.py
+      - name: V7 - couvertures manquantes, types d images, periode et dossier a valider
+        run: python manga_v7_complet.py
       - name: Sauvegarder l'observation pour le prochain controle automatique
         if: success()
         uses: actions/cache/save@v4
@@ -54,7 +56,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: controle-manga-v6
+          name: dossier-manga-v7
           path: rapports_manga/
           if-no-files-found: warn
           retention-days: 14
