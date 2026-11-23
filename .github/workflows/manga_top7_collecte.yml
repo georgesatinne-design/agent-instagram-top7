@@ -1,0 +1,72 @@
+name: Manga - Top 200 hebdomadaire, Top 7 reconstitue (sans publication)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Les palmares sont publies le vendredi ; 4 tentatives / semaine.
+    - cron: '12 12,18 * * 5,6'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: manga-collecte-hebdomadaire
+  cancel-in-progress: false
+
+jobs:
+  collecter_manga:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Installer les dependances deja presentes dans le projet
+        run: python -m pip install -r requirements.txt
+      - name: Tester exclusivement l extension manga
+        run: python -m unittest discover -s tests -p 'test_manga_sources_hebdo.py' -v
+      - name: Reconstituer les meilleures ventes manga en France
+        run: |
+          if [ -f manga_history/dernier_classement.json ]; then
+            python manga_sources_hebdo.py --sortie sorties/manga_hebdo --precedent manga_history/dernier_classement.json
+          else
+            python manga_sources_hebdo.py --sortie sorties/manga_hebdo
+          fi
+      - name: Conserver une preuve du dernier classement pour les evolutions
+        run: |
+          python - <<'PY'
+          import json, shutil
+          from pathlib import Path
+          files=sorted(Path('sorties/manga_hebdo').glob('MANGA_*/classement_manga.json'))
+          if len(files)!=1:
+              raise SystemExit('Aucun classement unique exploitable')
+          latest=files[0]
+          dest=Path('manga_history/dernier_classement.json')
+          dest.parent.mkdir(exist_ok=True)
+          if dest.exists():
+              old=json.loads(dest.read_text(encoding='utf8'))
+              cur=json.loads(latest.read_text(encoding='utf8'))
+              if old.get('fin_ventes','') > cur['fin_ventes']:
+                  raise SystemExit('Refus de regression vers un classement ancien')
+          shutil.copy2(latest,dest)
+          PY
+          if [ -n "$(git status --porcelain manga_history)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add manga_history
+            git commit -m "Manga - nouvelle periode de ventes Edistat/ActuaLitte"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Archiver classement et preuves pour controle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dossier-classement-manga-hebdomadaire
+          path: sorties/manga_hebdo/
+          if-no-files-found: warn
+          retention-days: 30
