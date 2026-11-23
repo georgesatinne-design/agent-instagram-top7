@@ -1,0 +1,98 @@
+{
+  "categorie": "MANGA",
+  "perimetre": "Reconstitution depuis Top 200 Edistat/ActuaLitté (livres papier en France), classification manga; non certifié exhaustif du segment manga",
+  "debut_ventes": "2026-11-09",
+  "fin_ventes": "2026-11-15",
+  "date_publication": "2026-11-20",
+  "source": "ActuaLitté / Edistat, contrôlé avec Bédé.fr",
+  "url_source": "https://actualitte.com/article/135341/meilleures-ventes/le-goncourt-fait-tomber-melenchon-jaenada-prend-la-tete",
+  "variations_verifiees": false,
+  "certification": "TOP7_RECONSTITUE_A_VALIDER",
+  "methode": "Rangs du Top 200 général; 7 premiers ouvrages identifiés comme mangas. Bédé.fr a des omissions et n est pas la preuve exhaustive.",
+  "titres": [
+    {
+      "rang_general_livres": 3,
+      "titre": "Instinct - Tome 3",
+      "ean": "9782749958200",
+      "editeur": "Michel Lafon",
+      "preuve_genre": "ean_identifie",
+      "mouvement": "NON DOCUMENTÉ",
+      "rang_bd_manga_comics": 2,
+      "couverture_candidate_url": "https://cdn.bede.fr/box/208x285/media/manga/70995.jpg?v2-1793892500",
+      "couverture_reference": "Instinct - Tome 3 - Michel Lafon",
+      "rang": 1
+    },
+    {
+      "rang_general_livres": 8,
+      "titre": "Spy x Family - tome 17",
+      "ean": "9791042021870",
+      "editeur": "Kurokawa",
+      "preuve_genre": "ean_identifie",
+      "mouvement": "NON DOCUMENTÉ",
+      "rang_bd_manga_comics": 4,
+      "couverture_candidate_url": "https://cdn.bede.fr/box/208x285/media/manga/69746.jpg?v2-1787221076",
+      "couverture_reference": "Spy x Family - tome 17 - Kurokawa Eds",
+      "rang": 2
+    },
+    {
+      "rang_general_livres": 34,
+      "titre": "L'Atelier des Sorciers T16 - Collector",
+      "ean": "9791043311772",
+      "editeur": "Pika",
+      "preuve_genre": "ean_identifie",
+      "mouvement": "NON DOCUMENTÉ",
+      "rang_bd_manga_comics": 11,
+      "couverture_candidate_url": "https://cdn.bede.fr/box/208x285/media/manga/69494.jpg?v2-1793892289",
+      "couverture_reference": "L'Atelier des Sorciers T16 - Collector - Pika",
+      "rang": 3
+    },
+    {
+      "rang_general_livres": 38,
+      "titre": "One Piece - Édition originale - Tome 113",
+      "ean": "9782344071120",
+      "editeur": "Glénat",
+      "preuve_genre": "ean_identifie",
+      "mouvement": "NON DOCUMENTÉ",
+      "rang_bd_manga_comics": 13,
+      "couverture_candidate_url": "https://cdn.bede.fr/box/208x285/media/manga/68264.jpg?v2-1779952341",
+      "couverture_reference": "One Piece - Édition originale - Tome 113 - Glénat",
+      "rang": 4
+    },
+    {
+      "rang_general_livres": 54,
+      "titre": "Kagurabachi T11",
+      "ean": "9782505144656",
+      "editeur": "Kana",
+      "preuve_genre": "ean_identifie",
+      "mouvement": "NON DOCUMENTÉ",
+      "rang_bd_manga_comics": 18,
+      "couverture_candidate_url": "https://cdn.bede.fr/box/208x285/media/manga/69986.jpg?v2-1789541456",
+      "couverture_reference": "Kagurabachi T11 - Kana Eds",
+      "rang": 5
+    },
+    {
+      "rang_general_livres": 55,
+      "titre": "Blue Lock T35",
+      "ean": "9791043306617",
+      "editeur": "Pika",
+      "preuve_genre": "ean_identifie",
+      "mouvement": "NON DOCUMENTÉ",
+      "rang_bd_manga_comics": 19,
+      "couverture_candidate_url": "https://cdn.bede.fr/box/208x285/media/manga/69485.jpg?v2-1785395703",
+      "couverture_reference": "Blue Lock T35 - Pika",
+      "rang": 6
+    },
+    {
+      "rang_general_livres": 62,
+      "titre": "L'Atelier des Sorciers T06 Edition Grimoire",
+      "ean": "9791043301445",
+      "editeur": "Pika",
+      "preuve_genre": "ean_identifie",
+      "mouvement": "NON DOCUMENTÉ",
+      "rang_bd_manga_comics": 20,
+      "couverture_candidate_url": "https://cdn.bede.fr/box/208x285/media/manga/67811.jpg?v2-1793892288",
+      "couverture_reference": "L'Atelier des Sorciers T06 Edition Grimoire - Pika",
+      "rang": 7
+    }
+  ]
+}
