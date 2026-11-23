@@ -1,9 +1,8 @@
-name: Diagnostic automatique des sources manga (sans publication)
+name: Diagnostic et vérification des sources manga (sans publication)
 
 on:
   workflow_dispatch:
   schedule:
-    # Quatre contrôles par jour ; les workflows GitHub programmés peuvent être retardés.
     - cron: '17 */6 * * *'
 
 permissions:
@@ -20,11 +19,13 @@ jobs:
           python-version: '3.12'
       - name: Installer les bibliothèques gratuites
         run: python -m pip install requests beautifulsoup4
-      - name: Tester le diagnostic avec des pages simulées
-        run: python -m unittest discover -s tests -p 'test_audit_manga_sources.py' -v
-      - name: Vérifier les sources publiques de classements
+      - name: Tester les deux diagnostics avec des pages simulées
+        run: python -m unittest discover -s tests -p 'test_*manga*.py' -v
+      - name: Vérifier les pages publiques
         run: python audit_manga_sources.py
-      - name: Garder le rapport (aucune publication Instagram)
+      - name: Contrôler les classements et signaler les incertitudes
+        run: python verifier_manga.py
+      - name: Conserver les rapports uniquement, aucune publication Instagram
         if: always()
         uses: actions/upload-artifact@v4
         with:
