@@ -1,4 +1,4 @@
-name: Diagnostic et maquette Top 7 manga (sans publication)
+name: Diagnostic manga et couvertures V5 (sans publication)
 
 on:
   workflow_dispatch:
@@ -29,6 +29,8 @@ jobs:
         run: python enquete_manga_v3.py
       - name: Generer huit images de MAQUETTE, sans publication
         run: python maquette_manga_v4.py
+      - name: Retrouver les editions exactes et les couvertures (toujours aucune publication)
+        run: python enrichissement_manga_v5.py
       - name: Telecharger les rapports et les maquettes (aucun appel Buffer)
         if: always()
         uses: actions/upload-artifact@v4
