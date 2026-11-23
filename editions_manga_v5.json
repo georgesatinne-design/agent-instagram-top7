@@ -1,0 +1,13 @@
+{
+  "usage": "Reperes d'editions françaises pour le palmares Bede.fr du 20/11/2026 UNIQUEMENT; ce fichier ne prouve pas les ventes et ne doit pas s'appliquer aux futures editions sans reevaluation.",
+  "date_palmares": "20/11/2026",
+  "editions": [
+    {"rang_mixte": 2, "titre": "Instinct - Tome 3", "editeur": "Michel Lafon", "ean": "9782749958200", "url": "https://www.michel-lafon.fr/books/instinct---tome-3", "note": "Edition imprimee, differente du coffret et de l'ebook"},
+    {"rang_mixte": 4, "titre": "Spy x Family - tome 17", "editeur": "Kurokawa", "ean": "9791042021870", "url": "https://actualitte.com/livres/941152/extraits/spy-x-family-tome-17-tatsuya-endo-9791042021870", "note": "Edition standard; ne pas confondre avec collector EAN 9791042021887"},
+    {"rang_mixte": 11, "titre": "L'Atelier des Sorciers T16 - Collector", "editeur": "Pika", "ean": "9791043311772", "url": "https://www.pika.fr/livre/latelier-des-sorciers-t16-collector-9791043311772/", "note": "Collector, et non tome 16 standard EAN 9791043311758"},
+    {"rang_mixte": 13, "titre": "One Piece - Édition originale - Tome 113", "editeur": "Glénat", "ean": "9782344071120", "url": "https://www.glenat.com/glenat-manga/one-piece-edition-originale-tome-113-9782344071120/", "note": "Edition originale standard, pas coffre au tresor"},
+    {"rang_mixte": 18, "titre": "Kagurabachi T11", "editeur": "Kana", "ean": "9782505144656", "url": "https://www.kana.fr/produit/kagurabachi-t11/", "note": "Tome 11 francais"},
+    {"rang_mixte": 19, "titre": "Blue Lock T35", "editeur": "Pika", "ean": "9791043306617", "url": "https://www.pika.fr/livre/blue-lock-t35-9791043306617/", "note": "Tome 35 francais"},
+    {"rang_mixte": 20, "titre": "L'Atelier des Sorciers T06 Edition Grimoire", "editeur": "Pika", "ean": "9791043301445", "url": "https://www.pika.fr/livre/latelier-des-sorciers-t06-edition-grimoire-9791043301445/", "note": "Edition Grimoire tome 6, pas edition standard"}
+  ]
+}
