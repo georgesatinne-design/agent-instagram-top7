@@ -1,4 +1,4 @@
-"""Studio ANECDOTE BD / V4 : chaque photographie authentique n'est utilisée qu'UNE fois.
+"""Studio ANECDOTE BD / V5 : chaque photographie représente une étape de l'anecdote.
 
 Aucune génération IA, aucun clonage de photo d'une page à l'autre :
 - les visuels figuratifs viennent exclusivement de photos_reelles.resolve() ;
@@ -21,7 +21,7 @@ FONT_BOLD=['/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
            '/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf']
 FONT_NORM=['/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
            '/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf']
-VERSION='BD_ANECDOTE_V4_IMAGES_UNIQUES'
+VERSION='BD_ANECDOTE_V5_IMAGES_SCENARISEES'
 
 
 def font(size,bold=True):
@@ -177,7 +177,7 @@ def _gradient_overlay(img,x,y,w,h,top=(36,21,46,0),bottom=(36,21,46,255)):
     return im.convert('RGB')
 
 
-def page(fact,number,photos=None,*,allocation=None):
+def page(fact,number,photos=None,*,allocation=None,scene_labels=None):
     """Rend une page sans jamais aller rechercher une photo déjà utilisée."""
     if number not in range(1,6):raise ValueError('Page 1 à 5 requise')
     if photos is None:
@@ -194,7 +194,7 @@ def page(fact,number,photos=None,*,allocation=None):
     idx=allocations.get(number)
     ph=prepared[idx] if idx is not None else None
     s=story(fact)
-    accent=CORAL if int(hashlib.sha256(fact['id'].encode()).hexdigest(),16)%2 else MINT
+    accent={'HISTOIRE':MINT,'PATRIMOINE':CORAL,'CLASSIQUE':'#F6A743','COMICS':'#D978AF'}.get(str(fact.get('theme','')).upper(),CORAL)
     im=Image.new('RGB',(W,H),CREAM);d=ImageDraw.Draw(im)
 
     if number==1:
@@ -283,26 +283,55 @@ def page(fact,number,photos=None,*,allocation=None):
         d=ImageDraw.Draw(im)
         _sticker(im,'ON EN PARLE EN COMMENTAIRE  ↓',(53,1132),fill=YELLOW,size=28)
         _mini_brand(im,5,'À TON TOUR')
+    # Un cartouche court EXPLIQUE l'image de cette page. Il n'affiche pas la
+    # source (dans l'audit interne seulement), ne prétend pas dater une photo moderne.
+    if ph is not None and scene_labels and number in scene_labels:
+        role=str(scene_labels[number].get('role','')).upper().strip()[:29]
+        if role:
+            d=ImageDraw.Draw(im)
+            lab_font=font(22)
+            b=d.textbbox((0,0),role,font=lab_font)
+            box_width=min(800,b[2]+43)
+            yy={1:246,2:168,3:160,4:169,5:192}.get(number,165)
+            _rect(d,(30,yy,30+box_width,yy+48),NIGHT,r=12)
+            d.text((48,yy+9),role,font=lab_font,fill=YELLOW)
     if number==1:_footer(im,1)
     return im
 
 
-def render(fact,folder,photos=None,*,audit_path=None):
-    """Génère 5 pages et prouve qu'aucune photo originale n'est utilisée deux fois."""
+def render(fact,folder,photos=None,*,audit_path=None,scenes=None):
+    """Génère 5 pages : les scènes approuvées sont liées au texte de leur page.
+
+    Sans `scenes`, conserve un mode de test pour les anciennes simulations locales.
+    En production `run.stage_fact` fournit TOUJOURS les scènes de `resolve`.
+    """
     photos_unique,hashes=load_photos(photos)
     if not photos_unique:raise ValueError('REFUS PUBLICATION: photos réelles validées requises')
-    allocations=photo_allocation(len(photos_unique))
+    if scenes is not None:
+        if len(scenes)!=len(photos or []):raise ValueError('Preuve de scène manquante')
+        if len(photos_unique)!=len(photos or []):raise ValueError('PHOTO_REPETEE: sources de scènes identiques')
+        allocations={int(s['page']):i for i,s in enumerate(scenes)}
+        if any(p not in (1,2,3,4,5) for p in allocations) or len(allocations)!=len(scenes):
+            raise ValueError('Répartition des pages incorrecte')
+        scene_labels={int(s['page']):s for s in scenes}
+    else:
+        allocations=photo_allocation(len(photos_unique))
+        scene_labels={}
     if len(set(allocations.values()))!=len(allocations):raise ValueError('PHOTO_REPETEE')
     folder=Path(folder);folder.mkdir(parents=True,exist_ok=True)
     names=[];audit=[]
     for index in range(1,6):
         filename=f'{index:02d}_anecdote.png'
         # Passer allocation + originaux dédupliqués. La page ne sélectionne jamais toute seule.
-        page(fact,index,photos_unique,allocation=allocations).save(folder/filename,format='PNG',optimize=True)
+        page(fact,index,photos_unique,allocation=allocations,scene_labels=scene_labels).save(folder/filename,format='PNG',optimize=True)
         names.append(filename)
         photo_index=allocations.get(index)
+        scene=scene_labels.get(index,{}) if photo_index is not None else {}
         audit.append({'page':index,'image_source_sha256':hashes[photo_index] if photo_index is not None else None,
-                      'type_page':'photographie_reelle_unique' if photo_index is not None else 'composition_graphique_sans_photo'})
+                      'type_page':'photographie_reelle_unique' if photo_index is not None else 'composition_graphique_sans_photo',
+                      'role_visuel':scene.get('role'),'pertinence_editoriale':scene.get('pertinence'),
+                      'epoque_reelle':scene.get('epoque'),'titre_commons':scene.get('titre_commons'),
+                      'licence':scene.get('licence'),'famille_source':scene.get('famille_source')})
     used=[a['image_source_sha256'] for a in audit if a['image_source_sha256']]
     if len(used)!=len(set(used)):raise ValueError('PHOTO_REPETEE: une photo réutilisée dans le carrousel')
     preview=Image.new('RGB',(5*220,302),'#f0ede8')
@@ -317,6 +346,8 @@ def render(fact,folder,photos=None,*,audit_path=None):
                 'photos_recues':len(photos or []),'photos_dedoublonnees':len(photos_unique),
                 'photos_utilisees':len(used),'photos_repetees':0,
                 'identification_couverture':'ANECDOTE BD grand bandeau jaune',
+                'narration_verifiee':scenes is not None,
+                'etapes_avec_photographie':[p['page'] for p in audit if p['image_source_sha256']],
                 'principe':'Aucune image generative, aucune meme photographie sur deux pages.'}
         destination.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
     return names

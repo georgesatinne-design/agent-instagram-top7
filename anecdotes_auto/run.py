@@ -15,7 +15,7 @@ from .buffer import Buffer,BufferError,is_top,is_anecdote,utc,parse
 PUBLIC=ROOT_REPO/'public_media'/'anecdotes_bd'
 REPORT=ROOT_REPO/'sorties'/'anecdotes_bd'
 REGISTRY=STATE/'programmes.json'
-VERSION_VISUELLE='BD_STORY_PHOTOS_V4_IMAGES_UNIQUES_2026_11'
+VERSION_VISUELLE='BD_STORY_PHOTOS_V5_NARRATION_SEMANTIQUE_2026_11'
 
 def get_registry():
     registry=read(REGISTRY,{}) or {}
@@ -48,7 +48,10 @@ def stage_fact(fact,day,repo,now):
     folder=PUBLIC/day.isoformat()/fact['id']
     # Aucun visuel synthétique : recherches de photos préapprouvées et licences vérifiées.
     photos,media_proofs=resolve(fact)
-    images=render(fact,folder,photos=photos,
+    # Les preuves contiennent la page cible ET pourquoi l'image illustre ce passage.
+    # Le mode sans scènes reste uniquement pour les anciens tests d'intégration mockés.
+    scene_plan=(media_proofs if all(m.get('page') for m in media_proofs) else None)
+    images=render(fact,folder,photos=photos,scenes=scene_plan,
         audit_path=STATE/'audit_compositions'/f'{day.isoformat()}_{fact["id"]}.json')
     text=caption(fact)
     (folder/'legende_instagram.txt').write_text(text+'\n',encoding='utf8')

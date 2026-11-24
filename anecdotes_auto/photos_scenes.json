@@ -1,0 +1,437 @@
+{
+  "version": "5.0",
+  "politique": "Seul un visuel préapparié à une phrase réelle de l’anecdote est admis. Aucune image de pure ambiance. Une image unique par slide. Les photos modernes ne sont jamais présentées comme des archives anciennes. Les images douteuses ou sous licence exigeant un crédit public sont refusées.",
+  "minimum_images_distinctes": 3,
+  "scenarios": {
+    "bruxelles-horta": {
+      "intention": "Du bâtiment aux architectes, de son histoire à sa nouvelle vie en musée de BD",
+      "visuels": [
+        {
+          "titre": "Hall of the Magasins Waucquez (20, rue des Sables, 1000, Brussels).jpg",
+          "page": 1,
+          "role": "Le bâtiment",
+          "pertinence": "Le bâtiment Waucquez est précisément le lieu de l’anecdote.",
+          "epoque": "actuelle",
+          "famille_source": "Hall of the Magasins Waucquez (20, rue des Sables, 1000, Brussels).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Victor Horta seated at own house (veranda).jpg",
+          "page": 2,
+          "role": "Le créateur",
+          "pertinence": "Portrait authentique de Victor Horta, l’architecte cité dans la révélation.",
+          "epoque": "historique",
+          "famille_source": "Victor Horta seated at own house (veranda).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "La bibliothèque du centre belge de la BD (1).jpg",
+          "page": 3,
+          "role": "La transformation",
+          "pertinence": "Bibliothèque actuelle du centre : met en scène la reconversion du bâtiment en lieu de BD.",
+          "epoque": "actuelle",
+          "famille_source": "La bibliothèque du centre belge de la BD (1).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Interior of the Waucquez Building photo 17.jpg",
+          "page": 4,
+          "role": "L’architecture",
+          "pertinence": "Détail intérieur actuel du bâtiment Art nouveau inauguré en 1906.",
+          "epoque": "actuelle",
+          "famille_source": "Interior of the Waucquez Building photo 17.jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        }
+      ],
+      "validation": "Préselection éditoriale de sujets, photographie recontrolee en ligne, aucune preuve de date attribuée à une photo moderne."
+    },
+    "bruxelles-1989": {
+      "intention": "Ouverture du musée, héritage des magasins Waucquez et architecture Horta",
+      "visuels": [
+        {
+          "titre": "Hall of the Magasins Waucquez (20, rue des Sables, 1000, Brussels).jpg",
+          "page": 1,
+          "role": "Le lieu",
+          "pertinence": "Hall du musée dont parle la publication.",
+          "epoque": "actuelle",
+          "famille_source": "Hall of the Magasins Waucquez (20, rue des Sables, 1000, Brussels).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "La bibliothèque du centre belge de la BD (1).jpg",
+          "page": 2,
+          "role": "La vie du musée",
+          "pertinence": "Bibliothèque actuelle du centre. Elle illustre sa mission culturelle, pas une scène de 1989.",
+          "epoque": "actuelle",
+          "famille_source": "La bibliothèque du centre belge de la BD (1).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Interior of the Waucquez Building photo 17.jpg",
+          "page": 3,
+          "role": "Le passé du lieu",
+          "pertinence": "Vue actuelle de l’intérieur des anciens magasins Waucquez.",
+          "epoque": "actuelle",
+          "famille_source": "Interior of the Waucquez Building photo 17.jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Victor Horta seated at own house (veranda).jpg",
+          "page": 4,
+          "role": "L’architecte",
+          "pertinence": "Victor Horta : portrait historique de l’auteur du bâtiment.",
+          "epoque": "historique",
+          "famille_source": "Victor Horta seated at own house (veranda).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        }
+      ],
+      "validation": "Préselection éditoriale de sujets, photographie recontrolee en ligne, aucune preuve de date attribuée à une photo moderne."
+    },
+    "bruxelles-1984": {
+      "intention": "L’association qui soutient la BD et contribue à préserver un édifice art nouveau",
+      "visuels": [
+        {
+          "titre": "Hall of the Magasins Waucquez (20, rue des Sables, 1000, Brussels).jpg",
+          "page": 1,
+          "role": "Le bâtiment à sauver",
+          "pertinence": "Hall des anciens magasins dont l’association accompagne la reconversion.",
+          "epoque": "actuelle",
+          "famille_source": "Hall of the Magasins Waucquez (20, rue des Sables, 1000, Brussels).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "La bibliothèque du centre belge de la BD (1).jpg",
+          "page": 2,
+          "role": "La BD en héritage",
+          "pertinence": "La bibliothèque illustre le rôle culturel du Centre depuis sa fondation.",
+          "epoque": "actuelle",
+          "famille_source": "La bibliothèque du centre belge de la BD (1).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Victor Horta seated at own house (veranda).jpg",
+          "page": 3,
+          "role": "L’histoire d’avant",
+          "pertinence": "Portrait de Victor Horta, auteur du bâtiment à préserver.",
+          "epoque": "historique",
+          "famille_source": "Victor Horta seated at own house (veranda).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Interior of the Waucquez Building photo 17.jpg",
+          "page": 4,
+          "role": "Le patrimoine préservé",
+          "pertinence": "Architecture conservée du même bâtiment, photographiée après restauration.",
+          "epoque": "actuelle",
+          "famille_source": "Interior of the Waucquez Building photo 17.jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        }
+      ],
+      "validation": "Préselection éditoriale de sujets, photographie recontrolee en ligne, aucune preuve de date attribuée à une photo moderne."
+    },
+    "bruxelles-textile": {
+      "intention": "La reconversion d’un magasin de textile en musée consacré à la BD",
+      "visuels": [
+        {
+          "titre": "Hall of the Magasins Waucquez (20, rue des Sables, 1000, Brussels).jpg",
+          "page": 1,
+          "role": "Le commerce textile",
+          "pertinence": "Hall des anciens magasins Waucquez, cadre de leur ancienne activité.",
+          "epoque": "actuelle",
+          "famille_source": "Hall of the Magasins Waucquez (20, rue des Sables, 1000, Brussels).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Interior of the Waucquez Building photo 17.jpg",
+          "page": 2,
+          "role": "Le cadre de l’ancienne boutique",
+          "pertinence": "Architecture intérieure des magasins reconvertis.",
+          "epoque": "actuelle",
+          "famille_source": "Interior of the Waucquez Building photo 17.jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Victor Horta seated at own house (veranda).jpg",
+          "page": 3,
+          "role": "L’architecte",
+          "pertinence": "Portrait authentique de l’architecte qui a conçu cet édifice.",
+          "epoque": "historique",
+          "famille_source": "Victor Horta seated at own house (veranda).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "La bibliothèque du centre belge de la BD (1).jpg",
+          "page": 4,
+          "role": "Le contraste actuel",
+          "pertinence": "Bibliothèque de BD actuelle dans cet ensemble patrimonial.",
+          "epoque": "actuelle",
+          "famille_source": "La bibliothèque du centre belge de la BD (1).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        }
+      ],
+      "validation": "Préselection éditoriale de sujets, photographie recontrolee en ligne, aucune preuve de date attribuée à une photo moderne."
+    },
+    "bruxelles-centre-doc": {
+      "intention": "Le centre de documentation et ses activités au sein du Musée de la BD",
+      "visuels": [
+        {
+          "titre": "La bibliothèque du centre belge de la BD (1).jpg",
+          "page": 1,
+          "role": "La documentation",
+          "pertinence": "Bibliothèque réelle du Centre Belge de la BD, pertinente pour le centre de documentation.",
+          "epoque": "actuelle",
+          "famille_source": "La bibliothèque du centre belge de la BD (1).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Hall of the Magasins Waucquez (20, rue des Sables, 1000, Brussels).jpg",
+          "page": 2,
+          "role": "Le Centre Belge",
+          "pertinence": "Hall des anciens magasins abritant le Centre.",
+          "epoque": "actuelle",
+          "famille_source": "Hall of the Magasins Waucquez (20, rue des Sables, 1000, Brussels).jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Interior of the Waucquez Building photo 17.jpg",
+          "page": 3,
+          "role": "Le lieu culturel",
+          "pertinence": "Vue actuelle du centre où se tiennent des activités culturelles.",
+          "epoque": "actuelle",
+          "famille_source": "Interior of the Waucquez Building photo 17.jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Le chapeau géant de Spirou exposé au centre belge de la BD.jpg",
+          "page": 4,
+          "role": "Le patrimoine BD",
+          "pertinence": "Élément d’exposition présent au centre. N’illustre pas littéralement un atelier.",
+          "epoque": "actuelle",
+          "famille_source": "Le chapeau géant de Spirou exposé au centre belge de la BD.jpg",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        }
+      ],
+      "validation": "Préselection éditoriale de sujets, photographie recontrolee en ligne, aucune preuve de date attribuée à une photo moderne."
+    },
+    "topffer-geneve": {
+      "intention": "Portrait puis trois œuvres authentiques de Töpffer : origines de la BD",
+      "visuels": [
+        {
+          "titre": "Rodolfe Toepffer.png",
+          "page": 1,
+          "role": "L’homme",
+          "pertinence": "Portrait de Rodolphe Töpffer, au cœur de l’anecdote.",
+          "epoque": "historique",
+          "famille_source": "Rodolfe Toepffer.png",
+          "domaine_public_ancien": true,
+          "artiste_mort_avant_1900": true
+        },
+        {
+          "titre": "Rodolphe Töpffer Karikaturen.jpg",
+          "page": 2,
+          "role": "Son dessin",
+          "pertinence": "Caricatures authentiques de Töpffer illustrant son travail.",
+          "epoque": "historique",
+          "famille_source": "Rodolphe Töpffer Karikaturen.jpg",
+          "domaine_public_ancien": true,
+          "artiste_mort_avant_1900": true
+        },
+        {
+          "titre": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (06 of 56).jpg",
+          "page": 3,
+          "role": "Son ouvrage",
+          "pertinence": "Page authentique d’un ouvrage de Töpffer : illustre sa pratique d’auteur.",
+          "epoque": "historique",
+          "famille_source": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (06 of 56).jpg",
+          "domaine_public_ancien": true,
+          "artiste_mort_avant_1900": true
+        },
+        {
+          "titre": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (10 of 56).jpg",
+          "page": 4,
+          "role": "Une autre page authentique",
+          "pertinence": "Autre page originale de son Essai de physiognomonie : document matériel différent de celui de la page 3.",
+          "epoque": "historique",
+          "famille_source": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (10 of 56).jpg",
+          "domaine_public_ancien": true,
+          "artiste_mort_avant_1900": true
+        }
+      ],
+      "validation": "Préselection éditoriale de sujets, photographie recontrolee en ligne, aucune preuve de date attribuée à une photo moderne."
+    },
+    "topffer-professeur": {
+      "intention": "Portrait puis trois œuvres authentiques de Töpffer : enseignant, auteur et artiste",
+      "visuels": [
+        {
+          "titre": "Rodolfe Toepffer.png",
+          "page": 1,
+          "role": "L’homme",
+          "pertinence": "Portrait de Rodolphe Töpffer, au cœur de l’anecdote.",
+          "epoque": "historique",
+          "famille_source": "Rodolfe Toepffer.png",
+          "domaine_public_ancien": true,
+          "artiste_mort_avant_1900": true
+        },
+        {
+          "titre": "Rodolphe Töpffer Karikaturen.jpg",
+          "page": 2,
+          "role": "Son dessin",
+          "pertinence": "Caricatures authentiques de Töpffer illustrant son travail.",
+          "epoque": "historique",
+          "famille_source": "Rodolphe Töpffer Karikaturen.jpg",
+          "domaine_public_ancien": true,
+          "artiste_mort_avant_1900": true
+        },
+        {
+          "titre": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (06 of 56).jpg",
+          "page": 3,
+          "role": "Son ouvrage",
+          "pertinence": "Page authentique d’un ouvrage de Töpffer : illustre sa pratique d’auteur.",
+          "epoque": "historique",
+          "famille_source": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (06 of 56).jpg",
+          "domaine_public_ancien": true,
+          "artiste_mort_avant_1900": true
+        },
+        {
+          "titre": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (10 of 56).jpg",
+          "page": 4,
+          "role": "Une autre page authentique",
+          "pertinence": "Autre page originale de son Essai de physiognomonie : document matériel différent de celui de la page 3.",
+          "epoque": "historique",
+          "famille_source": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (10 of 56).jpg",
+          "domaine_public_ancien": true,
+          "artiste_mort_avant_1900": true
+        }
+      ],
+      "validation": "Préselection éditoriale de sujets, photographie recontrolee en ligne, aucune preuve de date attribuée à une photo moderne."
+    },
+    "lucky-luke-goscinny": {
+      "intention": "Deux prises de vue du duo + photographie différente de Morris, aucune couverture de BD sous droits",
+      "visuels": [
+        {
+          "titre": "Morris y Goscinny 1 - Amsterdam - 27051971.jpg",
+          "page": 1,
+          "role": "Le duo",
+          "pertinence": "Morris et Goscinny photographiés ensemble, créateurs dont parle le récit.",
+          "epoque": "1971",
+          "famille_source": "anefo-morris-goscinny-cliche-1",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (l) en Morris (tekenaar, Bestanddeelnr 924-5894.jpg",
+          "page": 2,
+          "role": "La collaboration",
+          "pertinence": "Autre photographie de la collaboration, cliché d’origine distinct.",
+          "epoque": "1971",
+          "famille_source": "anefo-morris-goscinny-cliche-2",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Gehurkt Albert Uderzo (tekenaar Asterix) en staand Morris (tekenaar Lucky Luke), Bestanddeelnr 924-5896.jpg",
+          "page": 4,
+          "role": "Le dessinateur",
+          "pertinence": "Morris photographié avec Uderzo : montre Morris, créateur de Lucky Luke.",
+          "epoque": "1971",
+          "famille_source": "anefo-morris-uderzo-cliche-3",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        }
+      ],
+      "validation": "Préselection éditoriale de sujets, photographie recontrolee en ligne, aucune preuve de date attribuée à une photo moderne."
+    },
+    "lucky-luke-morris": {
+      "intention": "Morris, dessinateur connu sous son pseudonyme, avec des portraits et deux clichés de son entourage artistique.",
+      "visuels": [
+        {
+          "titre": "Morris y Goscinny 1 - Amsterdam - 27051971.jpg",
+          "page": 1,
+          "role": "Le duo",
+          "pertinence": "Photographie réelle de Morris, le dessinateur cité dans ce récit.",
+          "epoque": "1971",
+          "famille_source": "anefo-morris-goscinny-cliche-1",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (l) en Morris (tekenaar, Bestanddeelnr 924-5894.jpg",
+          "page": 2,
+          "role": "La collaboration",
+          "pertinence": "Autre cliché réel de Morris et de son entourage artistique en 1971.",
+          "epoque": "1971",
+          "famille_source": "anefo-morris-goscinny-cliche-2",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Gehurkt Albert Uderzo (tekenaar Asterix) en staand Morris (tekenaar Lucky Luke), Bestanddeelnr 924-5896.jpg",
+          "page": 4,
+          "role": "Le dessinateur",
+          "pertinence": "Morris avec Uderzo en 1971 ; ce n’est pas une photographie de la première publication de 1946.",
+          "epoque": "1971",
+          "famille_source": "anefo-morris-uderzo-cliche-3",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        }
+      ],
+      "validation": "Photos réelles datées 1971: ne représentent pas la première apparition de Lucky Luke en 1946. Servent uniquement à présenter Morris et la collaboration historique."
+    },
+    "lucky-luke-80": {
+      "intention": "Des photographies authentiques des créateurs pour illustrer la longévité de Lucky Luke, sans les faire passer pour des images datant de 1946.",
+      "visuels": [
+        {
+          "titre": "Morris y Goscinny 1 - Amsterdam - 27051971.jpg",
+          "page": 1,
+          "role": "Le duo",
+          "pertinence": "Photographie réelle de Morris, le dessinateur cité dans ce récit.",
+          "epoque": "1971",
+          "famille_source": "anefo-morris-goscinny-cliche-1",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (l) en Morris (tekenaar, Bestanddeelnr 924-5894.jpg",
+          "page": 2,
+          "role": "La collaboration",
+          "pertinence": "Autre cliché réel de Morris et de son entourage artistique en 1971.",
+          "epoque": "1971",
+          "famille_source": "anefo-morris-goscinny-cliche-2",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        },
+        {
+          "titre": "Gehurkt Albert Uderzo (tekenaar Asterix) en staand Morris (tekenaar Lucky Luke), Bestanddeelnr 924-5896.jpg",
+          "page": 4,
+          "role": "Le dessinateur",
+          "pertinence": "Morris avec Uderzo en 1971 ; ce n’est pas une photographie de la première publication de 1946.",
+          "epoque": "1971",
+          "famille_source": "anefo-morris-uderzo-cliche-3",
+          "domaine_public_ancien": false,
+          "artiste_mort_avant_1900": false
+        }
+      ],
+      "validation": "Photos réelles datées 1971: ne représentent pas la première apparition de Lucky Luke en 1946. Servent uniquement à présenter Morris et la collaboration historique."
+    }
+  }
+}
