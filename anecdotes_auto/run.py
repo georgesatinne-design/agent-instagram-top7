@@ -5,19 +5,20 @@ from __future__ import annotations
 import argparse,datetime as dt,hashlib,os,re,traceback
 from pathlib import Path
 from zoneinfo import ZoneInfo
-from .catalogue import ROOT_REPO,STATE,CONFIG,bank,read,write,select,topic
+from .catalogue import ROOT_REPO,STATE,CONFIG,bank,read,write,select,topic,ROOT
 from .calendrier import PARIS,next_days,eligible,reserved_kind,target_date_time
 from .visuels import render,caption
 from .storytelling import editorial_eligible
-from .photos_reelles import resolve,PhotosIndisponibles
+from .photos_reelles import PhotosIndisponibles
+from .recherche_images import resolve_avance as resolve
 from .buffer import Buffer,BufferError,is_top,is_anecdote,utc,parse
 
 PUBLIC=ROOT_REPO/'public_media'/'anecdotes_bd'
 REPORT=ROOT_REPO/'sorties'/'anecdotes_bd'
 REGISTRY=STATE/'programmes.json'
-VERSION_VISUELLE='BD_STORY_PHOTOS_V6_RECUPERATION_CONTROLEE_2026_11'
+VERSION_VISUELLE='BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11'
 # Une V5 déjà mise à jour et validée ne doit pas être rééditée inutilement.
-VERSIONS_DEJA_VALIDES={VERSION_VISUELLE,'BD_STORY_PHOTOS_V5_NARRATION_SEMANTIQUE_2026_11'}
+VERSIONS_DEJA_VALIDES={VERSION_VISUELLE, 'BD_STORY_PHOTOS_V6_RECUPERATION_CONTROLEE_2026_11', 'BD_STORY_PHOTOS_V5_NARRATION_SEMANTIQUE_2026_11'}
 
 def get_registry():
     registry=read(REGISTRY,{}) or {}
@@ -43,6 +44,30 @@ def used_info(registry,day):
         if rec.get('sujet'):
             topics[rec['sujet']]=max(date_s,topics.get(rec['sujet'],'0000-00-00'))
     return completed,topics
+
+def sujets_par_disponibilite(facts,registry,day,exclude_ids=()):
+    """Choisit les faits PROUVES ayant des images disponibles AVANT les autres.
+
+    Priorité à la diversité; si une série de thèmes n'a aucune photo autorisée,
+    les autres sujets non publiés restent éligibles, plutôt que de bloquer Buffer.
+    """
+    reserve=read(STATE/'stock_photos_verifiees.json',{}) or {}
+    scenarios=(read(ROOT/'photos_scenes.json',{}) or {}).get('scenarios',{})
+    excluded=set(exclude_ids)
+    used_topics=[]
+    for date_s,record in registry.items():
+        if not isinstance(record,dict) or record.get('etat') not in ('PROGRAMME','EN_ATTENTE','EN_ATTENTE_MAJ'):
+            continue
+        if record.get('sujet') and abs((dt.date.fromisoformat(date_s)-day).days)<CONFIG.get('intervalle_sujet_jours',5):
+            used_topics.append(record['sujet'])
+    candidates=[f for f in facts if f['id'] not in excluded]
+    candidates.sort(key=lambda f:(
+        reserve.get(f['id'],{}).get('statut')!='PRET',
+        topic(f) in used_topics,
+        f['id'] not in scenarios,
+        hashlib.sha256((day.isoformat()+f['id']).encode()).hexdigest()))
+    return candidates
+
 
 def stage_fact(fact,day,repo,now):
     if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',repo):
@@ -79,6 +104,8 @@ def stage_fact(fact,day,repo,now):
 def prepare(repo,*,now=None,buffer=None,collect=True):
     now=now or dt.datetime.now(dt.timezone.utc)
     buffer=buffer or Buffer()
+    from .recherche_images import reinitialiser_quota
+    reinitialiser_quota(30)
     REPORT.mkdir(parents=True,exist_ok=True)
     results={'date_utc':now.isoformat(),'candidats':len(bank()),'collecte':None,'plans':[],
              'jours':[],'erreurs':[],'remplacements_non_effectues':[]}
@@ -144,6 +171,23 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
                         topic(facts_by_id[r['fact_id']])==topic(f)]
                     if not conflicts or min(conflicts)>=4:
                         candidates.append(f)
+                # Ultime passe: un sujet différent mais du même thème vaut mieux
+                # qu'un ancien carrousel pauvre et figé. On n'utilise JAMAIS deux
+                # fois le même fait, ni une image décorative sans rapport.
+                reserved_ids={f['id'] for f in candidates}
+                fallbacks=[f for f in facts if f['id'] not in used_ids and
+                           f['id'] not in reserved_ids and
+                           (not original or f['id']!=original['id'])]
+                fallbacks.sort(key=lambda f:(topic(f)==topic(original) if original else False,f['id']))
+                candidates.extend(fallbacks)
+                reserve=read(STATE/'stock_photos_verifiees.json',{}) or {}
+                if original:
+                    head=candidates[:1];tail=candidates[1:]
+                else:
+                    head=[];tail=candidates
+                tail.sort(key=lambda f:(reserve.get(f['id'],{}).get('statut')!='PRET',
+                                         topic(f) in used_recent_topics,f['id']))
+                candidates=head+tail
                 done=False;errors_local=[]
                 for f in candidates:
                     if f['id'] in photos_indisponibles:continue
@@ -159,7 +203,7 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
                         done=True;break
                     except (PhotosIndisponibles,ValueError) as exc:
                         photos_indisponibles.add(f['id'])
-                        errors_local.append(f['id']+': '+str(exc)[:100])
+                        errors_local.append(f['id']+': '+str(exc)[:210])
                 if not done:
                     reason='Aucun sujet illustrable vérifié : '+' ; '.join(errors_local[:5])[:520]
                     failure={'date':key,'id_buffer':item.get('id_buffer'),
@@ -192,15 +236,12 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
             # Retry only if the files are still present and the slot still free.
             if (ROOT_REPO/item.get('dossier','')).is_dir():
                 results['plans'].append(key);continue
-        completed,topics=used_info(registry,day)
-        exclude=[rec.get('fact_id') for rec in registry.values() if isinstance(rec,dict) and rec.get('etat') in ('EN_ATTENTE','PROGRAMME')]
-        # Certains sujets n'ont pas encore deux photos vérifiées. On essaie
-        # les candidats suivants, sans bloquer les autres jours.
+        exclude=[rec.get('fact_id') for rec in registry.values() if isinstance(rec,dict) and rec.get('etat') in ('EN_ATTENTE','PROGRAMME','EN_ATTENTE_MAJ')]
+        # Regarder d'abord les anecdotes ayant déjà une preuve et trois photos
+        # distinctes en stock. Aucune répétition du même fait, même sous un autre nom.
         accepted=False
-        for _attempt in range(min(len(facts),12)):
-            selected=select(facts,completed,topics,day,
-                exclude_ids=[*exclude,*photos_indisponibles])
-            if selected is None:break
+        candidates=sujets_par_disponibilite(facts,registry,day,exclude_ids=[*exclude,*photos_indisponibles])
+        for selected in candidates[:min(len(candidates),18)]:
             try:
                 registry[key]=stage_fact(selected,day,repo,now)
                 results['plans'].append(key)

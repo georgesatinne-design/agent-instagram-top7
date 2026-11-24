@@ -238,7 +238,7 @@ def page(fact,number,photos=None,*,allocation=None,scene_labels=None):
         if ph is not None:
             _photo_panel(im,ph,(32,134,1016,660),rounded=25,outline=NIGHT)
             d=ImageDraw.Draw(im)
-            _sticker(im,'RETOUR EN ARRIÈRE', (53,729),fill=YELLOW,size=29)
+            _sticker(im,'LE CONTEXTE EN IMAGES', (53,729),fill=YELLOW,size=29)
         else:
             d.polygon(((0,128),(1080,128),(1080,812),(0,620)),fill=PURPLE)
             _dots(im,(40,175,940,570),tone=YELLOW,step=28,radius=3)
