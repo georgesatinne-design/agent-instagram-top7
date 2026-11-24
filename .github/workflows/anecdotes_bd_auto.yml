@@ -91,3 +91,22 @@ jobs:
           path: sorties/anecdotes_bd/
           retention-days: 30
           if-no-files-found: warn
+
+      - name: Signaler les anecdotes qui restent avec l'ancienne présentation
+        if: always()
+        run: |
+          python - <<'PYALERT'
+          import json, pathlib, sys
+          path=pathlib.Path('sorties/anecdotes_bd/REPRISES_A_FAIRE.json')
+          anomalies=json.loads(path.read_text(encoding='utf8')) if path.exists() else []
+          summary=pathlib.Path(__import__('os').environ.get('GITHUB_STEP_SUMMARY','/dev/null'))
+          with summary.open('a', encoding='utf8') as f:
+            f.write('## Contrôle des remplacements des anecdotes\n')
+            if not anomalies:
+              f.write('✅ Aucun ancien carrousel bloqué dans cette exécution.\n')
+            for a in anomalies:
+              f.write(f"- ❌ {a.get('date')}: {a.get('fact_id')} — {a.get('raison')}\n")
+          if anomalies:
+            print('ERREUR : remplacements non effectués, voir REPRISES_A_FAIRE.json')
+            sys.exit(1)
+          PYALERT
