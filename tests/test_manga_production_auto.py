@@ -148,26 +148,28 @@ class MangaProductionTests(unittest.TestCase):
             self.assertEqual(simulated['statut'],'SIMULATION')
             self.assertFalse((folder/'MANGA'/'RECU_BUFFER.json').exists())
 
-    def test_buffer_detecte_une_edition_deja_programmee_sans_nouvel_envoi(self):
+    def test_buffer_edition_deja_programmee_avec_recu_versionne_ne_renvoie_rien(self):
         import manga_buffer_auto as m
         due='2026-11-24T17:00:00.000Z'
         caption='📚 TOP 7 MANGA — VENTES DU 09/11 AU 15/11/2026'
         payload={'text':caption,'dueAt':due,'assets':[{'image':{'url':'https://raw.githubusercontent.com/x/y/main/a.png'}}],
                  'channelId':'c'}
-        class ImageResponse:
-            headers={'Content-Type':'image/png'}
-            def raise_for_status(self):pass
-            def close(self):pass
-        existing=[{'id':'buffer-123','status':'scheduled','channelId':'c','text':caption,'dueAt':due}]
-        with tempfile.TemporaryDirectory() as td, \
-             patch.object(m,'construire',return_value=payload), \
-             patch.object(m,'_list_manga_programmes',return_value=existing):
-            send=lambda *a,**k: (_ for _ in ()).throw(AssertionError('mutation Buffer interdite'))
-            a=m.transmettre(Path(td),'https://raw.githubusercontent.com/x/y/main/',api_key='dummy',
-                channel_id='c',send=True,post=send,get=lambda *a,**kw:ImageResponse())
-            self.assertEqual(a['action'],'DEJA_PROGRAMME')
-            b=m.transmettre(Path(td),'https://raw.githubusercontent.com/x/y/main/',api_key='dummy',
-                channel_id='c',send=True,post=send,get=lambda *a,**kw:ImageResponse())
+        with tempfile.TemporaryDirectory() as td, patch.object(m,'construire',return_value=payload):
+            folder=Path(td)
+            receipt={'statut':'POST_PROGRAMME','edition':'MANGA_2026-11-15',
+               'id_buffer':'buffer-123','date_programmee_utc':due,
+               'version_contenu':m.VERSION_PUBLIQUE}
+            (folder/'ancien.json').write_text(json.dumps(receipt),encoding='utf8')
+            send=lambda *a,**k: (_ for _ in ()).throw(AssertionError('Aucun appel Buffer autorise'))
+            a=m.transmettre(folder,'https://raw.githubusercontent.com/x/y/main/',api_key='dummy',
+                channel_id='c',send=True,post=send,
+                now=dt.datetime(2026,11,23,18,tzinfo=dt.timezone.utc),
+                previous_receipt=folder/'ancien.json')
+            self.assertEqual(a['id_buffer'],'buffer-123')
+            b=m.transmettre(folder,'https://raw.githubusercontent.com/x/y/main/',api_key='dummy',
+                channel_id='c',send=True,post=send,
+                now=dt.datetime(2026,11,23,18,tzinfo=dt.timezone.utc),
+                previous_receipt=folder/'RECU_BUFFER.json')
             self.assertEqual(a,b)
 
     def test_trop_d_incertitudes_bloque_publication(self):
