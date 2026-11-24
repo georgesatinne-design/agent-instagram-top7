@@ -102,6 +102,6 @@ class TestVisuelsUniques(unittest.TestCase):
         self.assertIn('ANECDOTE BD',visuels.caption(self.fact))
 
     def test_la_v4_est_identifiee_comme_nouvelle_revision(self):
-        self.assertIn('V6_RECUPERATION_CONTROLEE',run.VERSION_VISUELLE)
+        self.assertIn('V7_MULTI_SOURCES',run.VERSION_VISUELLE)
 
 if __name__=='__main__':unittest.main()
