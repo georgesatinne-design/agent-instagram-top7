@@ -1,72 +1,150 @@
-name: Manga - Top 200 hebdomadaire, Top 7 reconstitue (sans publication)
+name: Manga - agent complet Top 7 ventes France vers Buffer
 
 on:
   workflow_dispatch:
   schedule:
-    # Les palmares sont publies le vendredi ; 4 tentatives / semaine.
-    - cron: '12 12,18 * * 5,6'
+    # Source ActuaLitte/Edistat généralement publiée le vendredi.
+    # Recontrôles vendredi, samedi, dimanche et lundi 15h17 heure de Paris.
+    - cron: '17 15 * * 5,6,0,1'
+      timezone: 'Europe/Paris'
 
 permissions:
   contents: write
 
 concurrency:
-  group: manga-collecte-hebdomadaire
+  group: manga-production-top7
   cancel-in-progress: false
 
 jobs:
-  collecter_manga:
+  manga:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - name: Retrouver le dépôt sans modifier le pipeline BD
+        uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Installer les dependances deja presentes dans le projet
+      - name: Installer les dépendances gratuites existantes
         run: python -m pip install -r requirements.txt
-      - name: Tester exclusivement l extension manga
-        run: python -m unittest discover -s tests -p 'test_manga_sources_hebdo.py' -v
-      - name: Reconstituer les meilleures ventes manga en France
+      - name: Contrôler collecte, édition, 8 images et interface Buffer sans publication
         run: |
-          if [ -f manga_history/dernier_classement.json ]; then
-            python manga_sources_hebdo.py --sortie sorties/manga_hebdo --precedent manga_history/dernier_classement.json
-          else
-            python manga_sources_hebdo.py --sortie sorties/manga_hebdo
-          fi
-      - name: Conserver une preuve du dernier classement pour les evolutions
+          python -m unittest discover -s tests -p 'test_manga_sources_hebdo.py' -v
+          python -m unittest discover -s tests -p 'test_manga_production_auto.py' -v
+      - name: Collecter et contrôler la dernière période de ventes manga
+        run: |
+          python manga_pipeline_auto.py --sortie sorties/manga_production \
+            --precedent manga_history/dernier_classement.json \
+            --cache manga_history/genres_ebooks.json
+      - name: Lire l'état de l'édition et interdire les données incomplètes
+        id: publication
         run: |
           python - <<'PY'
-          import json, shutil
           from pathlib import Path
-          files=sorted(Path('sorties/manga_hebdo').glob('MANGA_*/classement_manga.json'))
-          if len(files)!=1:
-              raise SystemExit('Aucun classement unique exploitable')
-          latest=files[0]
-          dest=Path('manga_history/dernier_classement.json')
-          dest.parent.mkdir(exist_ok=True)
-          if dest.exists():
-              old=json.loads(dest.read_text(encoding='utf8'))
-              cur=json.loads(latest.read_text(encoding='utf8'))
-              if old.get('fin_ventes','') > cur['fin_ventes']:
-                  raise SystemExit('Refus de regression vers un classement ancien')
-          shutil.copy2(latest,dest)
+          import json,os
+          found=sorted(Path('sorties/manga_production').glob('MANGA_*/ETAT.json'))
+          if len(found)!=1:raise SystemExit('Un dossier manga unique est nécessaire')
+          report=json.loads(found[0].read_text(encoding='utf8'))
+          edition=report['edition']
+          if not edition.startswith('MANGA_') or '..' in edition:
+              raise SystemExit('Nom de période invalide')
+          receipt=Path('manga_buffer_receipts')/(edition+'.json')
+          ready=bool(report['pret_buffer']) and not receipt.exists()
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf8') as out:
+              out.write('edition='+edition+'\n')
+              out.write('ready='+str(ready).lower()+'\n')
+          print('Edition:',edition,'Certificat:',report['statut_ventes'],
+                'Couvertures:',report['couvertures'],'/7','Programme:',ready)
           PY
-          if [ -n "$(git status --porcelain manga_history)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add manga_history
-            git commit -m "Manga - nouvelle periode de ventes Edistat/ActuaLitte"
+      - name: Sauvegarder l'historique des genres et les observations pour la prochaine semaine
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, shutil
+          folders=sorted(Path('sorties/manga_production').glob('MANGA_*'))
+          if len(folders)!=1:raise SystemExit('Dossier unique requis')
+          f=folders[0]
+          curr=json.loads((f/'classement_manga.json').read_text(encoding='utf8'))
+          history=Path('manga_history/dernier_classement.json')
+          history.parent.mkdir(exist_ok=True)
+          old=json.loads(history.read_text(encoding='utf8')) if history.exists() else {}
+          if old.get('fin_ventes','')<=curr['fin_ventes']:
+              shutil.copy2(f/'classement_manga.json',history)
+          shutil.copy2(f/'cache_genre_a_conserver.json',Path('manga_history/genres_ebooks.json'))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add manga_history
+          if [ -n "$(git diff --cached --name-only)" ]; then
+            git commit -m 'Manga - observation hebdomadaire et catalogues bibliographiques'
             git pull --rebase origin main
             git push origin HEAD:main
           fi
-      - name: Archiver classement et preuves pour controle
+      - name: Mettre en ligne les huit images du carrousel vérifié
+        if: steps.publication.outputs.ready == 'true'
+        env:
+          EDITION: ${{ steps.publication.outputs.edition }}
+          REPO_PRIVATE: ${{ github.event.repository.private }}
+        run: |
+          if [ "$REPO_PRIVATE" = "true" ]; then
+            echo 'Buffer exige des images accessibles par URL publiques. GitHub privé : refus.'
+            exit 1
+          fi
+          python - <<'PY'
+          from pathlib import Path
+          import json, os, shutil
+          edition=os.environ['EDITION']
+          source=Path('sorties/manga_production')/edition/'MANGA'
+          manifest=json.loads((source/'post_manifest.json').read_text(encoding='utf8'))
+          if not manifest.get('ready_to_stage') or manifest.get('certification_manga')!='TOP7_EDISTAT_VERIFIE':
+              raise SystemExit('Classement non certifié : aucun média public envoyé')
+          names=manifest['pages']
+          if len(names)!=8:raise SystemExit('Huit images nécessaires')
+          dest=Path('public_media')/edition/'MANGA';dest.mkdir(parents=True,exist_ok=True)
+          for name in names:
+              if name not in [f'{i:02d}_rang_{8-i}.png' for i in range(1,8)]+['08_recapitulatif.png']:
+                  raise SystemExit('Nom de fichier inattendu : '+name)
+              shutil.copy2(source/name,dest/name)
+          PY
+          git add public_media
+          if [ -n "$(git diff --cached --name-only)" ]; then
+            git commit -m "Manga - visuels certifiés ${EDITION}"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Déposer le Top 7 manga à la date programmée dans Buffer
+        if: steps.publication.outputs.ready == 'true'
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          EDITION: ${{ steps.publication.outputs.edition }}
+        run: |
+          if [ -z "$BUFFER_API_KEY" ] || [ -z "$BUFFER_CHANNEL_ID" ]; then
+            echo 'Accès Buffer absent : aucun envoi. Les données et les images restent disponibles.'
+            exit 1
+          fi
+          BASE="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/public_media/${EDITION}/MANGA/"
+          python manga_buffer_auto.py --send \
+            --folder "sorties/manga_production/${EDITION}/MANGA" \
+            --public-base-url "$BASE"
+          mkdir -p manga_buffer_receipts
+          cp "sorties/manga_production/${EDITION}/MANGA/RECU_BUFFER.json" "manga_buffer_receipts/${EDITION}.json"
+          git add manga_buffer_receipts
+          if [ -n "$(git diff --cached --name-only)" ]; then
+            git commit -m "Manga - reçu Buffer ${EDITION}"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Livrer les preuves et les huit pages, même si non publiables
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: dossier-classement-manga-hebdomadaire
-          path: sorties/manga_hebdo/
+          name: dossier-manga-complet
+          path: sorties/manga_production/
           if-no-files-found: warn
           retention-days: 30
