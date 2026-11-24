@@ -1,0 +1,26 @@
+{
+  "version": "anecdotes_bd_v1",
+  "fuseau": "Europe/Paris",
+  "heure_normale": "18:00",
+  "heure_vendredi": "17:00",
+  "horizon_jours": 8,
+  "max_posts_par_execution": 4,
+  "max_posts_programmes_canal": 9,
+  "repli_top_minutes_avant": 75,
+  "marge_programmation_minutes": 30,
+  "intervalle_sujet_jours": 5,
+  "intervalle_fait_jours": 365,
+  "reservations": {
+    "mardi": "MANGA",
+    "jeudi": "COMICS_HEBDOMADAIRE",
+    "vendredi": "BD",
+    "deuxieme_dimanche": "COMICS_MENSUEL"
+  },
+  "collecte": {
+    "actif": true,
+    "max_pages_par_execution": 18,
+    "max_liens_par_source": 8,
+    "max_nouveaux_faits": 15,
+    "timeout_secondes": 12
+  }
+}

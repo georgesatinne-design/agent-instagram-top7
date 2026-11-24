@@ -1,0 +1,18 @@
+{
+  "sources_primaires": [
+    {"nom":"BnF / catalogue","domaine":"catalogue.bnf.fr","usage":"notices officielles", "decouverte":false},
+    {"nom":"Cité de la BD","domaine":"www.citebd.org","usage":"histoire et patrimoine", "decouverte":false},
+    {"nom":"Musée BD Bruxelles","domaine":"www.cbbd.be","usage":"musée et histoire", "decouverte":false},
+    {"nom":"Festival Angoulême","domaine":"www.bdangouleme.com","usage":"histoire du festival", "decouverte":false},
+    {"nom":"Dargaud","domaine":"www.dargaud.com","usage":"œuvres et auteurs", "decouverte":true},
+    {"nom":"Dupuis","domaine":"www.dupuis.com","usage":"œuvres et auteurs", "decouverte":true},
+    {"nom":"Urban Comics","domaine":"www.urban-comics.com","usage":"éditions, auteurs et albums", "decouverte":true},
+    {"nom":"Delcourt","domaine":"www.editions-delcourt.fr","usage":"albums", "decouverte":true}
+  ],
+  "points_entree_decouverte": [
+    "https://www.dargaud.com/bd/lucky-luke",
+    "https://www.dupuis.com/univers/FR/spirou.html",
+    "https://www.urban-comics.com/a-paraitre/",
+    "https://www.editions-delcourt.fr/comics"
+  ]
+}
