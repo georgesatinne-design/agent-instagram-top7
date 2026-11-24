@@ -8,6 +8,8 @@ from __future__ import annotations
 import datetime as dt
 import json
 import re
+from xml.etree import ElementTree as ET
+from urllib.parse import urlparse
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 import requests
@@ -16,15 +18,18 @@ from manga_sources_hebdo import norm, EvidenceError, match_titles
 
 GOOGLE = 'https://www.googleapis.com/books/v1/volumes'
 OPENLIBRARY = 'https://openlibrary.org/api/books'
+BNF_SRU = 'https://catalogue.bnf.fr/api/SRU'
 HEADERS = {'User-Agent': 'AgentMangaFrance/2.0 (verification bibliographique)' }
 # Ne jamais considérer « roman graphique » comme preuve que le livre n'est pas manga.
 MANGA_WORDS = ('manga', 'shonen', 'shonen', 'shojo', 'shoujo', 'seinen', 'josei', 'manhwa')
 NON_MANGA_GENRES = (
-    'fiction', 'romance', 'thriller', 'biography', 'biographie', 'political science',
-    'politique', 'history', 'histoire', 'cooking', 'cuisine', 'travel', 'voyage',
-    'self help', 'développement personnel', 'psychology', 'psychologie', 'religion',
-    'science', 'business', 'essays', 'essais', 'novel', 'roman', 'young adult fiction',
-    'philosophy', 'philosophie', 'poetry', 'poésie', 'poesie',
+    # Marques SPECIFIQUES d'un genre non-manga. 'fiction' ou 'histoire' seuls
+    # sont trop larges : un manga peut traiter d'histoire ou être une fiction.
+    'romance', 'thriller', 'biographie', 'biography', 'political science',
+    'science politique', 'cuisine', 'cookbook', 'livre de cuisine',
+    'developpement personnel', 'self help', 'essai politique',
+    'romans', 'roman', 'novel', 'poesie', 'poetry', 'theatre', 'theater',
+    'memoirs', 'memoires', 'récit de voyage', 'guide de voyage',
 )
 
 
@@ -40,11 +45,11 @@ def _genre_from_tokens(categories: list[str], *, exclusive=False) -> tuple[str,s
     if any(re.search(r'\b'+re.escape(w)+r'\b',joined) for w in MANGA_WORDS):
         return 'MANGA', 'mention explicite manga dans catégories bibliographiques'
     # Comics, bande dessinée et graphic novel ne suffisent pas à EXCLURE manga.
-    if re.search(r'comic|graphic novel|bande dessinee|bd|sequential art|illustrated',joined):
+    if re.search(r'\b(?:comic|comics|graphic novel|bande dessinee|bd|sequential art|illustrated)\b',joined):
         return 'INCERTAIN', 'BD/comics non spécifique : peut être manga'
     # Parent genre book categories can include non-manga comics in some catalogs;
     # require clearly non-graphic subject and precise bibliographic ISBN.
-    if cleaned and any(re.search(r'\b'+re.escape(w)+r'\b',joined) for w in NON_MANGA_GENRES):
+    if cleaned and any(re.search(r'\b'+re.escape(norm(w))+r'\b',joined) for w in NON_MANGA_GENRES):
         return 'NON_MANGA', 'catégories bibliographiques non graphiques explicites'
     return 'INCERTAIN', 'aucune catégorie suffisamment discriminante'
 
@@ -81,6 +86,49 @@ def openlibrary_isbn(ean: str, *, getter=requests.get) -> dict:
     return {'statut':'INCERTAIN','raison':'Métadonnées non disponibles','source':'Open Library ISBN'}
 
 
+
+
+def bnf_isbn(ean: str, *, getter=requests.get) -> dict:
+    """Recherche ISBN/EAN exact dans le catalogue général de la BnF (SRU public).
+
+    Une notice sans identifiant exact ou sans sujet de genre reste INCERTAINE.
+    Aucune clé API ou inscription payante n'est nécessaire.
+    """
+    fallback={'statut':'INCERTAIN','raison':'Notice BnF absente ou genre indéterminé',
+              'source':'BnF catalogue général SRU'}
+    if not re.fullmatch(r'(?:978|979)\d{10}',str(ean)):
+        return fallback
+    try:
+        r=getter(BNF_SRU,params={
+            'version':'1.2','operation':'searchRetrieve',
+            'query':f'bib.fuzzyISBN all "{ean}"',
+            'recordSchema':'dublincore','maximumRecords':'5'
+        },headers=HEADERS,timeout=16,allow_redirects=True)
+        r.raise_for_status()
+        final=urlparse(getattr(r,'url', BNF_SRU))
+        if final.scheme!='https' or final.hostname!='catalogue.bnf.fr':return fallback
+        if len(r.content)>1_500_000:return fallback
+        tree=ET.fromstring(r.content)
+        ns_srw='{http://www.loc.gov/zing/srw/}'
+        ns_dc='{http://purl.org/dc/elements/1.1/}'
+        for rec in tree.findall('.//'+ns_srw+'record'):
+            raw_ids=[(n.text or '').strip() for n in rec.iter() if n.tag==ns_dc+'identifier']
+            # La BnF peut exprimer des identifiants avec des tirets ou ISBN:...
+            # Ne pas utiliser une notice générique d'une autre édition.
+            digits=[''.join(re.findall(r'\d',i)) for i in raw_ids]
+            if str(ean) not in digits and not any(str(ean) in d for d in digits):
+                continue
+            subjects=[(n.text or '').strip() for n in rec.iter() if n.tag==ns_dc+'subject']
+            titles=[(n.text or '').strip() for n in rec.iter() if n.tag==ns_dc+'title']
+            stat,why=_genre_from_tokens(subjects)
+            return {'statut':stat,'raison':why, 'categories':subjects[:20],
+                    'titres_catalogue':titles[:3], 'source':'BnF catalogue général SRU',
+                    'url':f'https://catalogue.bnf.fr/rechercher.do?motRecherche={ean}'}
+    except (requests.RequestException,ET.ParseError,ValueError,TypeError,AttributeError):
+        pass
+    return fallback
+
+
 def merger(ean: str, candidates: list[dict]) -> dict:
     statuses={c['statut'] for c in candidates}
     if 'MANGA' in statuses and 'NON_MANGA' in statuses:
@@ -90,13 +138,16 @@ def merger(ean: str, candidates: list[dict]) -> dict:
     return {'statut':'INCERTAIN','raison':'Catégorie bibliographique inconnue','sources':candidates}
 
 
-def catalog_status(row: dict, *, google=google_isbn, openlibrary=openlibrary_isbn) -> dict:
-    ean = str(row['ean'])
+def catalog_status(row: dict, *, google=google_isbn,
+                   openlibrary=openlibrary_isbn, bnf=bnf_isbn) -> dict:
+    ean=str(row['ean'])
     a=google(ean)
-    if a.get('statut') == 'MANGA':
-        return merger(ean,[a])
-    b=openlibrary(ean)
-    return merger(ean,[a,b])
+    # BnF : source française, interrogée quand Google Books est insuffisant.
+    b=bnf(ean) if a.get('statut') != 'MANGA' else {'statut':'INCERTAIN','raison':'non interrogée','source':'BnF'}
+    if a.get('statut')=='MANGA' or b.get('statut')=='MANGA':
+        return merger(ean,[a,b])
+    c=openlibrary(ean) if a.get('statut')!='NON_MANGA' and b.get('statut')!='NON_MANGA' else {'statut':'INCERTAIN','raison':'non interrogée','source':'Open Library'}
+    return merger(ean,[a,b,c])
 
 
 def genre_bede(row:dict, rows:list[dict]) -> dict | None:
@@ -112,8 +163,17 @@ def genre_bede(row:dict, rows:list[dict]) -> dict | None:
         stat='MANGA'
     elif '/media/bd/' in url or '/media/comics/' in url:
         stat='NON_MANGA'
+    elif '/media/albums/' in url:
+        # Chez Bédé.fr, la catégorie 'albums' peut couvrir divers formats.
+        # On ne l'exclut que pour des éditeurs / collections BD identifiés.
+        b=norm(matches[0].get('alt',''))
+        bd_imprints=('lucky comics','dupuis','dargaud', 'blake et mortimer',
+                    'le lombard', 'mr tan', 'bayard jeunesse', 'bamboo',
+                    'casterman', 'rue de sevres')
+        if not any(p in b for p in bd_imprints):return None
+        stat='NON_MANGA'
     else:return None
-    return {'statut':stat,'raison':'Catégorie du catalogue Bédé.fr + édition concordante',
+    return {'statut':stat,'raison':'Rubrique du catalogue Bédé.fr + titre et collection concordants',
             'source':'Bédé.fr / type de couverture','url':url}
 
 def auditer(classement: dict, preuves: dict, *, cache: dict | None=None,

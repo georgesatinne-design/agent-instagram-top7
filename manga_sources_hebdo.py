@@ -230,8 +230,16 @@ def known_series(item):
 def classify_item(item,known,bede_rows,annual_titles=()):
     if item['ean'] in known:
         return True,known[item['ean']]['titre'],'ean_identifie',None
-    if known_series(item):
-        return True,item['titre_article'],'serie_manga_connue',None
+    # Les collections Bédé.fr sont segmentées : /media/manga/ correspond
+    # à la rubrique MANGA. Ici on l'utilise pour détecter les nouveautés,
+    # jamais comme preuve indépendante des rangs de ventes Edistat.
+    matches=[r for r in bede_rows
+             if '/media/manga/' in (r.get('cover_url') or '').lower()
+             and match_titles(item['titre_article'],r.get('alt',''))]
+    if len(matches)==1:
+        return True,item['titre_article'],'bede_categorie_manga',None
+    # Un nom de série (même célèbre) n'est pas une preuve de la bonne édition.
+    # Pas de validation par simple mot-clé, qui pourrait sélectionner un homonyme.
     for name in annual_titles:
         if match_titles(item['titre_article'],name):
             return True,item['titre_article'],'catalogue_manga_annuel',None
@@ -281,7 +289,8 @@ def source_report(article_html,bede_html,annual_html='', *, root=Path('.'),sourc
             candidates.append(attach_bede(item,current['lignes']))
         elif len(candidates)<7:
             unconfirmed.append({'rang_general_livres':row['rang_general'],
-                                'titre_article':row['titre_article'],'ean':row['ean']})
+                                'titre_article':row['titre_article'],'ean':row['ean'],
+                                'editeur_article':row.get('editeur_article','')})
         if len(candidates)>=7:
             break
     if len(candidates)<7:raise EvidenceError(f'Seulement {len(candidates)} mangas reconnus dans le Top 200')
@@ -314,7 +323,7 @@ def source_report(article_html,bede_html,annual_html='', *, root=Path('.'),sourc
               'sources_supplementaires':[
                  {'nom':'Livres Hebdo / NielsenIQ BookData','url':LIVRES_HEBDO,'role':'comparaison indépendante de la tête des ventes, pas de Top 7 manga publié'},
                  {'nom':'Bédé.fr / palmarès Edistat','url':BEDE,'role':'recoupement même source primaire Edistat, avec omission possible'},
-                 {'nom':'Bédé.fr manga 2026','url':BEDE_MANGA,'role':'catalogue de reconnaissance des genres, pas de preuve de ventes hebdomadaires'}],
+                 {'nom':'Bédé.fr manga (catalogue annuel)','url':f'https://www.bede.fr/meilleurs-manga-{published.year}','role':'catalogue de reconnaissance des genres, pas de preuve de ventes hebdomadaires'}],
               'limites':['Top 200 général plafonné à 200 ouvrages',
                          'Classification manga hors catalogue parfois incertaine',
                          'Pas de volume de ventes individuel de chaque ouvrage dans les 200 fiches',
@@ -340,7 +349,10 @@ def collect(root, dest, *, article_url=None, actualitte_html=None,bede_html=None
     if actualitte_html is None:actualitte_html=get_html(article_url)
     if bede_html is None:bede_html=get_html(BEDE)
     if annual_html is None:
-        try:annual_html=get_html(BEDE_MANGA)
+        # Année de publication réelle, afin de ne pas réutiliser le catalogue 2026
+        # pour classifier automatiquement les titres en 2027 et au-delà.
+        annual_url=f'https://www.bede.fr/meilleurs-manga-{pub_date(actualitte_html).year}'
+        try:annual_html=get_html(annual_url)
         except (requests.RequestException,EvidenceError):annual_html=''
     previous=None
     if previous_file and Path(previous_file).is_file():
