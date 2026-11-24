@@ -156,8 +156,9 @@ class TestRepriseV6(unittest.TestCase):
     def test_git_workflow_signale_les_reprises_apres_archivage(self):
         workflow=(Path(__file__).resolve().parents[1]/'.github/workflows/anecdotes_bd_auto.yml')
         data=workflow.read_text('utf8')
-        self.assertIn('REPRISES_A_FAIRE.json',data)
-        self.assertLess(data.index('Archiver le rapport interne'), data.index('Signaler les anecdotes'))
-        self.assertIn('sys.exit(1)',data)
+        self.assertIn('python -m anecdotes_auto.controle_workflow', data)
+        self.assertLess(data.index('Archiver le rapport interne'), data.index('Contrôler les reprises'))
+        # Aucune photo authentique admissible = avertissement, pas panne technique.
+        self.assertNotIn('sys.exit(1)', data)
 
 if __name__=='__main__':unittest.main()
