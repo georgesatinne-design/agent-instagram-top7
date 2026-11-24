@@ -1,0 +1,10 @@
+{
+  "statut": "POST_PROGRAMME",
+  "publication": "QUEUE_BUFFER",
+  "action": "CREATION",
+  "id_buffer": "6b04ea8cc43c1f2f5c7ada9a",
+  "status_buffer": "scheduled",
+  "edition": "MANGA_2026-11-15",
+  "date_programmee_utc": "2026-11-24T17:00:00.000Z",
+  "pages": 8
+}
