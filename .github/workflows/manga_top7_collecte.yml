@@ -34,6 +34,7 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_manga_sources_hebdo.py' -v
           python -m unittest discover -s tests -p 'test_manga_production_auto.py' -v
+          python -m unittest discover -s tests -p 'test_manga_publication_70.py' -v
       - name: Collecter et contrôler la dernière période de ventes manga
         run: |
           python manga_pipeline_auto.py --sortie sorties/manga_production \
@@ -99,8 +100,9 @@ jobs:
           edition=os.environ['EDITION']
           source=Path('sorties/manga_production')/edition/'MANGA'
           manifest=json.loads((source/'post_manifest.json').read_text(encoding='utf8'))
-          if not manifest.get('ready_to_stage') or manifest.get('certification_manga')!='TOP7_EDISTAT_VERIFIE':
-              raise SystemExit('Classement non certifié : aucun média public envoyé')
+          policy=manifest.get('qualite_editoriale') or {}
+          if not manifest.get('ready_to_stage') or not policy.get('autorise_publication') or float(policy.get('valeur',0))<70:
+              raise SystemExit('Score éditorial manga sous 70 : aucun média public envoyé')
           names=manifest['pages']
           if len(names)!=8:raise SystemExit('Huit images nécessaires')
           dest=Path('public_media')/edition/'MANGA';dest.mkdir(parents=True,exist_ok=True)
@@ -111,7 +113,7 @@ jobs:
           PY
           git add public_media
           if [ -n "$(git diff --cached --name-only)" ]; then
-            git commit -m "Manga - visuels certifiés ${EDITION}"
+            git commit -m "Manga - visuels contrôlés ${EDITION}"
             git pull --rebase origin main
             git push origin HEAD:main
           fi
