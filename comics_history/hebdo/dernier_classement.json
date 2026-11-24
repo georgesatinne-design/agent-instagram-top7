@@ -1,0 +1,84 @@
+{
+  "categorie": "COMICS",
+  "cadence": "HEBDO",
+  "mode_interne": "MDCU_HEBDO",
+  "source": "MDCU / BDFugue",
+  "url_source": "https://mdcu-comics.fr/news/42518-meilleures-ventes-comics-bdfugue-semaine-47",
+  "date_article": "2026-11-22",
+  "titres": [
+    {
+      "rang": 1,
+      "titre": "Hellboy - Petits contes de Noël",
+      "editeur": "Delcourt",
+      "couverture_candidate_url": "https://www.mdcu-comics.fr/upload/comics/covers/fr/img_comics_21888_hellboy-petits-contes-de-noel.jpg?v=1793541604",
+      "couverture_reference": "Hellboy - Petits contes de Noël",
+      "preuve_genre": "mdcu_palmares_comics",
+      "source_url": "https://mdcu-comics.fr/news/42518-meilleures-ventes-comics-bdfugue-semaine-47",
+      "mouvement": "NON DOCUMENTÉ"
+    },
+    {
+      "rang": 2,
+      "titre": "Les Affamés du crépuscule T02",
+      "editeur": "Delcourt",
+      "couverture_candidate_url": "https://www.mdcu-comics.fr/upload/comics/covers/fr/img_comics_21984_les-affames-du-crepuscule-t02.jpg?v=1793541604",
+      "couverture_reference": "Les Affamés du crépuscule T02",
+      "preuve_genre": "mdcu_palmares_comics",
+      "source_url": "https://mdcu-comics.fr/news/42518-meilleures-ventes-comics-bdfugue-semaine-47",
+      "mouvement": "NON DOCUMENTÉ"
+    },
+    {
+      "rang": 3,
+      "titre": "Absolute Superman Tome 3",
+      "editeur": "Urban Comics",
+      "couverture_candidate_url": "https://www.mdcu-comics.fr/upload/comics/covers/fr/img_comics_21640_absolute-superman-tome-3.webp?v=1793541724",
+      "couverture_reference": "Absolute Superman Tome 3",
+      "preuve_genre": "mdcu_palmares_comics",
+      "source_url": "https://mdcu-comics.fr/news/42518-meilleures-ventes-comics-bdfugue-semaine-47",
+      "mouvement": "NON DOCUMENTÉ"
+    },
+    {
+      "rang": 4,
+      "titre": "Absolute Wonder Woman Tome 3",
+      "editeur": "Urban Comics",
+      "couverture_candidate_url": "https://www.mdcu-comics.fr/upload/comics/covers/fr/img_comics_21641_absolute-wonder-woman-tome-3.webp?v=1793098717",
+      "couverture_reference": "Absolute Wonder Woman Tome 3",
+      "preuve_genre": "mdcu_palmares_comics",
+      "source_url": "https://mdcu-comics.fr/news/42518-meilleures-ventes-comics-bdfugue-semaine-47",
+      "mouvement": "NON DOCUMENTÉ"
+    },
+    {
+      "rang": 5,
+      "titre": "IMMORTAL HULK T02 (de 5)",
+      "editeur": "Panini Comics",
+      "couverture_candidate_url": "https://www.mdcu-comics.fr/upload/comics/covers/fr/img_comics_21832_immortal-hulk-t02-de-5.webp?v=1793542445",
+      "couverture_reference": "IMMORTAL HULK T02 (de 5)",
+      "preuve_genre": "mdcu_palmares_comics",
+      "source_url": "https://mdcu-comics.fr/news/42518-meilleures-ventes-comics-bdfugue-semaine-47",
+      "mouvement": "NON DOCUMENTÉ"
+    }
+  ],
+  "variations_verifiees": false,
+  "annee": 2026,
+  "semaine": 47,
+  "debut_ventes": "2026-11-16",
+  "fin_ventes": "2026-11-22",
+  "periode_label": "SEMAINE 47 • 2026",
+  "edition": "COMICS_HEBDO_2026_W47",
+  "qualite_editoriale": {
+    "valeur": 100,
+    "seuil": 70.0,
+    "unite": "points_sur_100_non_probabiliste",
+    "autorise_publication": true,
+    "points": {
+      "rang_source_date_et_fenetre": 25,
+      "ordre_et_identites": 25,
+      "couvertures_verifiees": 20,
+      "editeurs": 10,
+      "palmares_explicitement_comics": 10,
+      "methode_non_melangee": 10
+    },
+    "n": 5,
+    "cadence": "HEBDO",
+    "limite": "Classement de ventes au sein d une enseigne, pas un Top national France"
+  }
+}
