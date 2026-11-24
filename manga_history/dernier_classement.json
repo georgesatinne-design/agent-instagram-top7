@@ -95,5 +95,25 @@
       "rang": 7
     }
   ],
-  "controle_genre_complet": false
+  "controle_genre_complet": false,
+  "qualite_editoriale": {
+    "valeur": 77.74,
+    "seuil": 70.0,
+    "unite": "points_sur_100_non_probabiliste",
+    "mode": "RECONSTITUE",
+    "autorise_publication": true,
+    "source_ok": true,
+    "sept_ouvrages_ok": true,
+    "sept_couvertures_ok": true,
+    "audit_genre_ok": true,
+    "taux_ouvrages_qualifies": 25.81,
+    "ouvrages_avant_top7_non_qualifies": 46,
+    "details_points": {
+      "palmares_et_periode": 30,
+      "mangas_ean_et_rangs": 25,
+      "couvertures": 15,
+      "controle_genre": 7.74
+    },
+    "limite": "Indice de contrôle éditorial, PAS une probabilité de rangs exacts ou un Top manga national exhaustif"
+  }
 }
