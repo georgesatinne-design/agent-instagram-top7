@@ -135,6 +135,7 @@ class TestsAncd(unittest.TestCase):
                 patch.object(run,'REPORT',root/'sorties'/'anecdotes_bd'),\
                 patch.object(visuels,'ROOT_REPO',root),\
                 patch.object(catalogue,'STATE',root/'anecdotes_state'),\
+                patch.object(run,'resolve',return_value=([original,original],[{'licence':'CC0 1.0','titre_commons':'test'}, {'licence':'CC0 1.0','titre_commons':'test2'}])),\
                 patch.dict(run.CONFIG,{'horizon_jours':2,'max_posts_par_execution':1}):
                 result=run.prepare('owner/depot-public',now=when,buffer=fake,collect=False)
                 self.assertEqual(result['plans'],['2026-11-25'])
