@@ -18,6 +18,9 @@ DAY_QUERY='''query Posts($organizationId: OrganizationId!, $channelId: ChannelId
 CREATE='''mutation CreatePost($input: CreatePostInput!) {createPost(input:$input) {
  __typename ... on PostActionSuccess { post { id dueAt status } } ... on MutationError {message}
 }}'''
+EDIT='''mutation EditExistingPost($input: EditPostInput!) {editPost(input:$input) {
+ __typename ... on PostActionSuccess { post {id dueAt status} } ... on MutationError {message}
+}}'''
 DELETE='''mutation DeletePost($input: DeletePostInput!) {deletePost(input:$input) {
  __typename ... on DeletePostSuccess {id} ... on VoidMutationError {message}
 }}'''
@@ -101,6 +104,20 @@ class Buffer:
         post=ans.get('post') or {}
         if not post.get('id') or post.get('status')!='scheduled' or (post.get('dueAt') and parse(post['dueAt'])!=parse(due_at)):
             raise BufferError('Publication non confirmée: vérifier Buffer avant de relancer')
+        return post
+    def edit_own(self,post_id,caption,due_at,assets):
+        """Corrige exactement notre post programmé, sans toucher au créneau ni en créer un autre."""
+        if not post_id or not caption.startswith('📚 ANECDOTE BD') or len(assets)!=5:
+            raise BufferError('Modification d’anecdote non autorisée')
+        payload={'id':post_id,'text':caption,'assets':assets,
+                 'metadata':{'instagram':{'type':'post','shouldShareToFeed':True}},
+                 'schedulingType':'automatic','mode':'customScheduled','dueAt':due_at}
+        ans=(self.call(EDIT,{'input':payload}).get('editPost') or {})
+        if ans.get('message'):raise BufferError('Édition refusée : '+str(ans['message'])[:200])
+        post=ans.get('post') or {}
+        if post.get('id')!=post_id or post.get('status')!='scheduled' or (
+           post.get('dueAt') and parse(post['dueAt'])!=parse(due_at)):
+            raise BufferError('Modification non confirmée : vérifier la file Buffer')
         return post
     def delete_own(self,post_id):
         ans=self.call(DELETE,{'input':{'id':post_id}}).get('deletePost') or {}

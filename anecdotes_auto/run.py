@@ -8,11 +8,13 @@ from zoneinfo import ZoneInfo
 from .catalogue import ROOT_REPO,STATE,CONFIG,bank,read,write,select,topic
 from .calendrier import PARIS,next_days,eligible,reserved_kind,target_date_time
 from .visuels import render,caption
+from .photos_reelles import resolve,PhotosIndisponibles
 from .buffer import Buffer,BufferError,is_top,is_anecdote,utc,parse
 
 PUBLIC=ROOT_REPO/'public_media'/'anecdotes_bd'
 REPORT=ROOT_REPO/'sorties'/'anecdotes_bd'
 REGISTRY=STATE/'programmes.json'
+VERSION_VISUELLE='PHOTOS_REELLES_V2_2026_11'
 
 def get_registry():
     registry=read(REGISTRY,{}) or {}
@@ -43,7 +45,9 @@ def stage_fact(fact,day,repo,now):
     if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',repo):
         raise RuntimeError('GITHUB_REPOSITORY invalide')
     folder=PUBLIC/day.isoformat()/fact['id']
-    images=render(fact,folder)
+    # Aucun visuel synthétique : recherches de photos préapprouvées et licences vérifiées.
+    photos,media_proofs=resolve(fact)
+    images=render(fact,folder,photos=photos)
     text=caption(fact)
     (folder/'legende_instagram.txt').write_text(text+'\n',encoding='utf8')
     digest=hashlib.sha256(text.encode()+b''.join((folder/name).read_bytes() for name in images)).hexdigest()[:18]
@@ -57,6 +61,8 @@ def stage_fact(fact,day,repo,now):
         shutil.copyfile(folder/'apercu.png',version_folder/'apercu.png')
         shutil.rmtree(folder)
     proof(fact,now)
+    # L'audit photo reste privé dans anecdotes_state, pas dans le texte public.
+    write(STATE/'preuves_photos'/f'{fact["id"]}.json',{'photos':media_proofs})
     base=f'https://raw.githubusercontent.com/{repo}/main/{version_folder.relative_to(ROOT_REPO).as_posix()}/'
     return {'fact_id':fact['id'],'sujet':topic(fact),'etat':'EN_ATTENTE','date':day.isoformat(),
             'due_at':utc(target_date_time(day)),'dossier':str(version_folder.relative_to(ROOT_REPO)),
@@ -75,6 +81,7 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
         except Exception as exc:results['erreurs'].append('COLLECTE: '+str(exc)[:250])
     facts=bank();results['candidats']=len(facts)
     registry=get_registry()
+    facts_by_id={fact['id']:fact for fact in facts}
     dayposts={}
     for day in next_days(now):
         try:dayposts[day.isoformat()]=buffer.day(day)
@@ -88,10 +95,30 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
     max_count=CONFIG['max_posts_programmes_canal']
     if scheduled_count>=max_count:
         results['erreurs'].append(f'Queue Buffer déjà remplie: {scheduled_count} posts sur fenêtre (plafond prudent {max_count})')
+    photos_indisponibles=set()
     for day in next_days(now):
         key=day.isoformat();posts=dayposts[key]
         item=registry.get(key) or {}
-        if item.get('etat') in ('PROGRAMME','SUPPLANTE_PAR_TOP'):
+        if item.get('etat')=='PROGRAMME' and item.get('version_visuelle')!=VERSION_VISUELLE:
+            # Remplacer proprement les anciennes anecdotes encore PROGRAMMÉES,
+            # sans créer un second post ni déplacer son heure.
+            same=[p for p in posts if p.get('id')==item.get('id_buffer') and
+                  is_anecdote(p) and p.get('text','').strip()==item.get('texte_public','').strip()]
+            if len(same)==1 and parse(same[0]['dueAt'])>now+dt.timedelta(minutes=35):
+                original=facts_by_id.get(item.get('fact_id'))
+                if original:
+                    try:
+                        upgraded=stage_fact(original,day,repo,now)
+                        upgraded.update({'etat':'EN_ATTENTE_MAJ','id_buffer':item['id_buffer'],
+                            'due_at':same[0]['dueAt'],'ancien_texte_public':item['texte_public'],
+                            'version_visuelle':VERSION_VISUELLE})
+                        registry[key]=upgraded;results['plans'].append(key)
+                        results['jours'].append({'date':key,'resultat':'MISE_A_JOUR_VISUELLE_PREPAREE'})
+                    except (PhotosIndisponibles,ValueError) as exc:
+                        results['jours'].append({'date':key,'resultat':'ANCIEN_POST_CONSERVE',
+                                                'raison':str(exc)[:180]})
+                continue
+        if item.get('etat') in ('PROGRAMME','SUPPLANTE_PAR_TOP','EN_ATTENTE_MAJ'):
             results['jours'].append({'date':key,'resultat':'DEJA_TRAITE'});continue
         ok,reason=eligible(day,now,posts)
         results['jours'].append({'date':key,'resultat':reason,'reservation':reserved_kind(day)})
@@ -104,11 +131,23 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
                 results['plans'].append(key);continue
         completed,topics=used_info(registry,day)
         exclude=[rec.get('fact_id') for rec in registry.values() if isinstance(rec,dict) and rec.get('etat') in ('EN_ATTENTE','PROGRAMME')]
-        selected=select(facts,completed,topics,day,exclude_ids=exclude)
-        if selected is None:
-            results['erreurs'].append(f'STOCK_EPUISE pour {key}: source non inventée');continue
-        registry[key]=stage_fact(selected,day,repo,now)
-        results['plans'].append(key)
+        # Certains sujets n'ont pas encore deux photos vérifiées. On essaie
+        # les candidats suivants, sans bloquer les autres jours.
+        accepted=False
+        for _attempt in range(min(len(facts),12)):
+            selected=select(facts,completed,topics,day,
+                exclude_ids=[*exclude,*photos_indisponibles])
+            if selected is None:break
+            try:
+                registry[key]=stage_fact(selected,day,repo,now)
+                results['plans'].append(key)
+                accepted=True
+                break
+            except (PhotosIndisponibles,ValueError) as exc:
+                photos_indisponibles.add(selected['id'])
+                results['erreurs'].append('PHOTO_REFUSEE '+selected['id']+': '+str(exc)[:190])
+        if not accepted:
+            results['erreurs'].append(f'PAS_DE_PHOTO_VERIFIEE pour {key}: aucune publication inventée')
     persist(registry)
     write(REPORT/'PLAN_BUFFER.json',[registry[d] for d in results['plans']])
     write(REPORT/'PREPARATION.json',results)
@@ -122,12 +161,13 @@ def _is_our_exact(post,rec):
 
 def reconcile(buffer,registry,now,results):
     for key,rec in registry.items():
-        if rec.get('etat')!='PROGRAMME':continue
+        if rec.get('etat') not in ('PROGRAMME','EN_ATTENTE_MAJ'):continue
         day=dt.date.fromisoformat(key)
         if dt.datetime.combine(day,dt.time(23,59),tzinfo=PARIS)<now.astimezone(PARIS):continue
         posts=buffer.day(day)
         tops=[p for p in posts if is_top(p)]
-        ours=[p for p in posts if p.get('id')==rec.get('id_buffer') and _is_our_exact(p,rec)]
+        ours=[p for p in posts if p.get('id')==rec.get('id_buffer') and is_anecdote(p) and
+              (p.get('text','').strip() in ((rec.get('texte_public') or '').strip(), (rec.get('ancien_texte_public') or '').strip()))]
         if not tops or not ours:continue
         if parse(ours[0]['dueAt'])<=now+dt.timedelta(minutes=10):
             results['erreurs'].append(f'Top arrive tardivement {key}: anecdote imminente, suppression automatique refusée')
@@ -147,10 +187,29 @@ def send(*,now=None,buffer=None):
     except Exception as exc:results['erreurs'].append('RECONCILIATION: '+str(exc)[:300])
     for key in sorted(registry):
         rec=registry[key]
-        if rec.get('etat')!='EN_ATTENTE':continue
+        if rec.get('etat') not in ('EN_ATTENTE','EN_ATTENTE_MAJ'):continue
         day=dt.date.fromisoformat(key)
         try:
             posts=buffer.day(day)
+            if rec.get('etat')=='EN_ATTENTE_MAJ':
+                existing=[p for p in posts if p.get('id')==rec.get('id_buffer') and
+                    is_anecdote(p) and p.get('text','').strip()==rec.get('ancien_texte_public','').strip()]
+                if len(existing)!=1 or len(posts)!=1:
+                    # Aucun remplacement aveugle, jamais de nouvelle publication.
+                    results['erreurs'].append(key+': ancienne publication introuvable ou concurrence')
+                    continue
+                if parse(existing[0]['dueAt'])<=now+dt.timedelta(minutes=30):
+                    results['ignores'].append(key+' : publication imminente');continue
+                folder=ROOT_REPO/rec['dossier']
+                assets=buffer.verify_images(rec['base_url'],rec['images'],folder)
+                updated=buffer.edit_own(rec['id_buffer'],rec['texte_public'],existing[0]['dueAt'],assets)
+                rec.update({'etat':'PROGRAMME','date_confirmation':now.isoformat(),
+                            'due_at':updated.get('dueAt') or existing[0]['dueAt'],
+                            'version_visuelle':VERSION_VISUELLE})
+                rec.pop('ancien_texte_public',None)
+                results['programmes'].append({'date':key,'id_buffer':updated['id'],
+                                             'pages':len(rec['images']),'action':'MISE_A_JOUR_SANS_DOUBLON'})
+                continue
             if posts:
                 exact=[p for p in posts if _is_our_exact(p,rec)]
                 if len(exact)==1:
@@ -170,7 +229,7 @@ def send(*,now=None,buffer=None):
             assets=buffer.verify_images(rec['base_url'],rec['images'],folder)
             post=buffer.create(rec['texte_public'],rec['due_at'],assets)
             rec.update({'etat':'PROGRAMME','id_buffer':post['id'],'date_confirmation':now.isoformat(),
-                        'due_at':post.get('dueAt') or rec['due_at']})
+                        'due_at':post.get('dueAt') or rec['due_at'],'version_visuelle':VERSION_VISUELLE})
             results['programmes'].append({'date':key,'id_buffer':post['id'],'pages':len(rec['images'])})
         except Exception as exc:
             results['erreurs'].append(key+': '+type(exc).__name__+' '+str(exc)[:260])
