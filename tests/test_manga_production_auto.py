@@ -28,7 +28,7 @@ def images_temoin(data,directory):
     directory.mkdir(parents=True,exist_ok=True)
     for book in data['titres']:
         Image.new('RGB',(450,680),(242,242,240)).save(cover_path(directory,book['titre']))
-    return [{'rang':x['rang'],'ok':True,'origine':'couverture-fictive-test'} for x in data['titres']]
+    return [{'rang':x['rang'],'ean':x['ean'],'ok':True,'origine':'couverture-fictive-test'} for x in data['titres']]
 
 
 class MangaProductionTests(unittest.TestCase):
@@ -170,7 +170,7 @@ class MangaProductionTests(unittest.TestCase):
                 channel_id='c',send=True,post=send,get=lambda *a,**kw:ImageResponse())
             self.assertEqual(a,b)
 
-    def test_aucun_buffer_pour_donnees_non_certifiees(self):
+    def test_trop_d_incertitudes_bloque_publication(self):
         with tempfile.TemporaryDirectory() as td:
             root=Path(td);shutil.copy2(ROOT/'editions_manga_v5.json',root/'editions_manga_v5.json')
             folder=produire(root=root,sortie=root/'sorties',precedent=root/'pas_de_precedent.json',
@@ -179,6 +179,8 @@ class MangaProductionTests(unittest.TestCase):
                    covers=images_temoin)
             state=json.loads((folder/'ETAT.json').read_text())
             self.assertFalse(state['pret_buffer'])
+            self.assertEqual(state['mode_publication'],'NON_AUTORISE')
+            self.assertLess(json.loads((folder/'SCORE_PUBLICATION.json').read_text())['taux_ouvrages_qualifies'],20)
             with self.assertRaisesRegex(ValueError,'pas suffisamment vérifié'):
                 construire(folder/'MANGA','https://raw.githubusercontent.com/test/repo/main/public_media/x/MANGA/',
                            'instagram-test',now=dt.datetime(2026,11,23,18,tzinfo=dt.timezone.utc))
