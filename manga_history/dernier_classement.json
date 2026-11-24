@@ -1,14 +1,14 @@
 {
   "categorie": "MANGA",
-  "perimetre": "Reconstitution depuis Top 200 Edistat/ActuaLitté (livres papier en France), classification manga; non certifié exhaustif du segment manga",
+  "perimetre": "Sept premiers mangas identifiés dans le Top 200 Edistat/ActuaLitté en France",
   "debut_ventes": "2026-11-09",
   "fin_ventes": "2026-11-15",
   "date_publication": "2026-11-20",
   "source": "ActuaLitté / Edistat, contrôlé avec Bédé.fr",
   "url_source": "https://actualitte.com/article/135341/meilleures-ventes/le-goncourt-fait-tomber-melenchon-jaenada-prend-la-tete",
   "variations_verifiees": false,
-  "certification": "TOP7_RECONSTITUE_A_VALIDER",
-  "methode": "Rangs du Top 200 général; 7 premiers ouvrages identifiés comme mangas. Bédé.fr a des omissions et n est pas la preuve exhaustive.",
+  "certification": "A_VERIFIER",
+  "methode": "Extraction Top 200, ISBN exact, classement des 7 premiers manga, vérification bibliographique des ouvrages précédents",
   "titres": [
     {
       "rang_general_livres": 3,
@@ -94,5 +94,6 @@
       "couverture_reference": "L'Atelier des Sorciers T06 Edition Grimoire - Pika",
       "rang": 7
     }
-  ]
+  ],
+  "controle_genre_complet": false
 }
