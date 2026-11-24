@@ -3,9 +3,11 @@ name: Manga - agent complet Top 7 ventes France vers Buffer
 on:
   workflow_dispatch:
   schedule:
-    # Source ActuaLitte/Edistat généralement publiée le vendredi.
-    # Recontrôles vendredi, samedi, dimanche et lundi 15h17 heure de Paris.
-    - cron: '17 15 * * 5,6,0,1'
+    # Le dépôt Buffer est tenté dès que les données sont disponibles.
+    # Tous les jours à 08h17, 14h17 et 20h17 (Paris),
+    # pour capter une parution anticipée sans attendre le mardi.
+    # L'heure du post Instagram reste mardi 18h Paris.
+    - cron: '17 8,14,20 * * *'
       timezone: 'Europe/Paris'
 
 permissions:
@@ -53,7 +55,21 @@ jobs:
           if not edition.startswith('MANGA_') or '..' in edition:
               raise SystemExit('Nom de période invalide')
           receipt=Path('manga_buffer_receipts')/(edition+'.json')
-          ready=bool(report['pret_buffer']) and not receipt.exists()
+          from datetime import datetime,timedelta,timezone
+          from manga_buffer_auto import VERSION_PUBLIQUE
+          if receipt.exists():
+              old_receipt=json.loads(receipt.read_text(encoding='utf8'))
+              if old_receipt.get('statut')!='POST_PROGRAMME':
+                  raise SystemExit('Reçu Buffer existant inattendu')
+              try:
+                  due=datetime.fromisoformat(old_receipt['date_programmee_utc'].replace('Z','+00:00'))
+              except (KeyError,ValueError):
+                  raise SystemExit('Date du reçu Buffer non exploitable')
+              encore_modifiable=due>datetime.now(timezone.utc)+timedelta(minutes=10)
+              correction=encore_modifiable and old_receipt.get('version_contenu')!=VERSION_PUBLIQUE
+          else:
+              correction=True
+          ready=bool(report['pret_buffer']) and correction
           with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf8') as out:
               out.write('edition='+edition+'\n')
               out.write('ready='+str(ready).lower()+'\n')
@@ -105,7 +121,7 @@ jobs:
               raise SystemExit('Score éditorial manga sous 70 : aucun média public envoyé')
           names=manifest['pages']
           if len(names)!=8:raise SystemExit('Huit images nécessaires')
-          dest=Path('public_media')/edition/'MANGA';dest.mkdir(parents=True,exist_ok=True)
+          dest=Path('public_media')/edition/'MANGA_sans_sources_v1';dest.mkdir(parents=True,exist_ok=True)
           for name in names:
               if name not in [f'{i:02d}_rang_{8-i}.png' for i in range(1,8)]+['08_recapitulatif.png']:
                   raise SystemExit('Nom de fichier inattendu : '+name)
@@ -130,10 +146,11 @@ jobs:
             echo 'Accès Buffer absent : aucun envoi. Les données et les images restent disponibles.'
             exit 1
           fi
-          BASE="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/public_media/${EDITION}/MANGA/"
+          BASE="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/public_media/${EDITION}/MANGA_sans_sources_v1/"
           python manga_buffer_auto.py --send \
             --folder "sorties/manga_production/${EDITION}/MANGA" \
-            --public-base-url "$BASE"
+            --public-base-url "$BASE" \
+            --previous-receipt "manga_buffer_receipts/${EDITION}.json"
           mkdir -p manga_buffer_receipts
           cp "sorties/manga_production/${EDITION}/MANGA/RECU_BUFFER.json" "manga_buffer_receipts/${EDITION}.json"
           git add manga_buffer_receipts
