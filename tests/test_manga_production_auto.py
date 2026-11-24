@@ -8,10 +8,11 @@ from unittest.mock import patch
 from pathlib import Path
 from PIL import Image
 
-from manga_qualite import _genre_from_tokens,auditer
+from manga_qualite import _genre_from_tokens,auditer,bnf_isbn,genre_bede,catalog_status
 from manga_pipeline_auto import produire, compute_movements
 from manga_buffer_auto import construire, mardi_suivant, transmettre
 from sources.couvertures import cover_path
+from manga_sources_hebdo import classify_item
 
 # Fixtures existantes dans la précédente extension, 100 % fictives.
 from test_manga_sources_hebdo import article,bede
@@ -31,6 +32,65 @@ def images_temoin(data,directory):
 
 
 class MangaProductionTests(unittest.TestCase):
+    def test_titre_manga_nouveau_reconnu_dans_catalogue_source(self):
+        row={'titre_article':'Manga totalement inédit Tome 42',
+             'ean':'9799999999991','editeur_article':'Maison nouvelle'}
+        bede=[{'alt':'Manga totalement inédit - Tome 42 - Maison nouvelle',
+               'cover_url':'https://cdn.bede.fr/media/manga/inconnu.png'}]
+        ok,title,why,_=classify_item(row,{},bede)
+        self.assertTrue(ok)
+        self.assertEqual(why,'bede_categorie_manga')
+        bede[0]['cover_url']='https://cdn.bede.fr/media/albums/inconnu.png'
+        self.assertFalse(classify_item(row,{},bede)[0])
+        self.assertFalse(classify_item({'titre_article':'Instinct du mensonge',
+            'ean':'9789999999999','editeur_article':'Flammarion'}, {}, [])[0])
+
+    def test_bnf_sru_exact_isbn_and_subjects(self):
+        isbn='9782080490896'
+        xml=f'''<srw:searchRetrieveResponse xmlns:srw="http://www.loc.gov/zing/srw/"
+          xmlns:dc="http://purl.org/dc/elements/1.1/">
+          <srw:numberOfRecords>1</srw:numberOfRecords><srw:records><srw:record>
+          <srw:recordData><dc:identifier>ISBN {isbn}</dc:identifier>
+          <dc:title>Un roman français</dc:title><dc:subject>Romans français</dc:subject>
+          </srw:recordData></srw:record></srw:records></srw:searchRetrieveResponse>'''.encode()
+        class Response:
+            content=xml
+            url='https://catalogue.bnf.fr/api/SRU'
+            def raise_for_status(self):pass
+        result=bnf_isbn(isbn,getter=lambda *a,**k:Response())
+        self.assertEqual(result['statut'],'NON_MANGA')
+        self.assertEqual(result['source'],'BnF catalogue général SRU')
+        self.assertEqual(result['categories'],['Romans français'])
+        bad=xml.replace(isbn.encode(),b'9782889880003')
+        class Wrong(Response):content=bad
+        self.assertEqual(bnf_isbn(isbn,getter=lambda *a,**k:Wrong())['statut'],'INCERTAIN')
+
+    def test_politique_generale_ou_fiction_seule_ne_suffisent_pas(self):
+        self.assertEqual(_genre_from_tokens(['Fiction'])[0],'INCERTAIN')
+        self.assertEqual(_genre_from_tokens(['History'])[0],'INCERTAIN')
+        self.assertEqual(_genre_from_tokens(['Manga'])[0],'MANGA')
+        self.assertEqual(_genre_from_tokens(['Comics & Graphic Novels'])[0],'INCERTAIN')
+
+    def test_bede_bd_precise_reconnue_mais_pas_album_ambigu(self):
+        row={'titre_article':'Des Boum et des Paf','ean':'9782808513821'}
+        lines=[{'alt':'Gaston Lagaffe - Tome 23 - Des Boum et des Paf - Dupuis',
+                'cover_url':'https://cdn.bede.fr/box/208x285/media/albums/gaston.jpg'}]
+        self.assertEqual(genre_bede(row,lines)['statut'],'NON_MANGA')
+        lines[0]['alt']='Gaston Lagaffe - Tome 23 - Des Boum et des Paf - Marque inconnue'
+        self.assertIsNone(genre_bede(row,lines))
+
+    def test_classifier_interroge_bnf_en_repli(self):
+        row={'ean':'9782080490896','titre_article':'L inconnue'}
+        queried=[]
+        def bnf(x):
+            queried.append('bnf')
+            return {'statut':'NON_MANGA','raison':'roman confirmé','source':'BnF'}
+        result=catalog_status(row,
+            google=lambda x:{'statut':'INCERTAIN','raison':'absent'},
+            bnf=bnf,openlibrary=lambda x:{'statut':'INCERTAIN','raison':'absent'})
+        self.assertEqual(queried,['bnf'])
+        self.assertEqual(result['statut'],'NON_MANGA')
+
     def test_google_books_roman_vs_manga(self):
         self.assertEqual(_genre_from_tokens(['Fiction / Romance'])[0],'NON_MANGA')
         self.assertEqual(_genre_from_tokens(['Comics & Graphic Novels / Manga'])[0],'MANGA')
