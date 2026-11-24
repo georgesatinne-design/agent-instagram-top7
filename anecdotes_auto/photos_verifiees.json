@@ -1,6 +1,6 @@
 {
-  "version": "2.0",
-  "principe": "Images réelles du domaine public ou CC0 uniquement. Liste approuvée, pas de visuel généré par IA. Vérification des licences par Commons API avant réutilisation.",
+  "version": "4.0",
+  "principe": "Photographies authentiques UNIQUES par carrousel. Toute licence recontrôlée à chaque première récupération ; sans IA et sans image répétée.",
   "groupes": {
     "bruxelles-": {
       "theme": "Musée et magasins Waucquez à Bruxelles",
@@ -19,6 +19,12 @@
         },
         {
           "titre": "Le chapeau géant de Spirou exposé au centre belge de la BD.jpg"
+        },
+        {
+          "titre": "Interior of the Waucquez Building photo 17.jpg",
+          "role": "interieur_musee_distinct",
+          "licence_presumee": "CC0 1.0",
+          "controle_en_ligne_requis": true
         }
       ]
     },
@@ -34,6 +40,24 @@
           "titre": "Rodolphe Töpffer Karikaturen.jpg",
           "domaine_public_ancien": true,
           "artiste_mort_avant_1900": true
+        },
+        {
+          "titre": "Rodolphe Töpffer Karikatur 1.jpg",
+          "domaine_public_ancien": true,
+          "artiste_mort_avant_1900": true,
+          "role": "planche_historique"
+        },
+        {
+          "titre": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (06 of 56).jpg",
+          "domaine_public_ancien": true,
+          "artiste_mort_avant_1900": true,
+          "role": "document_historique"
+        },
+        {
+          "titre": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (10 of 56).jpg",
+          "domaine_public_ancien": true,
+          "artiste_mort_avant_1900": true,
+          "role": "document_historique"
         }
       ]
     },
@@ -41,13 +65,16 @@
       "theme": "Lucky Luke, créateurs et patrimoine",
       "photos": [
         {
-          "titre": "Morris - Maurice De Bevere.jpg"
-        },
-        {
           "titre": "Morris y Goscinny 1 - Amsterdam - 27051971.jpg"
         },
         {
           "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) 1971.jpg"
+        },
+        {
+          "titre": "Gehurkt Albert Uderzo (tekenaar Asterix) en staand Morris (tekenaar Lucky Luke), Bestanddeelnr 924-5896.jpg",
+          "role": "photo_morris_avec_uderzo",
+          "licence_presumee": "CC0 1.0",
+          "controle_en_ligne_requis": true
         }
       ]
     },

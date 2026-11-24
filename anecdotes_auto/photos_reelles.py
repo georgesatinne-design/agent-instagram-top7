@@ -1,4 +1,4 @@
-"""Photographies et documents *réels* exclusivement, depuis Wikimedia Commons.
+"""Photographies et documents *réels* exclusivement, depuis Wikimedia Commons (V4).
 
 - PAS de génération d'images, de modèle d'image ni de recherche libre du web.
 - Chaque titre de fichier est présélectionné éditorialement dans photos_verifiees.json.
@@ -95,6 +95,31 @@ def _fetch_file(session,titre,option):
         'sha256':hashlib.sha256(clean).hexdigest(),'telecharge_le':dt.datetime.now(dt.timezone.utc).isoformat(),
         'IA_generee':False,'adaptation':'recadrage et composition graphique (aucune image synthétique)'}
 
+
+def _maximise_diversite(files,proofs):
+    """Photos authentiques les plus distinctes : image à usage unique dans le carrousel.
+
+    Empreinte perceptuelle sur 64 bits : détecte une même photo réexportée en JPEG.
+    Départ = première photo éditorialement approuvée, puis choix par distance maxi.
+    Un seuil faible (3 bits) élimine les véritables quasi-doublons seulement.
+    """
+    if len(files)!=len(proofs):raise ValueError('Preuves photographiques incomplètes')
+    from .visuels import _photo_hash
+    usable=[];hashes=[]
+    for src,meta in zip(files,proofs):
+        with Image.open(src) as raw:
+            phash=_photo_hash(raw)
+        if any((phash^existing).bit_count()<=3 for existing in hashes):continue
+        # La même source Commons ne peut pas revenir sous deux copies locales.
+        if any(meta.get('titre_commons')==found[1].get('titre_commons') for found in usable):continue
+        usable.append((src,meta));hashes.append(phash)
+    if len(usable)<2:return [x[0] for x in usable],[x[1] for x in usable]
+    chosen=[0];left=set(range(1,len(usable)))
+    while left:
+        winner=max(left,key=lambda index:(min((hashes[index]^hashes[c]).bit_count() for c in chosen),-index))
+        chosen.append(winner);left.remove(winner)
+    return [usable[i][0] for i in chosen],[usable[i][1] for i in chosen]
+
 def resolve(fact,*,session=None,cache=None):
     """Retourne (chemins des photos locales, licences) ou lève PhotosIndisponibles.
 
@@ -119,8 +144,12 @@ def resolve(fact,*,session=None,cache=None):
             files.append(dest);proofs.append(meta)
         except (requests.RequestException,PhotosIndisponibles,ValueError,OSError,UnidentifiedImageError) as exc:
             errors.append(op['titre']+': '+str(exc)[:140])
-    if len(files)<1:
-        raise PhotosIndisponibles(f'Au moins 1 photo authentique requise pour {groupe}; aucune obtenue. '+ '; '.join(errors)[:340])
-    # Une seule photographie réelle peut être exploitée de plusieurs façons : cadrages,
-    # zooms, diptyques et typographie, sans créer de faux visuels.
-    return files,proofs
+    # Dédoublonnage du contenu et sélection de points de vue différents.
+    if not files:
+        raise PhotosIndisponibles(f'Aucune photo authentique pour {groupe}. '+ '; '.join(errors)[:340])
+    distinct,docs=_maximise_diversite(files,proofs)
+    if len(distinct)<2:
+        # Priorité à la richesse éditoriale : ne pas publier quatre pages de texte
+        # après une seule photo, et ne jamais cloner cette photo pour masquer le manque.
+        raise PhotosIndisponibles(f'Au moins DEUX photographies authentiques et DISTINCTES requises pour {groupe} ; {len(distinct)} vérifiée(s). '+ '; '.join(errors)[:250])
+    return distinct,docs
