@@ -1,0 +1,54 @@
+name: Anecdotes BD - photothèque fiable en avance
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 5 * * *'
+      timezone: 'Europe/Paris'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: anecdotes-bd-buffer-automatique
+  cancel-in-progress: false
+
+jobs:
+  phototheque:
+    runs-on: ubuntu-latest
+    timeout-minutes: 29
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Configurer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Installer les dépendances des anecdotes uniquement
+        run: python -m pip install -r anecdotes_auto/requirements_anecdotes.txt
+      - name: Tester les adaptateurs multi-sources sans accéder à Buffer
+        run: python -m unittest discover -s tests -p 'test_anecdotes_v7_images.py' -v
+      - name: Préqualifier des anecdotes avec photos réelles distinctes
+        run: python -m anecdotes_auto.stock_images --limit 5
+      - name: Enregistrer le stock d'images et les preuves
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if [ -d anecdotes_state ]; then git add anecdotes_state; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'Anecdotes BD - reserve de photographies sourcées'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Rapports techniques et disponibilité des photos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-phototheque-anecdotes
+          path: |
+            anecdotes_state/stock_photos_rapport.json
+            anecdotes_state/stock_photos_verifiees.json
+          retention-days: 30
