@@ -2,7 +2,7 @@
   "2026-11-25": {
     "fact_id": "bruxelles-1989",
     "sujet": "bruxelles",
-    "etat": "EN_ATTENTE",
+    "etat": "PROGRAMME",
     "date": "2026-11-25",
     "due_at": "2026-11-25T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-11-25/bruxelles-1989_e584083fb889672505",
@@ -16,12 +16,14 @@
     ],
     "revision": "e584083fb889672505",
     "date_preparation": "2026-11-24T09:12:25.120678+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe Centre Belge de la Bande Dessinée a ouvert au public le 6 octobre 1989.\n\nIl prend place dans les anciens magasins Waucquez.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous"
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe Centre Belge de la Bande Dessinée a ouvert au public le 6 octobre 1989.\n\nIl prend place dans les anciens magasins Waucquez.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous",
+    "id_buffer": "6b05551aeb53767fb4281441",
+    "date_confirmation": "2026-11-24T09:12:56.275972+00:00"
   },
   "2026-11-28": {
     "fact_id": "urban-superman-vo",
     "sujet": "urban",
-    "etat": "EN_ATTENTE",
+    "etat": "PROGRAMME",
     "date": "2026-11-28",
     "due_at": "2026-11-28T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-11-28/urban-superman-vo_9d02f18d732c064c07",
@@ -35,12 +37,14 @@
     ],
     "revision": "9d02f18d732c064c07",
     "date_preparation": "2026-11-24T09:12:25.120678+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nAbsolute Superman tome 3 rassemble les épisodes américains 15 à 21.\n\nCette édition rassemble une sélection de numéros américains.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous"
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nAbsolute Superman tome 3 rassemble les épisodes américains 15 à 21.\n\nCette édition rassemble une sélection de numéros américains.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous",
+    "id_buffer": "6b05551cc2cc76a6ce6a4ad5",
+    "date_confirmation": "2026-11-24T09:12:56.275972+00:00"
   },
   "2026-11-29": {
     "fact_id": "festival-scolaire-1975",
     "sujet": "festival",
-    "etat": "EN_ATTENTE",
+    "etat": "PROGRAMME",
     "date": "2026-11-29",
     "due_at": "2026-11-29T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-11-29/festival-scolaire-1975_e26d0ef7123549b65e",
@@ -54,12 +58,14 @@
     ],
     "revision": "e26d0ef7123549b65e",
     "date_preparation": "2026-11-24T09:12:25.120678+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe concours de la BD scolaire d’Angoulême est né en 1975.\n\nIl apparaît un an après la première édition du Festival.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous"
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe concours de la BD scolaire d’Angoulême est né en 1975.\n\nIl apparaît un an après la première édition du Festival.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous",
+    "id_buffer": "6b05551e428d2546b7f84066",
+    "date_confirmation": "2026-11-24T09:12:56.275972+00:00"
   },
   "2026-11-30": {
     "fact_id": "spirou-charleroi",
     "sujet": "spirou",
-    "etat": "EN_ATTENTE",
+    "etat": "PROGRAMME",
     "date": "2026-11-30",
     "due_at": "2026-11-30T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-11-30/spirou-charleroi_1eb760ef74d89b666a",
@@ -73,6 +79,8 @@
     ],
     "revision": "1eb760ef74d89b666a",
     "date_preparation": "2026-11-24T09:12:25.120678+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe Journal de Spirou est créé en 1938 par les Éditions Jean Dupuis.\n\nCette entreprise familiale est originaire de Charleroi.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous"
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe Journal de Spirou est créé en 1938 par les Éditions Jean Dupuis.\n\nCette entreprise familiale est originaire de Charleroi.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous",
+    "id_buffer": "6b055520428d2546b7f840e5",
+    "date_confirmation": "2026-11-24T09:12:56.275972+00:00"
   }
 }
