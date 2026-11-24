@@ -1,0 +1,93 @@
+name: Anecdotes BD - remplissage automatique Buffer
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Tous les jours : anticiper les jours libres. Vérifications tardives pour
+    # remplacer les TOP absents au dernier moment, sans préempter leur créneau.
+    - cron: '17 8,12,15,19 * * *'
+      timezone: 'Europe/Paris'
+    - cron: '47 15,16,17 * * *'
+      timezone: 'Europe/Paris'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: anecdotes-bd-buffer-automatique
+  cancel-in-progress: false
+
+jobs:
+  anecdotes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Copier le dépôt principal
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Préparer Git pour les reçus et médias
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+      - name: Configurer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Installer les dépendances de ce module sans modifier les TOP
+        run: python -m pip install -r anecdotes_auto/requirements_anecdotes.txt
+
+      - name: Tester le moteur anecdotes sans aucune publication
+        run: python -m unittest discover -s tests -p 'test_anecdotes_bd_auto.py' -v
+
+      - name: Vérifier Buffer, chercher les faits et produire les 5 images par jour
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
+        run: python -m anecdotes_auto.run prepare --repo "$GITHUB_REPOSITORY"
+
+      - name: Mettre les images HTTPS sur GitHub AVANT de contacter Buffer
+        run: |
+          if [ -d anecdotes_state ]; then git add anecdotes_state; fi
+          if [ -d public_media/anecdotes_bd ]; then git add public_media/anecdotes_bd; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'Anecdotes BD - sources controlees et visuels prets'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Remplir Buffer et retirer nos anecdotes si un TOP a pris la place
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
+          GITHUB_REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
+        run: python -m anecdotes_auto.run send
+
+      - name: Sauvegarder les confirmations Buffer sans modifier les TOP
+        if: always()
+        run: |
+          if [ -d anecdotes_state ]; then
+            git add anecdotes_state
+            if ! git diff --cached --quiet; then
+              git commit -m 'Anecdotes BD - reçus Buffer et arbitrage des TOP'
+              git pull --rebase origin main
+              git push origin HEAD:main
+            fi
+          fi
+
+      - name: Archiver le rapport interne
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapport-anecdotes-bd
+          path: sorties/anecdotes_bd/
+          retention-days: 30
+          if-no-files-found: warn
