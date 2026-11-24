@@ -82,5 +82,24 @@
     "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe Journal de Spirou est créé en 1938 par les Éditions Jean Dupuis.\n\nCette entreprise familiale est originaire de Charleroi.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous",
     "id_buffer": "6b055520428d2546b7f840e5",
     "date_confirmation": "2026-11-24T09:12:56.275972+00:00"
+  },
+  "2026-12-02": {
+    "fact_id": "lucky-luke-1946",
+    "sujet": "lucky",
+    "etat": "EN_ATTENTE",
+    "date": "2026-12-02",
+    "due_at": "2026-12-02T17:00:00.000Z",
+    "dossier": "public_media/anecdotes_bd/2026-12-02/lucky-luke-1946_2a437ccf824d1d728e",
+    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-02/lucky-luke-1946_2a437ccf824d1d728e/",
+    "images": [
+      "01_anecdote.png",
+      "02_anecdote.png",
+      "03_anecdote.png",
+      "04_anecdote.png",
+      "05_anecdote.png"
+    ],
+    "revision": "2a437ccf824d1d728e",
+    "date_preparation": "2026-11-24T10:03:22.068394+00:00",
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLucky Luke : première aventure\n\nLa première aventure de Lucky Luke s’intitule Arizona 1880.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD"
   }
 }
