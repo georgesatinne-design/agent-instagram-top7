@@ -306,8 +306,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "Métadonnées non disponibles",
-        "source": "Open Library ISBN"
+        "raison": "ISBN absent",
+        "source": "Open Library"
       }
     ],
     "verifie_le": "2026-11-24"
