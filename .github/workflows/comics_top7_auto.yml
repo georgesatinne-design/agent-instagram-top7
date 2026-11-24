@@ -61,31 +61,6 @@ jobs:
               f.write('ready='+str(valid).lower()+'\n')
           print(json.dumps(state,indent=2,ensure_ascii=False))
           PY
-      - name: Sauvegarder uniquement l'historique comics
-        if: steps.gate.outputs.ready == 'true'
-        run: |
-          python - <<'PY'
-          import json,shutil
-          from pathlib import Path
-          folders=list(Path('sorties/comics_production').glob('COMICS_*'))
-          if len(folders)==0:
-              print('Pas de Top 7 valide cette fois ; historique inchangé')
-              raise SystemExit(0)
-          if len(folders)!=1:raise SystemExit('Plusieurs éditions comics détectées')
-          folder=folders[0];current=json.loads((folder/'classement_comics.json').read_text(encoding='utf8'))
-          history=Path('comics_history/dernier_classement.json');history.parent.mkdir(exist_ok=True)
-          prev=json.loads(history.read_text(encoding='utf8')) if history.exists() else {}
-          if prev.get('semaine_reference',[''])[0]<=current.get('semaine_reference',[''])[0]:
-              shutil.copy2(folder/'classement_comics.json',history)
-          PY
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add comics_history
-          if [ -n "$(git diff --cached --name-only)" ]; then
-            git commit -m 'Comics - historique ventes et mouvements'
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi
       - name: Déposer les huit images sur une URL permanente publique
         if: steps.gate.outputs.ready == 'true'
         id: images
@@ -147,6 +122,31 @@ jobs:
           git add comics_buffer_receipts
           if [ -n "$(git diff --cached --name-only)" ]; then
             git commit -m "Comics - reçu Buffer ${EDITION}"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Sauvegarder uniquement l'historique comics
+        if: steps.gate.outputs.ready == 'true'
+        run: |
+          python - <<'PY'
+          import json,shutil
+          from pathlib import Path
+          folders=list(Path('sorties/comics_production').glob('COMICS_*'))
+          if len(folders)==0:
+              print('Pas de Top 7 valide cette fois ; historique inchangé')
+              raise SystemExit(0)
+          if len(folders)!=1:raise SystemExit('Plusieurs éditions comics détectées')
+          folder=folders[0];current=json.loads((folder/'classement_comics.json').read_text(encoding='utf8'))
+          history=Path('comics_history/dernier_classement.json');history.parent.mkdir(exist_ok=True)
+          prev=json.loads(history.read_text(encoding='utf8')) if history.exists() else {}
+          if prev.get('semaine_reference',[''])[0]<=current.get('semaine_reference',[''])[0]:
+              shutil.copy2(folder/'classement_comics.json',history)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add comics_history
+          if [ -n "$(git diff --cached --name-only)" ]; then
+            git commit -m 'Comics - historique ventes et mouvements'
             git pull --rebase origin main
             git push origin HEAD:main
           fi
