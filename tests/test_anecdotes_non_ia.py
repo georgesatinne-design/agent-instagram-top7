@@ -39,9 +39,9 @@ class TestCarrouselsAuthentiques(unittest.TestCase):
                     self.assertEqual(im.size,(1080,1350))
             self.assertTrue((Path(t)/'apercu.png').is_file())
     def test_titre_commons_preapprouve(self):
-        groups=json.loads(photos_reelles.CATALOGUE.read_text())['groupes']
-        self.assertTrue(groups['bruxelles-']['photos'])
-        self.assertTrue(all('titre' in p for group in groups.values() for p in group['photos']))
+        scenarios=json.loads(photos_reelles.CATALOGUE.read_text())['scenarios']
+        self.assertTrue(scenarios['bruxelles-horta']['visuels'])
+        self.assertTrue(all('titre' in p and 'pertinence' in p and 'page' in p for sc in scenarios.values() for p in sc['visuels']))
     def test_url_media_securisee(self):
         self.assertTrue(photos_reelles._valid_image_url('https://upload.wikimedia.org/wikipedia/commons/test.jpg'))
         self.assertFalse(photos_reelles._valid_image_url('https://upload.wikimedia.org.evil.com/test.jpg'))

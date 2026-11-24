@@ -98,10 +98,10 @@ class TestVisuelsUniques(unittest.TestCase):
         src=inspect.getsource(visuels.page)
         self.assertIn("'ANECDOTE BD'",src)
         self.assertIn('font(93)',src)
-        self.assertEqual(visuels.VERSION,'BD_ANECDOTE_V4_IMAGES_UNIQUES')
+        self.assertTrue(visuels.VERSION.startswith('BD_ANECDOTE_V5_'))
         self.assertIn('ANECDOTE BD',visuels.caption(self.fact))
 
     def test_la_v4_est_identifiee_comme_nouvelle_revision(self):
-        self.assertIn('V4_IMAGES_UNIQUES',run.VERSION_VISUELLE)
+        self.assertIn('V5_NARRATION_SEMANTIQUE',run.VERSION_VISUELLE)
 
 if __name__=='__main__':unittest.main()
