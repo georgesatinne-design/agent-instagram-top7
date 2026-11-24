@@ -2,11 +2,11 @@
   "2026-11-25": {
     "fact_id": "bruxelles-1989",
     "sujet": "bruxelles",
-    "etat": "PROGRAMME",
+    "etat": "EN_ATTENTE_MAJ",
     "date": "2026-11-25",
     "due_at": "2026-11-25T17:00:00.000Z",
-    "dossier": "public_media/anecdotes_bd/2026-11-25/bruxelles-1989_e584083fb889672505",
-    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-11-25/bruxelles-1989_e584083fb889672505/",
+    "dossier": "public_media/anecdotes_bd/2026-11-25/bruxelles-1989_ae37dea75d2ac48781",
+    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-11-25/bruxelles-1989_ae37dea75d2ac48781/",
     "images": [
       "01_anecdote.png",
       "02_anecdote.png",
@@ -14,20 +14,22 @@
       "04_anecdote.png",
       "05_anecdote.png"
     ],
-    "revision": "e584083fb889672505",
-    "date_preparation": "2026-11-24T09:12:25.120678+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe Centre Belge de la Bande Dessinée a ouvert au public le 6 octobre 1989.\n\nIl prend place dans les anciens magasins Waucquez.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous",
+    "revision": "ae37dea75d2ac48781",
+    "date_preparation": "2026-11-24T10:33:28.934575+00:00",
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nUne date qui change tout à bruxelles\n\nLe Centre Belge de la Bande Dessinée a ouvert au public le 6 octobre 1989.\n\nTu as déjà visité ce musée ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "id_buffer": "6b05551aeb53767fb4281441",
-    "date_confirmation": "2026-11-24T09:12:56.275972+00:00"
+    "ancien_texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe Centre Belge de la Bande Dessinée a ouvert au public le 6 octobre 1989.\n\nIl prend place dans les anciens magasins Waucquez.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous",
+    "ancien_fact_id": "bruxelles-1989",
+    "version_visuelle": "BD_STORY_PHOTOS_V3_2026_11"
   },
   "2026-11-28": {
-    "fact_id": "urban-superman-vo",
-    "sujet": "urban",
-    "etat": "PROGRAMME",
+    "fact_id": "topffer-geneve",
+    "sujet": "topffer",
+    "etat": "EN_ATTENTE_MAJ",
     "date": "2026-11-28",
     "due_at": "2026-11-28T17:00:00.000Z",
-    "dossier": "public_media/anecdotes_bd/2026-11-28/urban-superman-vo_9d02f18d732c064c07",
-    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-11-28/urban-superman-vo_9d02f18d732c064c07/",
+    "dossier": "public_media/anecdotes_bd/2026-11-28/topffer-geneve_a6eafc64d50da76345",
+    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-11-28/topffer-geneve_a6eafc64d50da76345/",
     "images": [
       "01_anecdote.png",
       "02_anecdote.png",
@@ -35,20 +37,22 @@
       "04_anecdote.png",
       "05_anecdote.png"
     ],
-    "revision": "9d02f18d732c064c07",
-    "date_preparation": "2026-11-24T09:12:25.120678+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nAbsolute Superman tome 3 rassemble les épisodes américains 15 à 21.\n\nCette édition rassemble une sélection de numéros américains.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous",
+    "revision": "a6eafc64d50da76345",
+    "date_preparation": "2026-11-24T10:33:28.934575+00:00",
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nUn des pères de la bd était suisse\n\nRodolphe Töpffer est né à Genève, en Suisse, en 1799.\n\nTu avais déjà entendu parler de Töpffer ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "id_buffer": "6b05551cc2cc76a6ce6a4ad5",
-    "date_confirmation": "2026-11-24T09:12:56.275972+00:00"
+    "ancien_texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nAbsolute Superman tome 3 rassemble les épisodes américains 15 à 21.\n\nCette édition rassemble une sélection de numéros américains.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous",
+    "ancien_fact_id": "urban-superman-vo",
+    "version_visuelle": "BD_STORY_PHOTOS_V3_2026_11"
   },
   "2026-11-29": {
     "fact_id": "festival-scolaire-1975",
     "sujet": "festival",
-    "etat": "PROGRAMME",
+    "etat": "EN_ATTENTE_MAJ",
     "date": "2026-11-29",
     "due_at": "2026-11-29T17:00:00.000Z",
-    "dossier": "public_media/anecdotes_bd/2026-11-29/festival-scolaire-1975_e26d0ef7123549b65e",
-    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-11-29/festival-scolaire-1975_e26d0ef7123549b65e/",
+    "dossier": "public_media/anecdotes_bd/2026-11-29/festival-scolaire-1975_c3c87b12e80504ffec",
+    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-11-29/festival-scolaire-1975_c3c87b12e80504ffec/",
     "images": [
       "01_anecdote.png",
       "02_anecdote.png",
@@ -56,20 +60,22 @@
       "04_anecdote.png",
       "05_anecdote.png"
     ],
-    "revision": "e26d0ef7123549b65e",
-    "date_preparation": "2026-11-24T09:12:25.120678+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe concours de la BD scolaire d’Angoulême est né en 1975.\n\nIl apparaît un an après la première édition du Festival.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous",
+    "revision": "c3c87b12e80504ffec",
+    "date_preparation": "2026-11-24T10:33:28.934575+00:00",
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nAngouleme : des enfants dessinent depuis 1975\n\nLe concours de la BD scolaire d’Angoulême est né en 1975.\n\nTu as déjà participé à un concours de BD ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "id_buffer": "6b05551e428d2546b7f84066",
-    "date_confirmation": "2026-11-24T09:12:56.275972+00:00"
+    "ancien_texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe concours de la BD scolaire d’Angoulême est né en 1975.\n\nIl apparaît un an après la première édition du Festival.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous",
+    "ancien_fact_id": "festival-scolaire-1975",
+    "version_visuelle": "BD_STORY_PHOTOS_V3_2026_11"
   },
   "2026-11-30": {
-    "fact_id": "spirou-charleroi",
-    "sujet": "spirou",
-    "etat": "PROGRAMME",
+    "fact_id": "bruxelles-1984",
+    "sujet": "bruxelles",
+    "etat": "EN_ATTENTE_MAJ",
     "date": "2026-11-30",
     "due_at": "2026-11-30T17:00:00.000Z",
-    "dossier": "public_media/anecdotes_bd/2026-11-30/spirou-charleroi_1eb760ef74d89b666a",
-    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-11-30/spirou-charleroi_1eb760ef74d89b666a/",
+    "dossier": "public_media/anecdotes_bd/2026-11-30/bruxelles-1984_b7564fd861bbb1a614",
+    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-11-30/bruxelles-1984_b7564fd861bbb1a614/",
     "images": [
       "01_anecdote.png",
       "02_anecdote.png",
@@ -77,20 +83,22 @@
       "04_anecdote.png",
       "05_anecdote.png"
     ],
-    "revision": "1eb760ef74d89b666a",
-    "date_preparation": "2026-11-24T09:12:25.120678+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe Journal de Spirou est créé en 1938 par les Éditions Jean Dupuis.\n\nCette entreprise familiale est originaire de Charleroi.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous",
+    "revision": "b7564fd861bbb1a614",
+    "date_preparation": "2026-11-24T10:33:28.934575+00:00",
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nBruxelles : le musée existait avant d’ouvrir\n\nLe Centre Belge de la Bande Dessinée a été fondé comme association en 1984.\n\nTu savais que l’association date de 1984 ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "id_buffer": "6b055520428d2546b7f840e5",
-    "date_confirmation": "2026-11-24T09:12:56.275972+00:00"
+    "ancien_texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe Journal de Spirou est créé en 1938 par les Éditions Jean Dupuis.\n\nCette entreprise familiale est originaire de Charleroi.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #LeSaviezVous",
+    "ancien_fact_id": "spirou-charleroi",
+    "version_visuelle": "BD_STORY_PHOTOS_V3_2026_11"
   },
   "2026-12-02": {
     "fact_id": "lucky-luke-1946",
     "sujet": "lucky",
-    "etat": "PROGRAMME",
+    "etat": "EN_ATTENTE_MAJ",
     "date": "2026-12-02",
     "due_at": "2026-12-02T17:00:00.000Z",
-    "dossier": "public_media/anecdotes_bd/2026-12-02/lucky-luke-1946_2a437ccf824d1d728e",
-    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-02/lucky-luke-1946_2a437ccf824d1d728e/",
+    "dossier": "public_media/anecdotes_bd/2026-12-02/lucky-luke-1946_28d836c9913c5f3699",
+    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-02/lucky-luke-1946_28d836c9913c5f3699/",
     "images": [
       "01_anecdote.png",
       "02_anecdote.png",
@@ -98,11 +106,12 @@
       "04_anecdote.png",
       "05_anecdote.png"
     ],
-    "revision": "2a437ccf824d1d728e",
-    "date_preparation": "2026-11-24T10:03:22.068394+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLucky Luke : première aventure\n\nLa première aventure de Lucky Luke s’intitule Arizona 1880.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "revision": "28d836c9913c5f3699",
+    "date_preparation": "2026-11-24T10:33:28.934575+00:00",
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLe premier lucky luke n’est pas celui que tu crois\n\nLa première aventure de Lucky Luke s’intitule Arizona 1880.\n\nTu as déjà lu Arizona 1880 ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "id_buffer": "6b0560fbe860c84f09c8889e",
-    "date_confirmation": "2026-11-24T10:03:36.471052+00:00",
-    "version_visuelle": "PHOTOS_REELLES_V2_2026_11"
+    "ancien_texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLucky Luke : première aventure\n\nLa première aventure de Lucky Luke s’intitule Arizona 1880.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "ancien_fact_id": "lucky-luke-1946",
+    "version_visuelle": "BD_STORY_PHOTOS_V3_2026_11"
   }
 }
