@@ -24,6 +24,7 @@ from manga_sources_hebdo import (ACTUALITTE_INDEX, BEDE, EvidenceError,
     match_titles,norm)
 
 FNAC='https://www.fnac.com/l36505/Meilleures-ventes-Comics/Comics/BD-et-Humour'
+BDFUGUE='https://www.bdfugue.com/meilleures-ventes/comics'
 MDCU='https://www.mdcu-comics.fr/'
 HTTP_HEADERS={'User-Agent':'Mozilla/5.0 (compatible; ComicsHebdoFrance/1.0; collecte de palmares publics)'}
 COMIC_LABELS=('urban comics','panini comics','huginn','hi comics','delcourt comics',
@@ -41,7 +42,8 @@ US_FRANCHISES=('batman','superman','wonder woman','absolute ','spider man','spid
 class CollectError(EvidenceError): pass
 
 def fetch(url,*,getter=requests.get,allowed=('www.fnac.com','fnac.com','actualitte.com',
-        'www.actualitte.com','bede.fr','www.bede.fr','www.mdcu-comics.fr','mdcu-comics.fr')):
+        'www.actualitte.com','bede.fr','www.bede.fr','www.mdcu-comics.fr','mdcu-comics.fr',
+        'www.bdfugue.com','bdfugue.com','api.bdfugue.com')):
     target=urlparse(url)
     if target.scheme!='https' or target.hostname not in allowed:raise CollectError('URL source non autorisée')
     r=getter(url,headers=HTTP_HEADERS,timeout=28,allow_redirects=True)
@@ -57,7 +59,8 @@ def week_bounds(date:dt.date) -> tuple[str,str]:
 
 def validate_cover_url(u:str)->str:
     p=urlparse(u or '')
-    if p.scheme=='https' and p.hostname in ('static.fnac-static.com','cdn.bede.fr'):
+    if p.scheme=='https' and (p.hostname in ('static.fnac-static.com','cdn.bede.fr') or
+        (p.hostname and (p.hostname=='bdfugue.com' or p.hostname.endswith('.bdfugue.com')))):
         return u
     return ''
 
@@ -162,6 +165,69 @@ def parse_fnac(html:str,*,min_count=7)->list[dict]:
     for i,item in enumerate(unique,1):item['rang_enseigne']=i
     return unique[:30]
 
+def parse_bdfugue(html:str,*,min_count=7)->list[dict]:
+    """Top comics d'une enseigne, dans son ordre affiché (ventes 30 derniers jours).
+
+    Ne prend que les cartes de la grille de produits; ne déduit jamais des rangs
+    depuis les menus, recommandations ou prix. Le site peut changer son HTML:
+    dans ce cas, on échoue explicitement plutôt que de publier un faux classement.
+    """
+    soup=BeautifulSoup(html,'html.parser')
+    heading=next((h for h in soup.find_all(['h1','h2'])
+                  if 'meilleures ventes comics' in norm(h.get_text(' ',strip=True))),None)
+    if heading is None:raise CollectError('BDFugue : titre du Top comics introuvable')
+    text=soup.get_text(' ',strip=True)
+    if not re.search(r'30\s+derniers?\s+jours',text,re.I):
+        raise CollectError('BDFugue : fenêtre de ventes (30 jours) non attestée')
+
+    # Les templates Magento utilisent des cartes product-item dans une grille.
+    selectors=(
+        'ol.products.list.items.product-items > li.product-item',
+        '.products-grid li.product-item',
+        '.products-grid .product-item',
+        'li.product-item',
+        '.products-grid .product-item-info',
+    )
+    def extract(nodes):
+        output=[]; seen=set()
+        for node in nodes:
+            a=node.select_one('a.product-item-link[href], h3.product-item-name a[href], h2.product-item-name a[href], a.product-item-photo[href]')
+            if a is None:continue
+            url=urljoin(BDFUGUE,a.get('href',''))
+            parsed=urlparse(url)
+            if parsed.scheme!='https' or parsed.hostname not in ('www.bdfugue.com','bdfugue.com') or parsed.path.startswith('/meilleures-ventes'):
+                continue
+            url=url.split('?',1)[0]
+            if url in seen:continue
+            title=a.get_text(' ',strip=True)
+            if not title:
+                name=node.select_one('.product-item-name')
+                title=name.get_text(' ',strip=True) if name else ''
+            img=node.select_one('img[alt]') or node.find('img')
+            if not title and img is not None:title=img.get('alt','').strip()
+            if not (5<=len(title)<=240):continue
+            cover=_img_src(img)
+            seen.add(url)
+            output.append({'titre':title,'editeur':'','url_produit':url,
+                'couverture_candidate_url':cover,'couverture_reference':title,
+                'preuve_genre':'bdfugue_rubrique_comics',
+                'origine_classement':'BDFUGUE'})
+        return output
+    candidates=[]
+    for selector in selectors:
+        candidates=extract(soup.select(selector))
+        if len(candidates)>=min_count:break
+    if len(candidates)<min_count:
+        # Autre structure HTML : liste de produits uniquement sous la grille.
+        for grid in soup.select('.products-grid, ol.product-items'):
+            candidates=extract(grid.select('.product-item, .product-item-info'))
+            if len(candidates)>=min_count:break
+    if len(candidates)<min_count:
+        raise CollectError(f'BDFugue : palmarès incomplet ({len(candidates)} produits reconnus)')
+    for i,book in enumerate(candidates,1):book['rang_enseigne']=i
+    return candidates[:30]
+
+
 def parse_mdcu_top(html):
     soup=BeautifulSoup(html,'html.parser')
     headline=soup.find('h1')
@@ -206,12 +272,20 @@ def match_fnac_bede(top200:list[dict],bede_rows:list[dict],fnac_rows:list[dict])
     recognized.sort(key=lambda x:x['rang_general_livres'])
     return recognized
 
-def build_candidate(*,fnac_html,now=None,actualitte_html=None,bede_html=None,article_url=None,mdcu_html=None):
+def build_candidate(*,fnac_html=None,bdfugue_html=None,now=None,actualitte_html=None,bede_html=None,article_url=None,mdcu_html=None):
     now=now or dt.datetime.now(ZoneInfo('Europe/Paris'))
     day=now.astimezone(ZoneInfo('Europe/Paris')).date()
-    fnac=parse_fnac(fnac_html)
-    evidence={'sources':{'fnac':FNAC},'releve_le':day.isoformat(),'classement_enseigne':fnac,
-              'source_secondaire':None,'rangs_nationaux':0,'avertissements':[]}
+    fnac=[];bdfugue=[];errors=[]
+    if fnac_html:
+        try:fnac=parse_fnac(fnac_html)
+        except CollectError as exc:errors.append('Fnac : '+str(exc))
+    if bdfugue_html:
+        try:bdfugue=parse_bdfugue(bdfugue_html)
+        except CollectError as exc:errors.append(str(exc))
+    # Le Top 200 national et les magasins ne sont pas fusionnés.
+    evidence={'sources':{'fnac':FNAC if fnac else None,'bdfugue':BDFUGUE if bdfugue else None},
+        'releve_le':day.isoformat(),'source_secondaire':None,'rangs_nationaux':0,
+        'avertissements':errors}
     mdcu=[]
     if mdcu_html:
         try:mdcu=parse_mdcu_top(mdcu_html)
@@ -222,7 +296,8 @@ def build_candidate(*,fnac_html,now=None,actualitte_html=None,bede_html=None,art
         try:
             p=pub_date(actualitte_html)
             start,end=_period_for_article(actualitte_html,p)
-            if (day-dt.date.fromisoformat(end)).days>10:raise CollectError('Top national moins récent que la fenêtre acceptée')
+            if (day-dt.date.fromisoformat(end)).days>10:
+                raise CollectError('Top national moins récent que la fenêtre acceptée')
             rank=parse_top200(actualitte_html)
             bede=parse_bede_current(bede_html)['lignes']
             national=match_fnac_bede(rank,bede,fnac)
@@ -237,45 +312,76 @@ def build_candidate(*,fnac_html,now=None,actualitte_html=None,bede_html=None,art
         display='DU '+dt.date.fromisoformat(start).strftime('%d/%m')+' AU '+dt.date.fromisoformat(end).strftime('%d/%m/%Y')
         edition='COMICS_'+end
         period={'debut_ventes':start,'fin_ventes':end,'date_palmares':None,'periode_label':display}
+        merchant='NATIONAL'
     else:
-        # La Fnac reste un palmarès de ventes d'enseigne (pas un Top France national).
+        if not fnac and not bdfugue:
+            raise CollectError('Aucun Top 7 comics exploitable dans les sources disponibles. '+' ; '.join(errors))
+        # Palmarès d'enseigne (fenêtre de 30 jours pour BDFugue).
+        # On ne prétend jamais avoir les sept meilleures ventes nationales de la semaine.
         mode='RELEVE_ENSEIGNE'
-        selected=[{**x,'rang':i} for i,x in enumerate(fnac[:7],1)]
+        merchant='BDFUGUE' if bdfugue else 'FNAC'
+        base=bdfugue if bdfugue else fnac
+        selected=[{**x,'rang':i} for i,x in enumerate(base[:7],1)]
         monday,sunday=week_bounds(day)
         edition='COMICS_'+sunday
-        period={'date_palmares':day.strftime('%d/%m/%Y'),'periode_label':'RELEVÉ LE '+day.strftime('%d/%m/%Y')}
-        evidence['avertissements'].append('Relevé Fnac; période réelle des ventes non publiée; ne pas afficher "ventes du … au …"')
-    data={'categorie':'COMICS','edition':edition,'perimetre':'Comics de langue française, palmarès national si sept rangs disponibles; sinon relevé vente spécialisé',
-          'source':('ActuaLitté / Edistat' if mode=='NATIONAL_HEBDO' else 'Fnac — classement meilleures ventes comics'),
-          'url_source':(article_url if mode=='NATIONAL_HEBDO' and article_url else FNAC),
-          'mode_interne':mode,'date_releve':day.isoformat(),'titres':selected,'variations_verifiees':False,
+        period={'date_palmares':day.strftime('%d/%m/%Y'),
+                'periode_label':'RELEVÉ LE '+day.strftime('%d/%m/%Y')}
+        evidence['avertissements'].append(
+            'Relevé BDFugue, ventes sur 30 jours glissants; pas un Top national hebdomadaire'
+            if bdfugue else
+            'Relevé Fnac, période des ventes non publiée; pas un Top national hebdomadaire')
+    data={'categorie':'COMICS','edition':edition,
+          'perimetre':'Classement comics national hebdomadaire si 7 rangs attestés; sinon classement d’enseigne daté',
+          'source':('ActuaLitté / Edistat' if mode=='NATIONAL_HEBDO' else
+                    'BDFugue — 30 derniers jours' if merchant=='BDFUGUE' else
+                    'Fnac — meilleures ventes comics'),
+          'url_source':(article_url if mode=='NATIONAL_HEBDO' and article_url else
+                        BDFUGUE if merchant=='BDFUGUE' else FNAC),
+          'mode_interne':mode,'releve_source':merchant,'date_releve':day.isoformat(),
+          'titres':selected,'variations_verifiees':False,
           'semaine_reference':list(week_bounds(day)),**period}
     evidence['mode_interne']=mode
+    evidence['releve_source']=merchant
     return data,evidence
 
 def collect_live(*,now=None,fetcher=fetch):
+    """Chaque source est indépendante : un 403 Fnac ne bloque plus BDFugue.
+
+    Ne tente ni proxy de contournement ni automatisation cachée des CAPTCHA.
+    Si les sources publiques accessibles sont insuffisantes, ne programme rien.
+    """
     now=now or dt.datetime.now(ZoneInfo('Europe/Paris'))
-    fnac=fetcher(FNAC)
+    failures=[];fnac=bdfugue=None
+    for key,url in (('BDFugue',BDFUGUE),('Fnac',FNAC)):
+        try:
+            html=fetcher(url)
+            if key=='BDFugue':
+                parse_bdfugue(html)
+                bdfugue=html
+            else:
+                parse_fnac(html)
+                fnac=html
+        except (CollectError,requests.RequestException,ValueError) as exc:
+            failures.append(f'{key} : {str(exc)[:180]}')
     ahtml=bhtml=None;url=None
     try:
         index=fetcher(ACTUALITTE_INDEX)
         urls=latest_article_urls(index,limit=5)
-        for url_try in urls:
+        for candidate in urls:
             try:
-                h=fetcher(url_try)
+                h=fetcher(candidate)
                 p=pub_date(h);start,end=_period_for_article(h,p)
                 age=(now.astimezone(ZoneInfo('Europe/Paris')).date()-dt.date.fromisoformat(end)).days
                 if 0<=age<=10:
-                    ahtml=h;url=url_try;break
+                    ahtml=h;url=candidate;break
             except (EvidenceError,requests.RequestException):continue
     except (EvidenceError,requests.RequestException) as exc:
-        pass
+        failures.append(f'ActuaLitté : {str(exc)[:180]}')
     if ahtml:
         try:bhtml=fetcher(BEDE)
-        except (EvidenceError,requests.RequestException):pass
-    # Recoupement indépendant BDFugue via MDCU, uniquement quand un article
-    # hebdomadaire récent est accessible. N'invente pas de classement à 7 à
-    # partir de leur Top 5. La source Fnac reste le classement primaire.
+        except (EvidenceError,requests.RequestException) as exc:
+            failures.append(f'Bédé.fr : {str(exc)[:180]}')
+    # Top5 de l'enseigne BDFugue publié par MDCU : recoupement seulement.
     mdcu_html=None
     try:
         listing=fetcher('https://www.mdcu-comics.fr/news')
@@ -289,15 +395,18 @@ def collect_live(*,now=None,fetcher=fetch):
             try:
                 candidate=fetcher(dest)
                 if len(parse_mdcu_top(candidate))>=4:
-                    # Indice de date explicite : pas de référence historique trop
-                    # ancienne (ex : un top de septembre en novembre).
-                    date_match=re.search(r'\b(\d{2}/\d{2}/20\d{2})\b',BeautifulSoup(candidate,'html.parser').get_text(' ',strip=True)[:550])
-                    if date_match:
-                        published=dt.datetime.strptime(date_match.group(1),'%d/%m/%Y').date()
-                        age=(now.astimezone(ZoneInfo('Europe/Paris')).date()-published).days
-                        if 0<=age<=10:
+                    m=re.search(r'\b(\d{2}/\d{2}/20\d{2})\b',
+                        BeautifulSoup(candidate,'html.parser').get_text(' ',strip=True)[:550])
+                    if m:
+                        published=dt.datetime.strptime(m.group(1),'%d/%m/%Y').date()
+                        if 0<=(now.astimezone(ZoneInfo('Europe/Paris')).date()-published).days<=10:
                             mdcu_html=candidate;break
             except (CollectError,requests.RequestException,ValueError):continue
     except (CollectError,requests.RequestException):pass
-    return build_candidate(fnac_html=fnac,actualitte_html=ahtml,bede_html=bhtml,
-                           article_url=url,mdcu_html=mdcu_html,now=now)
+    try:
+        data,evidence=build_candidate(fnac_html=fnac,bdfugue_html=bdfugue,
+            actualitte_html=ahtml,bede_html=bhtml,article_url=url,mdcu_html=mdcu_html,now=now)
+    except CollectError as exc:
+        raise CollectError(str(exc)+' ; '+' ; '.join(failures)) from exc
+    evidence['avertissements']+=failures
+    return data,evidence

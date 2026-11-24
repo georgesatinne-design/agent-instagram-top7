@@ -14,7 +14,7 @@ def calculer(data,evidence,covers,*,today=None):
     mode=data.get('mode_interne')
     complete=len(titles)==7 and [x.get('rang') for x in titles]==list(range(1,8))
     distinct=len({x.get('url_produit') or x.get('ean') or x.get('titre') for x in titles})==7
-    typed=all(x.get('preuve_genre') in ('rubrique_comics_et_licence_ou_label','bede_categorie_comics','fnac_categorie_comics') for x in titles)
+    typed=all(x.get('preuve_genre') in ('rubrique_comics_et_licence_ou_label','bede_categorie_comics','fnac_categorie_comics','bdfugue_rubrique_comics') for x in titles)
     covers_ok=len(covers)==7 and all(x.get('ok') for x in covers)
     dated=False
     try:
@@ -48,5 +48,5 @@ def calculer(data,evidence,covers,*,today=None):
     return {'valeur':round(score,2),'seuil':SEUIL,'unite':'points_sur_100_non_probabiliste',
         'mode':mode,'autorise_publication':passed,'details_points':points,
         'comics_identifies':len(titles),'couvertures':sum(bool(x.get('ok')) for x in covers),
-        'perimetre_reel':('Palmarès national général avec sept comics identifiés' if mode=='NATIONAL_HEBDO' else 'Classement des meilleures ventes de l’enseigne Fnac, relevé le '+str(data.get('date_releve'))),
-        'limite':'Ce score évalue des contrôles techniques et éditoriaux, PAS une probabilité de vérité du Top 7 national; le relevé Fnac n’est pas un Top national hebdomadaire'}
+        'perimetre_reel':('Palmarès national général avec sept comics identifiés' if mode=='NATIONAL_HEBDO' else 'Classement des meilleures ventes de l’enseigne '+('BDFugue (30 jours)' if data.get('releve_source')=='BDFUGUE' else 'Fnac')+', relevé le '+str(data.get('date_releve'))),
+        'limite':'Ce score évalue des contrôles techniques et éditoriaux, PAS une probabilité de vérité du Top 7 national; un relevé d’enseigne n’est pas un Top national hebdomadaire'}

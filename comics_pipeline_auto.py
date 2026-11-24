@@ -4,6 +4,7 @@ Tout est additionnel: aucun script de production BD ni manga n'est modifié.
 """
 from __future__ import annotations
 import argparse
+import io
 import datetime as dt
 import json
 import re
@@ -14,7 +15,7 @@ import requests
 from bs4 import BeautifulSoup
 from PIL import Image,ImageDraw
 from manga_sources_hebdo import match_titles
-from sources.couvertures import cover_path,download_cover,search_google_books
+from sources.couvertures import cover_path,download_cover,search_google_books,meme_livre
 from visual_top7 import render_top7,font,pill
 from comics_sources_hebdo import collect_live,build_candidate,validate_cover_url,fetch,CollectError
 from comics_score_publication import calculer
@@ -42,6 +43,7 @@ def update_previous(data,prev):
     for x in data['titres']:x['mouvement']='NON DOCUMENTÉ'
     data['variations_verifiees']=False
     if not prev or data['mode_interne']!=prev.get('mode_interne'):return
+    if data.get('releve_source')!=prev.get('releve_source'):return
     try:
         old=dt.date.fromisoformat(prev['semaine_reference'][0]);new=dt.date.fromisoformat(data['semaine_reference'][0])
     except (KeyError,ValueError,TypeError):return
@@ -57,26 +59,90 @@ def update_previous(data,prev):
     data['variations_verifiees']=True
 
 def enrich_product(book,*,fetcher=fetch):
-    """ISBN facultatif pour une fiche enseigne; jamais un ISBN deviné."""
+    """Récupère éditeur, ISBN et couverture depuis la fiche produit exacte.
+
+    BDFugue est la source de classement de repli; une fiche différente du titre
+    attendu n'est jamais acceptée pour enrichir le contenu.
+    """
     u=book.get('url_produit','')
-    if urlparse(u).hostname not in ('www.fnac.com','fnac.com'):return book
+    host=urlparse(u).hostname
+    if host not in ('www.fnac.com','fnac.com','www.bdfugue.com','bdfugue.com'):
+        return book
     try:soup=BeautifulSoup(fetcher(u),'html.parser')
     except (requests.RequestException,CollectError):return book
-    for meta in soup.select('meta[property="og:title"],meta[name="title"]'):
-        t=meta.get('content','')
-        if t and not match_titles(book['titre'],t):return book
+    title_tag=soup.select_one('h1')
+    page_title=title_tag.get_text(' ',strip=True) if title_tag else ''
+    if page_title and not match_titles(book['titre'],page_title):return book
+    if host in ('bdfugue.com','www.bdfugue.com'):
+        # Sur les fiches BDFugue, on trouve « Éditeur Urban Comics » et « Référence 979... ».
+        root=soup.select_one('main') or soup
+        texts=[t.strip() for t in root.stripped_strings]
+        pub=''
+        for i,t in enumerate(texts[:-1]):
+            if re.fullmatch(r'(?:[ÉE]diteur|[ÉE]diteur\s*:)',t,re.I):
+                candidate=texts[i+1].strip()
+                if 3<=len(candidate)<=80 and not candidate.lower().startswith(('voir','genre','resume','résumé')):
+                    pub=candidate;break
+        if not pub:
+            match=re.search(r'\b[ÉE]diteur\s*:?\s*(Urban Comics|Panini Comics|Panini|Delcourt|Huginn\s*&\s*Muninn|Bliss Comics|Hi Comics|Black River|Vestron|404 Comics|Komics Initiative|Akileos|Glénat|Dargaud|Soleil|Ankama|Futuropolis)\b',root.get_text(' ',strip=True),re.I)
+            if match:pub=match.group(1)
+        if pub:book['editeur']=pub
+    else:
+        text=soup.get_text(' ',strip=True)
+        match=re.search(r'\bEditeur\s+(.{2,70}?)(?:\s+Parution\b|\s+En stock\b)',text,re.I)
+        if match and not book.get('editeur'):book['editeur']=match.group(1).strip()
     nums=[]
-    for selector in ('meta[itemprop="isbn"]','meta[property="product:ean"]','meta[itemprop="gtin13"]'):
-        for el in soup.select(selector):
-            nums+=re.findall(r'\b(?:978|979)\d{10}\b',el.get('content',''))
+    for sel in ('meta[itemprop="isbn"]','meta[property="product:ean"]',
+                'meta[itemprop="gtin13"]','meta[itemprop="sku"]'):
+        for el in soup.select(sel):nums+=re.findall(r'\b(?:978|979)\d{10}\b',el.get('content',''))
     for script in soup.select('script[type="application/ld+json"]'):
-        nums+=re.findall(r'\b(?:978|979)\d{10}\b',script.get_text())[:4]
+        nums+=re.findall(r'\b(?:978|979)\d{10}\b',script.get_text())[:5]
+    if host in ('bdfugue.com','www.bdfugue.com'):
+        nums+=re.findall(r'(?:R[ée]f[ée]rence|SKU)[.\s:]*((?:978|979)\d{10})',
+                         soup.get_text(' ',strip=True),re.I)[:5]
     if len(set(nums))==1:book['ean']=nums[0]
     og=soup.select_one('meta[property="og:image"]')
     if og and validate_cover_url(og.get('content','')):
         book['couverture_candidate_url']=og['content']
         book['couverture_reference']=book['titre']
     return book
+
+
+def _download_comics_cover(book,found,directory,*,getter=requests.get):
+    """Autorise UNIQUEMENT une image BDFugue HTTPS pour cette chaîne comics.
+
+    Aucune modification des domaines autorisés dans les collecteurs BD/manga.
+    """
+    rank=book['rang'];item=found.get(rank)
+    if not item:return False,'Pas de couverture'
+    url=item['url']
+    if not validate_cover_url(url):return False,'URL couverture non autorisée'
+    if not meme_livre(book['titre'],item['reference']):return False,'Titre / édition discordants'
+    path=cover_path(directory,book['titre'])
+    if path.exists():return True,'Cache comics vérifié'
+    try:
+        response=getter(url,headers={'User-Agent':'Mozilla/5.0'},timeout=22)
+        response.raise_for_status()
+        final=urlparse(getattr(response,'url',url))
+        if not validate_cover_url(final.geturl()):return False,'Redirection image non autorisée'
+        if not response.headers.get('Content-Type','').lower().startswith('image/'):
+            return False,'Ressource non image'
+        if len(response.content)>3_500_000:return False,'Couverture trop lourde'
+        im=Image.open(io.BytesIO(response.content));im.load()
+        if im.width<180 or im.height<250 or im.width*im.height>15_000_000:
+            return False,'Résolution de couverture invalide'
+        directory=Path(directory);directory.mkdir(parents=True,exist_ok=True)
+        im.convert('RGB').save(path,optimize=True)
+        return True,url
+    except (requests.RequestException,OSError,ValueError) as exc:
+        return False,str(exc)[:110]
+
+
+def _download_cover_comics(book,found,directory):
+    item=found.get(book['rang'])
+    if item and 'bdfugue.com' in (urlparse(item['url']).hostname or ''):
+        return _download_comics_cover(book,found,directory)
+    return download_cover(book,found,directory)
 
 def covers_get(data,folder,*,downloader=download_cover,google=search_google_books,fetcher=fetch):
     folder=Path(folder);folder.mkdir(parents=True,exist_ok=True)
@@ -90,19 +156,19 @@ def covers_get(data,folder,*,downloader=download_cover,google=search_google_book
             enrich_product(b,fetcher=fetcher)
             cand=validate_cover_url(b.get('couverture_candidate_url',''))
         found={b['rang']:{'url':cand,'reference':b.get('couverture_reference') or b['titre']}} if cand else {}
-        ok,why=downloader(b,found,folder)
+        ok,why=(_download_cover_comics(b,found,folder) if downloader is download_cover else downloader(b,found,folder))
         if not ok and b.get('url_produit'):
             # Le visuel de liste Fnac est parfois trop petit. Essayer l'og:image
             # de la FICHE EXACTE avant de chercher une couverture alternative.
             enrich_product(b,fetcher=fetcher)
             candidate2=validate_cover_url(b.get('couverture_candidate_url',''))
             if candidate2:
-                ok,why=downloader(b,{b['rang']:{'url':candidate2,
-                    'reference':b.get('couverture_reference') or b['titre']}},folder)
+                ok,why=(_download_cover_comics(b,{b['rang']:{'url':candidate2,
+                    'reference':b.get('couverture_reference') or b['titre']}},folder) if downloader is download_cover else downloader(b,{b['rang']:{'url':candidate2,'reference':b.get('couverture_reference') or b['titre']}},folder))
         if not ok:
             try:alternative=google(b)
             except Exception:alternative=None
-            if alternative:ok,why=downloader(b,{b['rang']:alternative},folder)
+            if alternative:ok,why=(_download_cover_comics(b,{b['rang']:alternative},folder) if downloader is download_cover else downloader(b,{b['rang']:alternative},folder))
         res.append({'rang':b['rang'],'ok':bool(ok),'origine':why})
     return res
 
@@ -153,7 +219,9 @@ def produire(*,root=ROOT,output=Path('sorties/comics_production'),previous=Path(
         save(folder/'ETAT.json',state)
         (folder/'RAPPORT.md').write_text('Aucun carrousel publié : '+str(e)+'\n',encoding='utf8')
         return folder
-    for b in data['titres']:b['titre']=normalize_title(b['titre'])
+    for b in data['titres']:
+        b['titre']=normalize_title(b['titre'])
+        if b.get('origine_classement')=='BDFUGUE':enrich_product(b,fetcher=fetcher)
     prior=read(previous)
     update_previous(data,prior)
     folder=output/data['edition'];folder.mkdir(parents=True,exist_ok=True)
