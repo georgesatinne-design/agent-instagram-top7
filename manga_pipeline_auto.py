@@ -132,35 +132,9 @@ def produire(*,root=ROOT, sortie=Path('sorties/manga_production'),
     # « source_validated » signifie ici que le palmarès source est vérifié,
     # et non que tous les genres des 200 ouvrages ont été certifiés.
     m['source_validated']=score['source_ok']
-    if m['ready_to_stage'] and score['mode']=='RECONSTITUE':
-        # Ne modifier que les images MANGA et non la fonction de rendu commune aux BD.
-        from PIL import ImageDraw
-        from visual_top7 import font as _font
-        for filename in m['pages']:
-            path=folder/filename
-            im=Image.open(path).convert('RGB')
-            d=ImageDraw.Draw(im)
-            d.rounded_rectangle((480,8,1060,47),radius=8,fill='#171717')
-            d.text((770,27),'TOP RECONSTITUÉ • EDISTAT',font=_font(17,True),fill='#FFFFFF',anchor='mm')
-            im.save(path,format='PNG',optimize=True)
-        # Le premier paragraphe reste reconnaissable par le contrôle Buffer.
-        caption_path=folder/m['caption_file']
-        caption=caption_path.read_text(encoding='utf8')
-        caption=caption.replace('📚 TOP 7 MANGA — Les meilleures ventes',
-            '📚 TOP 7 MANGA — Classement hebdomadaire reconstitué',1)
-        reserve=('📊 Sélection reconstituée à partir du Top 200 Edistat/ActuaLitté. '
-                 'La classification de certains livres reste incertaine : ce Top 7 peut donc être incomplet.')
-        parties=caption.split('\n\n',1)
-        if len(parties)!=2:raise ValueError('Légende Instagram sans en-tête structuré')
-        caption=parties[0]+'\n'+reserve+'\n\n'+parties[1]
-        caption_path.write_text(caption,encoding='utf8')
-        # Réactualiser la planche-contact après l'étiquetage des huit images.
-        preview=Image.new('RGB',(4*282,2*364),'#e6e3ec')
-        for i,name in enumerate(m['pages']):
-            with Image.open(folder/name) as slide:
-                snap=slide.convert('RGB');snap.thumbnail((270,338))
-                preview.paste(snap,((i%4)*282+6,(i//4)*364+6))
-        preview.save(folder/'apercu.png')
+    # Les sources, le score et le mode de reconstitution restent internes.
+    # Le rendu MANGA et sa légende publique restent ceux de la charte d'origine.
+    m['version_contenu'] = 'manga_sans_sources_v1'
     manifest.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
     write_json(folder/'AUDIT_COUVERTURES.json',{'controles':results})
     write_json(dest/'SCORE_PUBLICATION.json',score)
@@ -198,7 +172,7 @@ def produire(*,root=ROOT, sortie=Path('sorties/manga_production'),
        f'- Score de contrôle éditorial : **{score["valeur"]}/100** (seuil {score["seuil"]})\n'
        f'- Mode de publication : **{score["mode"]}**\n'
        f'- Programmation automatique autorisée : **{status["pret_buffer"]}**\n\n'
-       'L’indice ne mesure PAS une probabilité statistique. Un Top reconstitué est clairement identifié, et les incertitudes sont conservées.\n',encoding='utf8')
+       'L’indice est interne et ne mesure PAS une probabilité statistique. Les incertitudes sont conservées dans le rapport privé.\n',encoding='utf8')
     return dest
 
 

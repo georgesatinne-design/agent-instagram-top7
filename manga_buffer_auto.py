@@ -21,6 +21,9 @@ from manga_score_publication import evaluer, SEUIL
 from buffer_client import (_graphql, _mutation_result, _parse_due,
                            MUTATION, EDIT_MUTATION, ORG_QUERY, SLOT_QUERY)
 
+VERSION_PUBLIQUE='manga_sans_sources_v1'
+SOURCE_PUBLIQUE=re.compile(r'(?i)(?:edistat|actualitt[ée]|b[ée]d[ée]\.fr|nielseniq|nielsen|\bbnf\b|reconstitu[ée]|reconstitution)')
+
 MANGA_HEADER=re.compile(r'^\s*(?:📚\s*)?TOP\s*7\s*MANGA\b',re.I)
 PERIOD_END=re.compile(r'\bAU\s+(\d{2}/\d{2}/\d{4})\b',re.I)
 
@@ -69,8 +72,9 @@ def construire(folder,base_url,channel_id,*,now=None):
         raise ValueError('Score documentaire inférieur à 70/100 : aucun envoi Buffer')
     if quality['valeur']!=stored.get('valeur') or quality['mode']!=m.get('mode_publication'):
         raise ValueError('Score manga incohérent entre source et manifest')
-    if data.get('certification')!='TOP7_EDISTAT_VERIFIE' and quality['mode']!='RECONSTITUE':
-        raise ValueError('Top manga reconstruit sans étiquette de prudence')
+    # Ne jamais transmettre le mode ni les sources bibliographiques au public.
+    if m.get('version_contenu') != VERSION_PUBLIQUE:
+        raise ValueError('Version publique sans sources non installée')
     pages=m.get('pages') or []
     if pages!=[f'{i:02d}_rang_{8-i}.png' for i in range(1,8)]+['08_recapitulatif.png']:
         raise ValueError('Ordre du Top 7 incorrect')
@@ -85,8 +89,8 @@ def construire(folder,base_url,channel_id,*,now=None):
         media.append({'image':{'url':base_url+quote(name)}})
     caption=(folder/m['caption_file']).read_text(encoding='utf8').strip()
     if not MANGA_HEADER.match(caption) or len(caption)>2200:raise ValueError('Légende manga absente/incorrecte')
-    if quality['mode']=='RECONSTITUE' and ('reconstitué' not in caption.lower() or 'incompl' not in caption.lower()):
-        raise ValueError('Mention de reconstitution et incertitude obligatoires dans la légende')
+    if SOURCE_PUBLIQUE.search(caption):
+        raise ValueError('La légende publique contient un nom de source ou une mention technique')
     expected_date=dt.date.fromisoformat(data['fin_ventes'])
     if date_periode_captation(caption)!=expected_date:
         raise ValueError('Période de ventes différente entre données et légende')
@@ -132,17 +136,38 @@ def _list_manga_programmes(api_key,channel_id,due_at,*,post=requests.post):
 
 
 def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.post,
-                get=requests.get,now=None)->dict:
+                get=requests.get,now=None,previous_receipt=None)->dict:
+    """Déposer rapidement le carrousel et corriger une édition déjà en queue.
+
+    Un reçu versionné permet l'idempotence, y compris quand GitHub relance
+    le workflow plusieurs fois dans la même journée. Les posts publiés ou
+    dont la date est passée ne sont jamais remis en queue automatiquement.
+    """
+    folder=Path(folder)
+    now=now or dt.datetime.now(dt.timezone.utc)
+    if now.tzinfo is None:raise ValueError('Date courante sans fuseau horaire')
     payload=construire(folder,base_url,channel_id,now=now)
     edition='MANGA_'+str(date_periode_captation(payload['text']))
     if not send:
         return {'statut':'SIMULATION','edition':edition,'images':8,
                 'date_programmee_utc':payload['dueAt']}
     if not api_key:raise ValueError('Accès Buffer absent')
-    receipt=Path(folder)/'RECU_BUFFER.json'
-    if receipt.exists():
-        return json.loads(receipt.read_text(encoding='utf8'))
-    # Confirmer les 8 URL avant d appeler l API Buffer.
+    receipt=folder/'RECU_BUFFER.json'
+    old_path=Path(previous_receipt) if previous_receipt else receipt
+    prior=json.loads(old_path.read_text(encoding='utf8')) if old_path.is_file() else None
+    if prior:
+        if prior.get('edition')!=edition or prior.get('statut')!='POST_PROGRAMME' or not prior.get('id_buffer'):
+            raise RuntimeError('Ancien reçu Buffer incompatible : vérification manuelle requise')
+        planned=_parse_due(prior['date_programmee_utc'])
+        if planned <= now+dt.timedelta(minutes=10):
+            # Le post peut être en cours de publication : ne pas le dupliquer.
+            result={**prior,'action':'DEJA_TRANSMIS_NON_MODIFIABLE'}
+            receipt.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+            return result
+        if prior.get('version_contenu')==VERSION_PUBLIQUE:
+            receipt.write_text(json.dumps(prior,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+            return prior
+    # Publier les images sur GitHub AVANT cette vérification d'accessibilité.
     for asset in payload['assets']:
         url=asset['image']['url']
         confirmed=False
@@ -164,8 +189,25 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
     same=[p for p in posts if date_periode_captation(p['text'])==current]
     if len(same)>1:raise RuntimeError('Plusieurs posts manga pour la même période existent dans Buffer')
     action='CREATION'
+    effective_due=payload['dueAt']
+    if prior and not same:
+        # Ne pas créer de doublon si l'ancien post ne ressort pas dans l'API.
+        raise RuntimeError('Post Buffer déjà identifié par reçu mais non retrouvé : création interdite')
     if same:
-        ident,status=same[0]['id'],'scheduled';action='DEJA_PROGRAMME'
+        old=same[0]
+        if prior and old['id']!=prior['id_buffer']:
+            raise RuntimeError('ID Buffer différent du reçu : création et modification interdites')
+        # Préserver le créneau du post déjà programmé, même si le prochain
+        # mardi calculé serait désormais le mardi de la semaine suivante.
+        effective_due=old['dueAt']
+        if _parse_due(effective_due)<=now+dt.timedelta(minutes=10):
+            raise RuntimeError('Publication imminente : modification refusée pour ne pas créer de doublon')
+        edited={'id':old['id'],'text':payload['text'],'assets':payload['assets'],
+                'metadata':payload['metadata'],'schedulingType':'automatic',
+                'mode':'customScheduled','dueAt':effective_due}
+        response=_graphql(post,api_key,EDIT_MUTATION,{'input':edited})
+        ident,status=_mutation_result(api_key,response,'editPost',effective_due,expected_id=old['id'])
+        action='CORRECTION_PROGRAMMEE'
     else:
         same_slot=[p for p in posts if abs((_parse_due(p['dueAt'])-_parse_due(payload['dueAt'])).total_seconds())<90]
         if len(same_slot)>1:raise RuntimeError('Plusieurs posts manga sur le même créneau')
@@ -184,7 +226,7 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
             ident,status=_mutation_result(api_key,response,'createPost',payload['dueAt'])
     result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':action,
             'id_buffer':ident,'status_buffer':status,'edition':edition,
-            'date_programmee_utc':payload['dueAt'],'pages':8}
+            'date_programmee_utc':effective_due,'pages':8,'version_contenu':VERSION_PUBLIQUE}
     receipt.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
     return result
 
@@ -194,9 +236,10 @@ def main():
     p.add_argument('--folder',type=Path,required=True)
     p.add_argument('--public-base-url',required=True)
     p.add_argument('--send',action='store_true',help='Sans --send : simulation sans API')
+    p.add_argument('--previous-receipt',type=Path,help='Reçu GitHub dune édition déjà programmée')
     args=p.parse_args()
     print(json.dumps(transmettre(args.folder,args.public_base_url,
       api_key=os.getenv('BUFFER_API_KEY',''),channel_id=os.getenv('BUFFER_CHANNEL_ID',''),
-      send=args.send),ensure_ascii=False,indent=2))
+      send=args.send,previous_receipt=args.previous_receipt),ensure_ascii=False,indent=2))
 
 if __name__=='__main__':main()
