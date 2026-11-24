@@ -1,6 +1,6 @@
 {
-  "version": "5.0",
-  "politique": "Seul un visuel préapparié à une phrase réelle de l’anecdote est admis. Aucune image de pure ambiance. Une image unique par slide. Les photos modernes ne sont jamais présentées comme des archives anciennes. Les images douteuses ou sous licence exigeant un crédit public sont refusées.",
+  "version": "V6_CURATED_ALTERNATIVES_2026_11",
+  "politique": "Seul un visuel préapparié à une phrase réelle de l’anecdote est admis. Aucune image de pure ambiance. Une image unique par slide. Les photos modernes ne sont jamais présentées comme des archives anciennes. Les images douteuses ou sous licence exigeant un crédit public sont refusées. V6 : alternatives vérifiées par scène, aucun repli générique.",
   "minimum_images_distinctes": 3,
   "scenarios": {
     "bruxelles-horta": {
@@ -336,7 +336,16 @@
           "epoque": "1971",
           "famille_source": "anefo-morris-goscinny-cliche-1",
           "domaine_public_ancien": false,
-          "artiste_mort_avant_1900": false
+          "artiste_mort_avant_1900": false,
+          "alternatives": [
+            {
+              "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (l) en Morris (tekenaar, Bestanddeelnr 924-5894.jpg",
+              "role": "Les deux créateurs immortalisés en 1971",
+              "pertinence": "Morris et Goscinny au travail comme figures de leur époque, pas comme photo de 1946.",
+              "famille_source": "anefo-negatif-924-5894",
+              "epoque": "archive 1971"
+            }
+          ]
         },
         {
           "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (l) en Morris (tekenaar, Bestanddeelnr 924-5894.jpg",
@@ -349,6 +358,22 @@
           "artiste_mort_avant_1900": false
         },
         {
+          "page": 3,
+          "role": "Une autre prise de vue de l’équipe créative",
+          "pertinence": "Morris et René Goscinny sont photographiés ensemble en 1971 : cette image parle des créateurs et ne prétend pas illustrer 1946.",
+          "epoque": "archive 1971",
+          "famille_source": "anefo-negatif-924-5892",
+          "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5892.jpg",
+          "alternatives": [
+            {
+              "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5893.jpg",
+              "famille_source": "anefo-negatif-924-5893",
+              "role": "Prise de vue différente des mêmes créateurs",
+              "pertinence": "Autre négatif original de Morris et Goscinny en 1971, distinct de la première scène."
+            }
+          ]
+        },
+        {
           "titre": "Gehurkt Albert Uderzo (tekenaar Asterix) en staand Morris (tekenaar Lucky Luke), Bestanddeelnr 924-5896.jpg",
           "page": 4,
           "role": "Le dessinateur",
@@ -357,6 +382,22 @@
           "famille_source": "anefo-morris-uderzo-cliche-3",
           "domaine_public_ancien": false,
           "artiste_mort_avant_1900": false
+        },
+        {
+          "page": 5,
+          "role": "Les créateurs : une dernière archive photographique",
+          "pertinence": "Une photographie d’archive montre les créateurs dans leur époque, sans faire croire que la photo date de la naissance de Lucky Luke.",
+          "epoque": "archive 1971",
+          "famille_source": "anefo-negatif-924-5893",
+          "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5893.jpg",
+          "alternatives": [
+            {
+              "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5892.jpg",
+              "famille_source": "anefo-negatif-924-5892",
+              "role": "Autre cliché indépendant des créateurs",
+              "pertinence": "Photographie indépendante, datée de 1971."
+            }
+          ]
         }
       ],
       "validation": "Préselection éditoriale de sujets, photographie recontrolee en ligne, aucune preuve de date attribuée à une photo moderne."
@@ -372,7 +413,16 @@
           "epoque": "1971",
           "famille_source": "anefo-morris-goscinny-cliche-1",
           "domaine_public_ancien": false,
-          "artiste_mort_avant_1900": false
+          "artiste_mort_avant_1900": false,
+          "alternatives": [
+            {
+              "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (l) en Morris (tekenaar, Bestanddeelnr 924-5894.jpg",
+              "role": "Les deux créateurs immortalisés en 1971",
+              "pertinence": "Morris et Goscinny au travail comme figures de leur époque, pas comme photo de 1946.",
+              "famille_source": "anefo-negatif-924-5894",
+              "epoque": "archive 1971"
+            }
+          ]
         },
         {
           "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (l) en Morris (tekenaar, Bestanddeelnr 924-5894.jpg",
@@ -385,6 +435,22 @@
           "artiste_mort_avant_1900": false
         },
         {
+          "page": 3,
+          "role": "Une autre prise de vue de l’équipe créative",
+          "pertinence": "Morris et René Goscinny sont photographiés ensemble en 1971 : cette image parle des créateurs et ne prétend pas illustrer 1946.",
+          "epoque": "archive 1971",
+          "famille_source": "anefo-negatif-924-5892",
+          "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5892.jpg",
+          "alternatives": [
+            {
+              "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5893.jpg",
+              "famille_source": "anefo-negatif-924-5893",
+              "role": "Prise de vue différente des mêmes créateurs",
+              "pertinence": "Autre négatif original de Morris et Goscinny en 1971, distinct de la première scène."
+            }
+          ]
+        },
+        {
           "titre": "Gehurkt Albert Uderzo (tekenaar Asterix) en staand Morris (tekenaar Lucky Luke), Bestanddeelnr 924-5896.jpg",
           "page": 4,
           "role": "Le dessinateur",
@@ -393,6 +459,22 @@
           "famille_source": "anefo-morris-uderzo-cliche-3",
           "domaine_public_ancien": false,
           "artiste_mort_avant_1900": false
+        },
+        {
+          "page": 5,
+          "role": "Les créateurs : une dernière archive photographique",
+          "pertinence": "Une photographie d’archive montre les créateurs dans leur époque, sans faire croire que la photo date de la naissance de Lucky Luke.",
+          "epoque": "archive 1971",
+          "famille_source": "anefo-negatif-924-5893",
+          "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5893.jpg",
+          "alternatives": [
+            {
+              "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5892.jpg",
+              "famille_source": "anefo-negatif-924-5892",
+              "role": "Autre cliché indépendant des créateurs",
+              "pertinence": "Photographie indépendante, datée de 1971."
+            }
+          ]
         }
       ],
       "validation": "Photos réelles datées 1971: ne représentent pas la première apparition de Lucky Luke en 1946. Servent uniquement à présenter Morris et la collaboration historique."
@@ -408,7 +490,16 @@
           "epoque": "1971",
           "famille_source": "anefo-morris-goscinny-cliche-1",
           "domaine_public_ancien": false,
-          "artiste_mort_avant_1900": false
+          "artiste_mort_avant_1900": false,
+          "alternatives": [
+            {
+              "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (l) en Morris (tekenaar, Bestanddeelnr 924-5894.jpg",
+              "role": "Les deux créateurs immortalisés en 1971",
+              "pertinence": "Morris et Goscinny au travail comme figures de leur époque, pas comme photo de 1946.",
+              "famille_source": "anefo-negatif-924-5894",
+              "epoque": "archive 1971"
+            }
+          ]
         },
         {
           "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (l) en Morris (tekenaar, Bestanddeelnr 924-5894.jpg",
@@ -421,6 +512,22 @@
           "artiste_mort_avant_1900": false
         },
         {
+          "page": 3,
+          "role": "Une autre prise de vue de l’équipe créative",
+          "pertinence": "Morris et René Goscinny sont photographiés ensemble en 1971 : cette image parle des créateurs et ne prétend pas illustrer 1946.",
+          "epoque": "archive 1971",
+          "famille_source": "anefo-negatif-924-5892",
+          "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5892.jpg",
+          "alternatives": [
+            {
+              "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5893.jpg",
+              "famille_source": "anefo-negatif-924-5893",
+              "role": "Prise de vue différente des mêmes créateurs",
+              "pertinence": "Autre négatif original de Morris et Goscinny en 1971, distinct de la première scène."
+            }
+          ]
+        },
+        {
           "titre": "Gehurkt Albert Uderzo (tekenaar Asterix) en staand Morris (tekenaar Lucky Luke), Bestanddeelnr 924-5896.jpg",
           "page": 4,
           "role": "Le dessinateur",
@@ -429,6 +536,22 @@
           "famille_source": "anefo-morris-uderzo-cliche-3",
           "domaine_public_ancien": false,
           "artiste_mort_avant_1900": false
+        },
+        {
+          "page": 5,
+          "role": "Les créateurs : une dernière archive photographique",
+          "pertinence": "Une photographie d’archive montre les créateurs dans leur époque, sans faire croire que la photo date de la naissance de Lucky Luke.",
+          "epoque": "archive 1971",
+          "famille_source": "anefo-negatif-924-5893",
+          "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5893.jpg",
+          "alternatives": [
+            {
+              "titre": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5892.jpg",
+              "famille_source": "anefo-negatif-924-5892",
+              "role": "Autre cliché indépendant des créateurs",
+              "pertinence": "Photographie indépendante, datée de 1971."
+            }
+          ]
         }
       ],
       "validation": "Photos réelles datées 1971: ne représentent pas la première apparition de Lucky Luke en 1946. Servent uniquement à présenter Morris et la collaboration historique."

@@ -15,7 +15,9 @@ from .buffer import Buffer,BufferError,is_top,is_anecdote,utc,parse
 PUBLIC=ROOT_REPO/'public_media'/'anecdotes_bd'
 REPORT=ROOT_REPO/'sorties'/'anecdotes_bd'
 REGISTRY=STATE/'programmes.json'
-VERSION_VISUELLE='BD_STORY_PHOTOS_V5_NARRATION_SEMANTIQUE_2026_11'
+VERSION_VISUELLE='BD_STORY_PHOTOS_V6_RECUPERATION_CONTROLEE_2026_11'
+# Une V5 déjà mise à jour et validée ne doit pas être rééditée inutilement.
+VERSIONS_DEJA_VALIDES={VERSION_VISUELLE,'BD_STORY_PHOTOS_V5_NARRATION_SEMANTIQUE_2026_11'}
 
 def get_registry():
     registry=read(REGISTRY,{}) or {}
@@ -79,7 +81,7 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
     buffer=buffer or Buffer()
     REPORT.mkdir(parents=True,exist_ok=True)
     results={'date_utc':now.isoformat(),'candidats':len(bank()),'collecte':None,'plans':[],
-             'jours':[],'erreurs':[]}
+             'jours':[],'erreurs':[],'remplacements_non_effectues':[]}
     if collect and CONFIG.get('collecte',{}).get('actif'):
         from .decouverte import discover
         try:results['collecte']=discover(now=now)
@@ -106,7 +108,7 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
     for day in next_days(now):
         key=day.isoformat();posts=dayposts[key]
         item=registry.get(key) or {}
-        if item.get('etat')=='PROGRAMME' and item.get('version_visuelle')!=VERSION_VISUELLE:
+        if item.get('etat')=='PROGRAMME' and item.get('version_visuelle') not in VERSIONS_DEJA_VALIDES:
             # Un post ancien peut être remplacé par une anecdote mieux illustrable.
             # Sécurité : seul l'identifiant connu + notre légende exacte autorisent editPost.
             same=[p for p in posts if p.get('id')==item.get('id_buffer') and
@@ -122,9 +124,25 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
                 used_recent_topics={topic(facts_by_id[r.get('fact_id')]) for d,r in registry.items()
                     if d!=key and isinstance(r,dict) and r.get('etat') in ('EN_ATTENTE','PROGRAMME','EN_ATTENTE_MAJ')
                     and r.get('fact_id') in facts_by_id and abs((dt.date.fromisoformat(d)-day).days)<CONFIG.get('intervalle_sujet_jours',5)}
+                # Première passe : meilleure diversité éditoriale. Si aucune photo
+                # n'est disponible, on élargit légèrement la distance entre sujets
+                # (4 jours au lieu de 5) pour éviter de garder une ancienne DA.
                 for f in facts:
                     if (f['id'] not in used_ids and topic(f) not in used_recent_topics and
                         (not original or f['id']!=original['id'])):
+                        candidates.append(f)
+                candidates_strict_ids={f['id'] for f in candidates}
+                for f in facts:
+                    if f['id'] in used_ids or f['id'] in candidates_strict_ids:
+                        continue
+                    if original and f['id']==original['id']:
+                        continue
+                    conflicts=[abs((dt.date.fromisoformat(d)-day).days) for d,r in registry.items()
+                        if d!=key and isinstance(r,dict) and
+                        r.get('etat') in ('EN_ATTENTE','PROGRAMME','EN_ATTENTE_MAJ') and
+                        r.get('fact_id') in facts_by_id and
+                        topic(facts_by_id[r['fact_id']])==topic(f)]
+                    if not conflicts or min(conflicts)>=4:
                         candidates.append(f)
                 done=False;errors_local=[]
                 for f in candidates:
@@ -143,11 +161,25 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
                         photos_indisponibles.add(f['id'])
                         errors_local.append(f['id']+': '+str(exc)[:100])
                 if not done:
-                    results['jours'].append({'date':key,'resultat':'ANCIEN_POST_CONSERVE',
-                        'raison':'Aucun sujet illustrable vérifié : '+' ; '.join(errors_local[:3])[:220]})
+                    reason='Aucun sujet illustrable vérifié : '+' ; '.join(errors_local[:5])[:520]
+                    failure={'date':key,'id_buffer':item.get('id_buffer'),
+                        'version_actuelle':item.get('version_visuelle'),
+                        'fact_id':item.get('fact_id'),'raison':reason,
+                        'nouvelle_tentative':'au prochain lancement automatique',
+                        'priorite':'HAUTE'}
+                    results['remplacements_non_effectues'].append(failure)
+                    results['jours'].append({'date':key,'resultat':'REMPLACEMENT_NON_EFFECTUE',
+                        'raison':reason})
             else:
+                failure={'date':key,'id_buffer':item.get('id_buffer'),
+                  'version_actuelle':item.get('version_visuelle'),
+                  'fact_id':item.get('fact_id'),
+                  'raison':'Post absent, texte différent ou horaire trop proche',
+                  'nouvelle_tentative':'controle a la prochaine execution',
+                  'priorite':'HAUTE'}
+                results['remplacements_non_effectues'].append(failure)
                 results['jours'].append({'date':key,'resultat':'POST_ANCIEN_NON_MODIFIABLE',
-                     'raison':'Post absent, texte différent ou horaire trop proche'})
+                     'raison':failure['raison']})
             continue
         if item.get('etat') in ('PROGRAMME','SUPPLANTE_PAR_TOP','EN_ATTENTE_MAJ'):
             results['jours'].append({'date':key,'resultat':'DEJA_TRAITE'});continue
@@ -182,8 +214,10 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
     persist(registry)
     write(REPORT/'PLAN_BUFFER.json',[registry[d] for d in results['plans']])
     write(REPORT/'PREPARATION.json',results)
+    write(REPORT/'REPRISES_A_FAIRE.json',results['remplacements_non_effectues'])
     write(REPORT/'ETAT.json',{'statut':'MEDIA_PREPARES','date':now.isoformat(),
         'futurs_carrousels':len(results['plans']),'anecdotes_en_banque':len(facts),
+        'remplacements_non_effectues':len(results['remplacements_non_effectues']),
         'erreurs':results['erreurs']})
     return results
 
@@ -212,7 +246,8 @@ def send(*,now=None,buffer=None):
     now=now or dt.datetime.now(dt.timezone.utc)
     buffer=buffer or Buffer()
     registry=get_registry();results={'date_utc':now.isoformat(),'programmes':[],
-                                   'deja_programmes':[],'ignores':[],'supprimes_pour_top':[],'erreurs':[]}
+                                   'deja_programmes':[],'ignores':[],'supprimes_pour_top':[],'erreurs':[],
+                                   'remplacements_non_effectues':[]}
     # Priority: if a Top arrives after a fallback, remove only our own scheduled anecdote.
     try:reconcile(buffer,registry,now,results)
     except Exception as exc:results['erreurs'].append('RECONCILIATION: '+str(exc)[:300])
@@ -264,13 +299,31 @@ def send(*,now=None,buffer=None):
             results['programmes'].append({'date':key,'id_buffer':post['id'],'pages':len(rec['images'])})
         except Exception as exc:
             results['erreurs'].append(key+': '+type(exc).__name__+' '+str(exc)[:260])
+    # Vérification post-envoi : ne pas annoncer une exécution saine si un post
+    # en ancienne DA est resté dans Buffer sans remplacement effectif.
+    backlog=read(REPORT/'REPRISES_A_FAIRE.json',[]) or []
+    unresolved=[]
+    for rec in backlog:
+        key=rec.get('date')
+        actuel=registry.get(key) or {}
+        if (actuel.get('version_visuelle') not in VERSIONS_DEJA_VALIDES and
+                actuel.get('etat')=='PROGRAMME'):
+            unresolved.append(rec)
+    results['remplacements_non_effectues']=unresolved
     persist(registry)
+    write(REPORT/'REPRISES_A_FAIRE.json',unresolved)
     write(REPORT/'RESULTATS_BUFFER.json',results)
-    write(REPORT/'ETAT.json',{'statut':'EXECUTION_TERMINEE','buffer_ok':len(results['programmes']),
-          'deja_programmes':len(results['deja_programmes']),'supprimes_pour_top':len(results['supprimes_pour_top']),
+    write(REPORT/'ETAT.json',{'statut':('REPRISES_A_FAIRE' if unresolved else 'EXECUTION_TERMINEE'),
+          'buffer_ok':len(results['programmes']),
+          'deja_programmes':len(results['deja_programmes']),
+          'supprimes_pour_top':len(results['supprimes_pour_top']),
+          'remplacements_non_effectues':len(unresolved),
           'erreurs':results['erreurs']})
     summary='# Anecdotes BD — audit interne\n\n'+f'Programmés: {len(results["programmes"])}\n\n'
     summary+=f'Réconciliés avec des TOP: {len(results["supprimes_pour_top"])}\n\n'
+    summary+=f'Remplacements encore nécessaires: {len(unresolved)}\n\n'
+    for warning in unresolved:
+        summary+=f"- ⚠ {warning['date']} — {warning['fact_id']} : {warning['raison']}\n"
     summary+=f'Erreurs: {len(results["erreurs"])}\n\n'
     if results['erreurs']:summary+='\n'.join('- '+m for m in results['erreurs'])+'\n'
     (REPORT/'RAPPORT.md').write_text(summary,encoding='utf8')

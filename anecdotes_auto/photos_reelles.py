@@ -145,28 +145,48 @@ def resolve(fact,*,session=None,cache=None):
         raise ValueError('Plusieurs photos affectées à une même étape')
     cache.mkdir(parents=True,exist_ok=True)
     choices=[];proofs=[];errors=[]
+    used_hashes=[];used_origins=set()
     for op in options:
-        titre=op['titre'];key=hashlib.sha256(titre.encode('utf8')).hexdigest()[:22]
-        dest=cache/(key+'.jpg');meta_path=cache/(key+'.json')
-        try:
-            if dest.exists() and meta_path.exists():
-                meta=read(meta_path,{})
-                if not (meta.get('titre_commons')==titre and meta.get('licence') and
-                       meta.get('sha256')==hashlib.sha256(dest.read_bytes()).hexdigest()):
-                    raise PhotosIndisponibles('Cache photo sans preuve intacte')
-            else:
-                blob,meta=_fetch_file(session,titre,op)
-                dest.write_bytes(blob);write(meta_path,meta)
-            proof={**meta,
-                'page':op['page'],'role':op['role'],'pertinence':op['pertinence'],
-                'epoque':op.get('epoque','actuelle'),
-                'famille_source':op.get('famille_source') or titre,
-                'fact_id':fact['id'],
-                'intention_editoriale':scen['intention']}
-            choices.append(dest);proofs.append(proof)
-        except (PhotosIndisponibles,requests.RequestException,UnidentifiedImageError,OSError,ValueError,KeyError) as exc:
-            errors.append(f'page {op.get("page")}: {titre} — {type(exc).__name__} {str(exc)[:95]}')
-    choices,proofs=_maximise_diversite(choices,proofs)
+        alternatives=[op,*op.get('alternatives',[])]
+        chosen=False
+        for alt in alternatives:
+            # Une alternative reste attachée au même passage et doit conserver
+            # un rôle narratif et une justification éditoriale explicites.
+            candidate={**op,**alt}
+            titre=candidate['titre']
+            if not candidate.get('pertinence') or not candidate.get('role'):
+                errors.append('page '+str(op['page'])+': image sans pertinence éditoriale')
+                continue
+            key=hashlib.sha256(titre.encode('utf8')).hexdigest()[:22]
+            dest=cache/(key+'.jpg');meta_path=cache/(key+'.json')
+            try:
+                if dest.exists() and meta_path.exists():
+                    meta=read(meta_path,{})
+                    if not (meta.get('titre_commons')==titre and meta.get('licence') and
+                           meta.get('sha256')==hashlib.sha256(dest.read_bytes()).hexdigest()):
+                        raise PhotosIndisponibles('Cache photo sans preuve intacte')
+                else:
+                    blob,meta=_fetch_file(session,titre,candidate)
+                    dest.write_bytes(blob);write(meta_path,meta)
+                family=candidate.get('famille_source') or titre
+                fingerprint=_phash(dest)
+                if family in used_origins or any((fingerprint^h).bit_count()<=4 for h in used_hashes):
+                    errors.append('page '+str(op['page'])+': photographie déjà utilisée, autre variante essayée')
+                    continue
+                proof={**meta,
+                    'page':op['page'],'role':candidate['role'],
+                    'pertinence':candidate['pertinence'],
+                    'epoque':candidate.get('epoque','actuelle'),
+                    'famille_source':family,'fact_id':fact['id'],
+                    'intention_editoriale':scen['intention']}
+                choices.append(dest);proofs.append(proof)
+                used_hashes.append(fingerprint);used_origins.add(family)
+                chosen=True
+                break
+            except (PhotosIndisponibles,requests.RequestException,UnidentifiedImageError,OSError,ValueError,KeyError) as exc:
+                errors.append(f'page {op.get("page")}: {titre} — {type(exc).__name__} {str(exc)[:95]}')
+        if not chosen:
+            errors.append('page '+str(op['page'])+': aucune alternative pertinente disponible')
     if len(choices)<min_required or not any(p['page']==1 for p in proofs):
         raise PhotosIndisponibles(
             f'Photos narratives insuffisantes pour {fact["id"]}: {len(choices)}/{min_required} '
