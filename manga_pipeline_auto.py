@@ -1,0 +1,164 @@
+"""Chaîne intégrée MANGA. AUCUNE modification des workflows BD.
+
+Collecte publique -> audit des catégories -> historique fiable -> couvertures
+ISBN -> 8 PNG selon la charte existante -> manifest strict -> livraison
+GitHub Actions/Buffer effectuée dans le workflow (jamais dans cette étape).
+"""
+from __future__ import annotations
+import argparse
+import datetime as dt
+import io
+import json
+import shutil
+from pathlib import Path
+from urllib.parse import urlparse
+import requests
+from PIL import Image
+
+from manga_sources_hebdo import collect, EvidenceError
+from manga_qualite import auditer,read_cache,write_json
+from sources.couvertures import download_cover,search_google_books,cover_path, GOOGLE_API
+from visual_top7 import render_top7
+
+ROOT=Path(__file__).resolve().parent
+COVER_API='https://covers.openlibrary.org/b/isbn/'
+HEADERS={'User-Agent':'AgentMangaFrance/2.0 (couvertures ISBN)' }
+
+
+def _cover_openlibrary(book:dict, folder:Path, *, getter=requests.get) -> tuple[bool,str]:
+    """Repli par ISBN exact : n'utilise jamais une recherche d'image par titre seul."""
+    ean=str(book.get('ean') or '')
+    if not ean.isdigit() or len(ean)!=13:
+        return False,'EAN-13 absent ou invalide'
+    url=COVER_API+ean+'-L.jpg?default=false'
+    try:
+        r=getter(url,timeout=18,headers=HEADERS,allow_redirects=True)
+        r.raise_for_status()
+        parsed=urlparse(getattr(r,'url',url))
+        if parsed.scheme!='https' or parsed.hostname not in ('covers.openlibrary.org',):
+            return False,'Hôte de couverture non autorisé'
+        if not r.headers.get('Content-Type','').startswith('image/') or len(r.content)>3_500_000:
+            return False,'Réponse Open Library non image ou trop lourde'
+        im=Image.open(io.BytesIO(r.content));im.load()
+        if im.width<180 or im.height<250 or im.height/im.width<1.16 or im.height/im.width>2.25:
+            return False,'Couverture Open Library non portrait / trop petite'
+        dest=cover_path(folder,book['titre']);dest.parent.mkdir(parents=True,exist_ok=True)
+        im.convert('RGB').save(dest,format='PNG')
+        return True,url
+    except (requests.RequestException,ValueError,OSError):
+        return False,'Couverture ISBN absente d’Open Library'
+
+
+def verifier_couvertures(data:dict, folder:Path, *, downloader=download_cover,
+                         google=search_google_books, ol=_cover_openlibrary) -> list[dict]:
+    folder=Path(folder);folder.mkdir(parents=True,exist_ok=True)
+    checks=[]
+    for row in data['titres']:
+        target=cover_path(folder,row['titre'])
+        if target.is_file():
+            checks.append({'rang':row['rang'],'ean':row.get('ean'), 'ok':True,'origine':'cache local'})
+            continue
+        selected={}
+        if row.get('couverture_candidate_url') and row.get('couverture_reference'):
+            selected[row['rang']]={'url':row['couverture_candidate_url'],'reference':row['couverture_reference']}
+        success,info=downloader(row,selected,folder)
+        if not success:
+            # La recherche par titre existante exige la correspondance exacte
+            # titre/tome, et ne force pas un candidat approximatif.
+            try:alt=google(row)
+            except Exception:alt=None
+            if alt:success,info=downloader(row,{row['rang']:alt},folder)
+        if not success:success,info=ol(row,folder)
+        checks.append({'rang':row['rang'],'ean':row.get('ean'),'ok':success,'origine':info})
+    return checks
+
+
+def compute_movements(data:dict, previous:dict | None) -> None:
+    """Ne calcule la variation que contre une semaine précédente également validée."""
+    for row in data['titres']:row['mouvement']='NON DOCUMENTÉ'
+    data['variations_verifiees']=False
+    if not previous or previous.get('certification')!='TOP7_EDISTAT_VERIFIE':return
+    try:
+        end=dt.date.fromisoformat(previous['fin_ventes'])
+        start=dt.date.fromisoformat(data['debut_ventes'])
+    except (ValueError,KeyError):return
+    if start != end+dt.timedelta(days=1):return
+    old={str(x.get('ean')):x['rang'] for x in previous.get('titres',[]) if x.get('ean')}
+    for book in data['titres']:
+        earlier=old.get(str(book['ean']))
+        if earlier is None:book['mouvement']='NOUVEAU'
+        else:
+            diff=earlier-book['rang']
+            book['mouvement']=(f'+{diff} PL.' if diff>0 else f'−{-diff} PL.' if diff<0 else 'STABLE')
+    data['variations_verifiees']=True
+
+
+def produire(*,root=ROOT, sortie=Path('sorties/manga_production'),
+             precedent=Path('manga_history/dernier_classement.json'),
+             cache=Path('manga_history/genres_ebooks.json'),
+             article_url=None, html_actualitte=None, html_bede=None, html_annuel=None,
+             resolver=None, covers=None) -> Path:
+    root=Path(root);sortie=Path(sortie)
+    previous=None
+    if Path(precedent).exists():
+        previous=json.loads(Path(precedent).read_text(encoding='utf8'))
+    dest=collect(root,sortie,article_url=article_url,actualitte_html=html_actualitte,
+                 bede_html=html_bede,annual_html=html_annuel,previous_file=None)
+    data=json.loads((dest/'classement_manga.json').read_text(encoding='utf8'))
+    proofs=json.loads((dest/'preuves_manga.json').read_text(encoding='utf8'))
+    kwargs={'cache':read_cache(cache)}
+    if resolver is not None:kwargs['resolver']=resolver
+    data,proofs,new_cache=auditer(data,proofs,**kwargs)
+    compute_movements(data,previous if data['certification']=='TOP7_EDISTAT_VERIFIE' else None)
+    write_json(dest/'classement_manga.json',data)
+    write_json(dest/'preuves_manga.json',proofs)
+    # Nous ne mettons pas en cache des réponses incertaines comme preuves finales.
+    write_json(dest/'cache_genre_a_conserver.json',new_cache)
+    results=covers(data,dest/'MANGA'/'couvertures') if covers else verifier_couvertures(data,dest/'MANGA'/'couvertures')
+    complete=all(x.get('ok') for x in results) and len(results)==7
+    verified=(data['certification']=='TOP7_EDISTAT_VERIFIE')
+    visual=render_top7(data,dest/'MANGA',dest/'MANGA'/'couvertures',use_watermark=not verified)
+    manifest=dest/'MANGA'/'post_manifest.json'
+    m=json.loads(manifest.read_text(encoding='utf8'))
+    # Strict gate indépendant du simple booléen retourné par le moteur de rendu.
+    m['certification_manga']=data['certification']
+    m['ready_to_stage']=bool(verified and complete and not visual['missing_covers'])
+    m['source_validated']=bool(verified)
+    manifest.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+    write_json(dest/'MANGA'/'AUDIT_COUVERTURES.json',{'controles':results})
+    status={
+       'categorie':'MANGA','edition':'MANGA_'+data['fin_ventes'],
+       'periode':[data['debut_ventes'],data['fin_ventes']],
+       'statut_ventes':data['certification'],
+       'genres_incertains':len(proofs['audit_genre']['indetermines']),
+       'mangas_rattrapes':len(proofs['audit_genre']['mangas_possiblement_omis']),
+       'couvertures':sum(bool(x.get('ok')) for x in results),
+       'pages':visual['pages'],
+       'pret_buffer':m['ready_to_stage'],
+       'actions':('CARROUSEL_PRET' if m['ready_to_stage'] else 'REVUE_AUTOMATIQUE_BLOQUEE'),
+    }
+    write_json(dest/'ETAT.json',status)
+    (dest/'RAPPORT.md').write_text(
+       '# Top 7 manga — '+data['fin_ventes']+'\n\n'
+       f'- Période : {data["debut_ventes"]} au {data["fin_ventes"]}\n'
+       f'- Contrôle des genres : **{data["certification"]}**\n'
+       f'- Livres non qualifiés avant le septième manga : {status["genres_incertains"]}\n'
+       f'- Couvertures : {status["couvertures"]}/7\n'
+       f'- Diapositives : {visual["pages"]}/8\n'
+       f'- Programmation automatique autorisée : **{status["pret_buffer"]}**\n\n'
+       'Un classement incomplet reste en aperçu avec filigrane. Les sources ne sont pas inventées.\n',encoding='utf8')
+    return dest
+
+
+def main():
+    p=argparse.ArgumentParser(description='Collecte, audit et carrousel Manga (BD inchangé)')
+    p.add_argument('--sortie',default='sorties/manga_production')
+    p.add_argument('--precedent',default='manga_history/dernier_classement.json')
+    p.add_argument('--cache',default='manga_history/genres_ebooks.json')
+    p.add_argument('--article-url')
+    args=p.parse_args()
+    dest=produire(root=ROOT,sortie=Path(args.sortie),precedent=Path(args.precedent),
+                 cache=Path(args.cache),article_url=args.article_url)
+    print((dest/'ETAT.json').read_text(encoding='utf8'))
+
+if __name__=='__main__':main()

@@ -308,6 +308,7 @@ def source_report(article_html,bede_html,annual_html='', *, root=Path('.'),sourc
     evidence={'source_principale':source_url,'date_palmares_bede':current['date_palmares'],
               'url_secondaire':BEDE,'periode_ventes':[start,end],
               'articles_dans_top200':len(books),'rangs_bede_trouves':len(current['lignes']),
+              'bede_lignes':current['lignes'],
               'mangas_reconnus_avant_septieme':len(top),
               'titres_anterieurs_sans_preuve_genre':unconfirmed,
               'sources_supplementaires':[
@@ -340,7 +341,7 @@ def collect(root, dest, *, article_url=None, actualitte_html=None,bede_html=None
     if bede_html is None:bede_html=get_html(BEDE)
     if annual_html is None:
         try:annual_html=get_html(BEDE_MANGA)
-        except requests.RequestException:annual_html=''
+        except (requests.RequestException,EvidenceError):annual_html=''
     previous=None
     if previous_file and Path(previous_file).is_file():
         previous=json.loads(Path(previous_file).read_text(encoding='utf8'))
