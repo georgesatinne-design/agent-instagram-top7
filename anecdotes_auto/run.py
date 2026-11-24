@@ -8,13 +8,14 @@ from zoneinfo import ZoneInfo
 from .catalogue import ROOT_REPO,STATE,CONFIG,bank,read,write,select,topic
 from .calendrier import PARIS,next_days,eligible,reserved_kind,target_date_time
 from .visuels import render,caption
+from .storytelling import editorial_eligible
 from .photos_reelles import resolve,PhotosIndisponibles
 from .buffer import Buffer,BufferError,is_top,is_anecdote,utc,parse
 
 PUBLIC=ROOT_REPO/'public_media'/'anecdotes_bd'
 REPORT=ROOT_REPO/'sorties'/'anecdotes_bd'
 REGISTRY=STATE/'programmes.json'
-VERSION_VISUELLE='PHOTOS_REELLES_V2_2026_11'
+VERSION_VISUELLE='BD_STORY_PHOTOS_V3_2026_11'
 
 def get_registry():
     registry=read(REGISTRY,{}) or {}
@@ -79,9 +80,11 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
         from .decouverte import discover
         try:results['collecte']=discover(now=now)
         except Exception as exc:results['erreurs'].append('COLLECTE: '+str(exc)[:250])
-    facts=bank();results['candidats']=len(facts)
+    all_facts=bank();facts=[f for f in all_facts if editorial_eligible(f)]
+    results['candidats']=len(all_facts)
+    results['creatifs_eligibles']=len(facts)
     registry=get_registry()
-    facts_by_id={fact['id']:fact for fact in facts}
+    facts_by_id={fact['id']:fact for fact in all_facts}
     dayposts={}
     for day in next_days(now):
         try:dayposts[day.isoformat()]=buffer.day(day)
@@ -100,24 +103,48 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
         key=day.isoformat();posts=dayposts[key]
         item=registry.get(key) or {}
         if item.get('etat')=='PROGRAMME' and item.get('version_visuelle')!=VERSION_VISUELLE:
-            # Remplacer proprement les anciennes anecdotes encore PROGRAMMÉES,
-            # sans créer un second post ni déplacer son heure.
+            # Un post ancien peut être remplacé par une anecdote mieux illustrable.
+            # Sécurité : seul l'identifiant connu + notre légende exacte autorisent editPost.
             same=[p for p in posts if p.get('id')==item.get('id_buffer') and
                   is_anecdote(p) and p.get('text','').strip()==item.get('texte_public','').strip()]
             if len(same)==1 and parse(same[0]['dueAt'])>now+dt.timedelta(minutes=35):
                 original=facts_by_id.get(item.get('fact_id'))
-                if original:
+                candidates=[]
+                if original:candidates.append(original)
+                # Si le sujet original n'a aucun visuel réel admissible, trouver
+                # une autre anecdote *prouvée* et illustrable, sans inventer d'image.
+                used_ids={r.get('fact_id') for d,r in registry.items()
+                          if d!=key and isinstance(r,dict) and r.get('etat') in ('EN_ATTENTE','PROGRAMME','EN_ATTENTE_MAJ')}
+                used_recent_topics={topic(facts_by_id[r.get('fact_id')]) for d,r in registry.items()
+                    if d!=key and isinstance(r,dict) and r.get('etat') in ('EN_ATTENTE','PROGRAMME','EN_ATTENTE_MAJ')
+                    and r.get('fact_id') in facts_by_id and abs((dt.date.fromisoformat(d)-day).days)<CONFIG.get('intervalle_sujet_jours',5)}
+                for f in facts:
+                    if (f['id'] not in used_ids and topic(f) not in used_recent_topics and
+                        (not original or f['id']!=original['id'])):
+                        candidates.append(f)
+                done=False;errors_local=[]
+                for f in candidates:
+                    if f['id'] in photos_indisponibles:continue
                     try:
-                        upgraded=stage_fact(original,day,repo,now)
+                        upgraded=stage_fact(f,day,repo,now)
                         upgraded.update({'etat':'EN_ATTENTE_MAJ','id_buffer':item['id_buffer'],
                             'due_at':same[0]['dueAt'],'ancien_texte_public':item['texte_public'],
+                            'ancien_fact_id':item.get('fact_id'),
                             'version_visuelle':VERSION_VISUELLE})
                         registry[key]=upgraded;results['plans'].append(key)
-                        results['jours'].append({'date':key,'resultat':'MISE_A_JOUR_VISUELLE_PREPAREE'})
+                        results['jours'].append({'date':key,'resultat':'MISE_A_JOUR_VISUELLE_PREPAREE',
+                            'sujet_initial':item.get('fact_id'),'sujet_retenu':f['id']})
+                        done=True;break
                     except (PhotosIndisponibles,ValueError) as exc:
-                        results['jours'].append({'date':key,'resultat':'ANCIEN_POST_CONSERVE',
-                                                'raison':str(exc)[:180]})
-                continue
+                        photos_indisponibles.add(f['id'])
+                        errors_local.append(f['id']+': '+str(exc)[:100])
+                if not done:
+                    results['jours'].append({'date':key,'resultat':'ANCIEN_POST_CONSERVE',
+                        'raison':'Aucun sujet illustrable vérifié : '+' ; '.join(errors_local[:3])[:220]})
+            else:
+                results['jours'].append({'date':key,'resultat':'POST_ANCIEN_NON_MODIFIABLE',
+                     'raison':'Post absent, texte différent ou horaire trop proche'})
+            continue
         if item.get('etat') in ('PROGRAMME','SUPPLANTE_PAR_TOP','EN_ATTENTE_MAJ'):
             results['jours'].append({'date':key,'resultat':'DEJA_TRAITE'});continue
         ok,reason=eligible(day,now,posts)

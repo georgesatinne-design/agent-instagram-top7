@@ -61,6 +61,32 @@
           "titre": "La bibliothèque du centre belge de la BD (1).jpg"
         }
       ]
+    },
+    "angouleme-": {
+      "theme": "Ville et patrimoine du festival d’Angoulême",
+      "photos": [
+        {
+          "titre": "Angoulême - 001.jpg",
+          "role": "photo_d_ambiance_actuelle"
+        },
+        {
+          "titre": "Angoulême - 007.jpg",
+          "role": "photo_d_ambiance_actuelle"
+        }
+      ]
+    },
+    "festival-": {
+      "theme": "Festival d’Angoulême (photographie contemporaine)",
+      "photos": [
+        {
+          "titre": "Alix Garin et Jean Cremers au festival international de la bande-dessinée d'Angoulême, 2023.jpg",
+          "role": "photo_contemporaine_pas_archive_1975"
+        },
+        {
+          "titre": "Angoulême - 001.jpg",
+          "role": "photo_d_ambiance_actuelle"
+        }
+      ]
     }
   }
 }

@@ -42,7 +42,13 @@ def _license(meta, titre, option):
 
 def _valid_image_url(url):
     parsed=urlparse(url)
-    return parsed.scheme=='https' and parsed.hostname in ('upload.wikimedia.org','upload.wikimedia.org.') and not parsed.username and not parsed.password
+    if parsed.scheme!='https' or parsed.username or parsed.password or parsed.port not in (None,443):
+        return False
+    if parsed.hostname=='upload.wikimedia.org':
+        return parsed.path.startswith('/wikipedia/')
+    if parsed.hostname=='commons.wikimedia.org':
+        return parsed.path.startswith('/wiki/Special:Redirect/file/') or parsed.path.startswith('/w/Special:Redirect/file/')
+    return False
 
 def _fetch_file(session,titre,option):
     if not re.fullmatch(r'[^<>\x00-\x1f]{6,200}\.(?:jpg|jpeg|png|webp)',titre,re.I):
@@ -59,10 +65,11 @@ def _fetch_file(session,titre,option):
         raise PhotosIndisponibles('Image non raster')
     licence=_license(inf.get('extmetadata') or {},titre,option)
     url=inf.get('thumburl') or inf.get('url') or ''
-    if not _valid_image_url(url):raise PhotosIndisponibles('URL média hors Wikimedia')
+    if not _valid_image_url(url):raise PhotosIndisponibles('URL média hors Wikimedia: domaine non approuvé')
     r=session.get(url,timeout=24,headers={'User-Agent':UA},stream=True)
     try:
         r.raise_for_status()
+        if not _valid_image_url(r.url):raise PhotosIndisponibles('Redirection média hors Wikimedia')
         if not r.headers.get('Content-Type','').lower().startswith('image/'):
             raise PhotosIndisponibles('Téléchargement non image')
         size=0;buffers=[]
@@ -112,6 +119,8 @@ def resolve(fact,*,session=None,cache=None):
             files.append(dest);proofs.append(meta)
         except (requests.RequestException,PhotosIndisponibles,ValueError,OSError,UnidentifiedImageError) as exc:
             errors.append(op['titre']+': '+str(exc)[:140])
-    if len(files)<2:
-        raise PhotosIndisponibles(f'Au moins 2 photos authentiques requises pour {groupe}; {len(files)} obtenue(s). '+ '; '.join(errors)[:300])
+    if len(files)<1:
+        raise PhotosIndisponibles(f'Au moins 1 photo authentique requise pour {groupe}; aucune obtenue. '+ '; '.join(errors)[:340])
+    # Une seule photographie réelle peut être exploitée de plusieurs façons : cadrages,
+    # zooms, diptyques et typographie, sans créer de faux visuels.
     return files,proofs
