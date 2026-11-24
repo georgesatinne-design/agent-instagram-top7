@@ -1,0 +1,160 @@
+name: Comics - Top 7 ventes France vers Buffer (automatique)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Recherche dès la mise à jour des classements, en heure de Paris.
+    # Les images partent dans Buffer pendant ce run, pas le jeudi à 18 h.
+    - cron: '27 8,14,20 * * *'
+      timezone: 'Europe/Paris'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: comics-top7-automatique
+  cancel-in-progress: false
+
+jobs:
+  comics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Récupérer le dépôt (aucun fichier BD ou MANGA modifié)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Installer les dépendances gratuites déjà utilisées
+        run: python -m pip install -r requirements.txt
+      - name: Tester tout le code comics sans envoi Buffer
+        run: python -m unittest discover -s tests -p 'test_comics_complet.py' -v
+      - name: Collecter, vérifier, fabriquer les 8 images et la légende comics
+        run: |
+          python comics_pipeline_auto.py --sortie sorties/comics_production \
+            --precedent comics_history/dernier_classement.json
+      - name: Examiner le résultat et la dernière période déjà envoyée
+        id: gate
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          from datetime import datetime,timedelta,timezone
+          folders=list(Path('sorties/comics_production').glob('*/ETAT.json'))
+          if len(folders)!=1:raise SystemExit('Dossier comics unique nécessaire')
+          state=json.loads(folders[0].read_text(encoding='utf8'))
+          edition=state.get('edition','')
+          valid=bool(state.get('pret_buffer')) and edition.startswith('COMICS_') and '..' not in edition
+          prior=Path('comics_buffer_receipts')/(edition+'.json') if valid else None
+          if prior and prior.exists():
+              receipt=json.loads(prior.read_text(encoding='utf8'))
+              if receipt.get('statut')!='POST_PROGRAMME':raise SystemExit('Reçu comics inattendu')
+              due=datetime.fromisoformat(receipt['date_programmee_utc'].replace('Z','+00:00'))
+              if due<=datetime.now(timezone.utc)+timedelta(minutes=10):
+                  valid=False # déjà publié / imminent, ne pas refaire la même semaine
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf8') as f:
+              f.write('edition='+edition+'\n')
+              f.write('ready='+str(valid).lower()+'\n')
+          print(json.dumps(state,indent=2,ensure_ascii=False))
+          PY
+      - name: Sauvegarder uniquement l'historique comics
+        if: steps.gate.outputs.ready == 'true'
+        run: |
+          python - <<'PY'
+          import json,shutil
+          from pathlib import Path
+          folders=list(Path('sorties/comics_production').glob('COMICS_*'))
+          if len(folders)==0:
+              print('Pas de Top 7 valide cette fois ; historique inchangé')
+              raise SystemExit(0)
+          if len(folders)!=1:raise SystemExit('Plusieurs éditions comics détectées')
+          folder=folders[0];current=json.loads((folder/'classement_comics.json').read_text(encoding='utf8'))
+          history=Path('comics_history/dernier_classement.json');history.parent.mkdir(exist_ok=True)
+          prev=json.loads(history.read_text(encoding='utf8')) if history.exists() else {}
+          if prev.get('semaine_reference',[''])[0]<=current.get('semaine_reference',[''])[0]:
+              shutil.copy2(folder/'classement_comics.json',history)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add comics_history
+          if [ -n "$(git diff --cached --name-only)" ]; then
+            git commit -m 'Comics - historique ventes et mouvements'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Déposer les huit images sur une URL permanente publique
+        if: steps.gate.outputs.ready == 'true'
+        id: images
+        env:
+          EDITION: ${{ steps.gate.outputs.edition }}
+          PRIVATE_REPO: ${{ github.event.repository.private }}
+        run: |
+          if [ "$PRIVATE_REPO" = "true" ]; then
+            echo 'GitHub privé : impossible de servir les images à Buffer via raw.githubusercontent.com'
+            exit 1
+          fi
+          python - <<'PY'
+          import hashlib,json,os,shutil
+          from pathlib import Path
+          edition=os.environ['EDITION']
+          folder=Path('sorties/comics_production')/edition/'COMICS'
+          m=json.loads((folder/'post_manifest.json').read_text(encoding='utf8'))
+          required=[f'{i:02d}_rang_{8-i}.png' for i in range(1,8)]+['08_recapitulatif.png']
+          if not m.get('ready_to_stage') or m['pages']!=required:
+              raise SystemExit('Dossier comics non certifié ou images hors ordre')
+          h=hashlib.sha256()
+          for name in required:h.update((folder/name).read_bytes())
+          h.update((folder/'legende_instagram.txt').read_bytes())
+          revision=h.hexdigest()[:16]
+          dest=Path('public_media')/edition/('COMICS_'+revision)
+          dest.mkdir(parents=True,exist_ok=True)
+          for name in required:shutil.copy2(folder/name,dest/name)
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf8') as f:f.write('revision='+revision+'\n')
+          print('Images :',dest)
+          PY
+          git add public_media
+          if [ -n "$(git diff --cached --name-only)" ]; then
+            git commit -m "Comics - visuels ${EDITION}"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Envoyer le carrousel à Buffer dès disponibilité
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          EDITION: ${{ steps.gate.outputs.edition }}
+          REVISION: ${{ steps.images.outputs.revision }}
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [ -z "$BUFFER_API_KEY" ] || [ -z "$BUFFER_CHANNEL_ID" ]; then
+            echo 'Clé Buffer ou identifiant de canal absent'
+            exit 1
+          fi
+          BASE="https://raw.githubusercontent.com/${REPO}/main/public_media/${EDITION}/COMICS_${REVISION}/"
+          python comics_buffer_auto.py --send \
+            --folder "sorties/comics_production/${EDITION}/COMICS" \
+            --public-base-url "$BASE" \
+            --previous-receipt "comics_buffer_receipts/${EDITION}.json"
+          mkdir -p comics_buffer_receipts
+          cp "sorties/comics_production/${EDITION}/COMICS/RECU_BUFFER.json" \
+            "comics_buffer_receipts/${EDITION}.json"
+          git add comics_buffer_receipts
+          if [ -n "$(git diff --cached --name-only)" ]; then
+            git commit -m "Comics - reçu Buffer ${EDITION}"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Conserver le diagnostic privé et les visuels
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dossier-comics-complet
+          path: sorties/comics_production/
+          if-no-files-found: warn
+          retention-days: 30
