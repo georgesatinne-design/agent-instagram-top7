@@ -86,7 +86,7 @@
   "2026-12-02": {
     "fact_id": "lucky-luke-1946",
     "sujet": "lucky",
-    "etat": "EN_ATTENTE",
+    "etat": "PROGRAMME",
     "date": "2026-12-02",
     "due_at": "2026-12-02T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-12-02/lucky-luke-1946_2a437ccf824d1d728e",
@@ -100,6 +100,9 @@
     ],
     "revision": "2a437ccf824d1d728e",
     "date_preparation": "2026-11-24T10:03:22.068394+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLucky Luke : première aventure\n\nLa première aventure de Lucky Luke s’intitule Arizona 1880.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD"
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nLucky Luke : première aventure\n\nLa première aventure de Lucky Luke s’intitule Arizona 1880.\n\nTu connaissais cette histoire ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "id_buffer": "6b0560fbe860c84f09c8889e",
+    "date_confirmation": "2026-11-24T10:03:36.471052+00:00",
+    "version_visuelle": "PHOTOS_REELLES_V2_2026_11"
   }
 }
