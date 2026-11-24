@@ -17,6 +17,7 @@ from PIL import Image
 
 from manga_sources_hebdo import collect, EvidenceError
 from manga_qualite import auditer,read_cache,write_json
+from manga_score_publication import evaluer
 from sources.couvertures import download_cover,search_google_books,cover_path, GOOGLE_API
 from visual_top7 import render_top7
 
@@ -77,7 +78,8 @@ def compute_movements(data:dict, previous:dict | None) -> None:
     """Ne calcule la variation que contre une semaine précédente également validée."""
     for row in data['titres']:row['mouvement']='NON DOCUMENTÉ'
     data['variations_verifiees']=False
-    if not previous or previous.get('certification')!='TOP7_EDISTAT_VERIFIE':return
+    if not previous or (previous.get('certification')!='TOP7_EDISTAT_VERIFIE'
+                       and not (previous.get('qualite_editoriale') or {}).get('autorise_publication')):return
     try:
         end=dt.date.fromisoformat(previous['fin_ventes'])
         start=dt.date.fromisoformat(data['debut_ventes'])
@@ -109,23 +111,68 @@ def produire(*,root=ROOT, sortie=Path('sorties/manga_production'),
     kwargs={'cache':read_cache(cache)}
     if resolver is not None:kwargs['resolver']=resolver
     data,proofs,new_cache=auditer(data,proofs,**kwargs)
-    compute_movements(data,previous if data['certification']=='TOP7_EDISTAT_VERIFIE' else None)
-    write_json(dest/'classement_manga.json',data)
+    # L'audit conserve ses incertitudes : il n'est JAMAIS converti en « certifié ».
     write_json(dest/'preuves_manga.json',proofs)
-    # Nous ne mettons pas en cache des réponses incertaines comme preuves finales.
     write_json(dest/'cache_genre_a_conserver.json',new_cache)
     results=covers(data,dest/'MANGA'/'couvertures') if covers else verifier_couvertures(data,dest/'MANGA'/'couvertures')
-    complete=all(x.get('ok') for x in results) and len(results)==7
-    verified=(data['certification']=='TOP7_EDISTAT_VERIFIE')
-    visual=render_top7(data,dest/'MANGA',dest/'MANGA'/'couvertures',use_watermark=not verified)
-    manifest=dest/'MANGA'/'post_manifest.json'
+    score=evaluer(data,proofs,results)
+    data['qualite_editoriale']=score
+    compute_movements(data,previous if score['autorise_publication'] else None)
+    write_json(dest/'classement_manga.json',data)
+    # Le filigrane « PAS POUR PUBLICATION » ne peut jamais être diffusé vers Buffer.
+    visual=render_top7(data,dest/'MANGA',dest/'MANGA'/'couvertures',
+                         use_watermark=not score['autorise_publication'])
+    folder=dest/'MANGA'
+    manifest=folder/'post_manifest.json'
     m=json.loads(manifest.read_text(encoding='utf8'))
-    # Strict gate indépendant du simple booléen retourné par le moteur de rendu.
     m['certification_manga']=data['certification']
-    m['ready_to_stage']=bool(verified and complete and not visual['missing_covers'])
-    m['source_validated']=bool(verified)
+    m['qualite_editoriale']=score
+    m['mode_publication']=score['mode']
+    m['ready_to_stage']=bool(score['autorise_publication'] and not visual['missing_covers'])
+    # « source_validated » signifie ici que le palmarès source est vérifié,
+    # et non que tous les genres des 200 ouvrages ont été certifiés.
+    m['source_validated']=score['source_ok']
+    if m['ready_to_stage'] and score['mode']=='RECONSTITUE':
+        # Ne modifier que les images MANGA et non la fonction de rendu commune aux BD.
+        from PIL import ImageDraw
+        from visual_top7 import font as _font
+        for filename in m['pages']:
+            path=folder/filename
+            im=Image.open(path).convert('RGB')
+            d=ImageDraw.Draw(im)
+            d.rounded_rectangle((480,8,1060,47),radius=8,fill='#171717')
+            d.text((770,27),'TOP RECONSTITUÉ • EDISTAT',font=_font(17,True),fill='#FFFFFF',anchor='mm')
+            im.save(path,format='PNG',optimize=True)
+        # Le premier paragraphe reste reconnaissable par le contrôle Buffer.
+        caption_path=folder/m['caption_file']
+        caption=caption_path.read_text(encoding='utf8')
+        caption=caption.replace('📚 TOP 7 MANGA — Les meilleures ventes',
+            '📚 TOP 7 MANGA — Classement hebdomadaire reconstitué',1)
+        reserve=('📊 Sélection reconstituée à partir du Top 200 Edistat/ActuaLitté. '
+                 'La classification de certains livres reste incertaine : ce Top 7 peut donc être incomplet.')
+        parties=caption.split('\n\n',1)
+        if len(parties)!=2:raise ValueError('Légende Instagram sans en-tête structuré')
+        caption=parties[0]+'\n'+reserve+'\n\n'+parties[1]
+        caption_path.write_text(caption,encoding='utf8')
+        # Réactualiser la planche-contact après l'étiquetage des huit images.
+        preview=Image.new('RGB',(4*282,2*364),'#e6e3ec')
+        for i,name in enumerate(m['pages']):
+            with Image.open(folder/name) as slide:
+                snap=slide.convert('RGB');snap.thumbnail((270,338))
+                preview.paste(snap,((i%4)*282+6,(i//4)*364+6))
+        preview.save(folder/'apercu.png')
     manifest.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
-    write_json(dest/'MANGA'/'AUDIT_COUVERTURES.json',{'controles':results})
+    write_json(folder/'AUDIT_COUVERTURES.json',{'controles':results})
+    write_json(dest/'SCORE_PUBLICATION.json',score)
+    (folder/'A_VALIDER.md').write_text(
+        '# MANGA — décision éditoriale\n\n'
+        +f'- Publication Buffer autorisée : **{m["ready_to_stage"]}**\n'
+        +f'- Score de contrôle : **{score["valeur"]}/100** (seuil {score["seuil"]})\n'
+        +f'- Mode : **{score["mode"]}**\n'
+        +f'- Incertitudes bibliographiques : **{score["ouvrages_avant_top7_non_qualifies"]}**\n'
+        +'- Ceci n’est PAS une probabilité statistique de classement exact.\n'
+        +'- Si le post est accepté par Buffer, il est programmé sans approbation manuelle.\n',
+        encoding='utf8')
     status={
        'categorie':'MANGA','edition':'MANGA_'+data['fin_ventes'],
        'periode':[data['debut_ventes'],data['fin_ventes']],
@@ -135,6 +182,9 @@ def produire(*,root=ROOT, sortie=Path('sorties/manga_production'),
        'couvertures':sum(bool(x.get('ok')) for x in results),
        'pages':visual['pages'],
        'pret_buffer':m['ready_to_stage'],
+       'score_qualite_editoriale':score['valeur'],
+       'seuil_publication':score['seuil'],
+       'mode_publication':score['mode'],
        'actions':('CARROUSEL_PRET' if m['ready_to_stage'] else 'REVUE_AUTOMATIQUE_BLOQUEE'),
     }
     write_json(dest/'ETAT.json',status)
@@ -145,8 +195,10 @@ def produire(*,root=ROOT, sortie=Path('sorties/manga_production'),
        f'- Livres non qualifiés avant le septième manga : {status["genres_incertains"]}\n'
        f'- Couvertures : {status["couvertures"]}/7\n'
        f'- Diapositives : {visual["pages"]}/8\n'
+       f'- Score de contrôle éditorial : **{score["valeur"]}/100** (seuil {score["seuil"]})\n'
+       f'- Mode de publication : **{score["mode"]}**\n'
        f'- Programmation automatique autorisée : **{status["pret_buffer"]}**\n\n'
-       'Un classement incomplet reste en aperçu avec filigrane. Les sources ne sont pas inventées.\n',encoding='utf8')
+       'L’indice ne mesure PAS une probabilité statistique. Un Top reconstitué est clairement identifié, et les incertitudes sont conservées.\n',encoding='utf8')
     return dest
 
 

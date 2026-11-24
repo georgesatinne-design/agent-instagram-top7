@@ -15,6 +15,7 @@ from urllib.parse import urlparse,quote
 from zoneinfo import ZoneInfo
 import requests
 from PIL import Image
+from manga_score_publication import evaluer, SEUIL
 
 # Réutilisation des fonctions GraphQL testées du projet BD, sans modifier leur code.
 from buffer_client import (_graphql, _mutation_result, _parse_due,
@@ -54,10 +55,22 @@ def construire(folder,base_url,channel_id,*,now=None):
     folder=Path(folder)
     m=json.loads((folder/'post_manifest.json').read_text(encoding='utf8'))
     data=json.loads((folder.parent/'classement_manga.json').read_text(encoding='utf8'))
-    if m.get('category')!='MANGA' or m.get('certification_manga')!='TOP7_EDISTAT_VERIFIE' or not m.get('ready_to_stage'):
+    if m.get('category')!='MANGA' or not m.get('ready_to_stage'):
         raise ValueError('Classement manga pas suffisamment vérifié pour programmation')
-    if data.get('certification')!='TOP7_EDISTAT_VERIFIE' or len(data.get('titres',[]))!=7:
-        raise ValueError('Classement manga source non validé')
+    if len(data.get('titres',[]))!=7:
+        raise ValueError('Sept mangas exacts requis')
+    # Ne jamais se fier au seul booléen écrit dans le manifest : recomposer
+    # le score depuis les preuves et l'audit des couvertures générés en amont.
+    preuves=json.loads((folder.parent/'preuves_manga.json').read_text(encoding='utf8'))
+    aud_couv=json.loads((folder/'AUDIT_COUVERTURES.json').read_text(encoding='utf8'))
+    quality=evaluer(data,preuves,aud_couv.get('controles') or [])
+    stored=m.get('qualite_editoriale') or {}
+    if not quality['autorise_publication'] or quality['valeur']<SEUIL:
+        raise ValueError('Score documentaire inférieur à 70/100 : aucun envoi Buffer')
+    if quality['valeur']!=stored.get('valeur') or quality['mode']!=m.get('mode_publication'):
+        raise ValueError('Score manga incohérent entre source et manifest')
+    if data.get('certification')!='TOP7_EDISTAT_VERIFIE' and quality['mode']!='RECONSTITUE':
+        raise ValueError('Top manga reconstruit sans étiquette de prudence')
     pages=m.get('pages') or []
     if pages!=[f'{i:02d}_rang_{8-i}.png' for i in range(1,8)]+['08_recapitulatif.png']:
         raise ValueError('Ordre du Top 7 incorrect')
@@ -72,6 +85,8 @@ def construire(folder,base_url,channel_id,*,now=None):
         media.append({'image':{'url':base_url+quote(name)}})
     caption=(folder/m['caption_file']).read_text(encoding='utf8').strip()
     if not MANGA_HEADER.match(caption) or len(caption)>2200:raise ValueError('Légende manga absente/incorrecte')
+    if quality['mode']=='RECONSTITUE' and ('reconstitué' not in caption.lower() or 'incompl' not in caption.lower()):
+        raise ValueError('Mention de reconstitution et incertitude obligatoires dans la légende')
     expected_date=dt.date.fromisoformat(data['fin_ventes'])
     if date_periode_captation(caption)!=expected_date:
         raise ValueError('Période de ventes différente entre données et légende')
