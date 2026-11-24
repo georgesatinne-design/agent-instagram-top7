@@ -10,6 +10,11 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -17,35 +22,79 @@
     "verifie_le": "2026-11-24"
   },
   "9782889880003": {
-    "statut": "INCERTAIN",
-    "raison": "Catégorie bibliographique inconnue",
+    "statut": "NON_MANGA",
+    "raison": "Genre non-manga confirmé via ISBN",
     "sources": [
       {
-        "statut": "INCERTAIN",
-        "raison": "ISBN exact non trouvé ou service indisponible",
-        "source": "Google Books ISBN"
+        "statut": "NON_MANGA",
+        "raison": "Rubrique du catalogue Bédé.fr + titre et collection concordants",
+        "source": "Bédé.fr / type de couverture",
+        "url": "https://cdn.bede.fr/box/208x285/media/albums/69600.jpg?v2-1786890955"
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Catégorie bibliographique inconnue",
+        "sources": [
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN exact non trouvé ou service indisponible",
+            "source": "Google Books ISBN"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "aucune catégorie suffisamment discriminante",
+            "categories": [],
+            "titres_catalogue": [
+              "Saint Lucky Luke"
+            ],
+            "source": "BnF catalogue général SRU",
+            "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782889880003"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN absent",
+            "source": "Open Library"
+          }
+        ]
       }
     ],
     "verifie_le": "2026-11-24"
   },
   "9782808513821": {
-    "statut": "INCERTAIN",
-    "raison": "Catégorie bibliographique inconnue",
+    "statut": "NON_MANGA",
+    "raison": "Genre non-manga confirmé via ISBN",
     "sources": [
       {
-        "statut": "INCERTAIN",
-        "raison": "ISBN exact non trouvé ou service indisponible",
-        "source": "Google Books ISBN"
+        "statut": "NON_MANGA",
+        "raison": "Rubrique du catalogue Bédé.fr + titre et collection concordants",
+        "source": "Bédé.fr / type de couverture",
+        "url": "https://cdn.bede.fr/box/208x285/media/albums/67703.jpg?v2-1783001991"
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Catégorie bibliographique inconnue",
+        "sources": [
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN exact non trouvé ou service indisponible",
+            "source": "Google Books ISBN"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "aucune catégorie suffisamment discriminante",
+            "categories": [],
+            "titres_catalogue": [
+              "Gaston : des boum et des paf. 23"
+            ],
+            "source": "BnF catalogue général SRU",
+            "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782808513821"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN absent",
+            "source": "Open Library"
+          }
+        ]
       }
     ],
     "verifie_le": "2026-11-24"
@@ -58,6 +107,11 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
       },
       {
         "statut": "INCERTAIN",
@@ -78,6 +132,16 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Le Casse du siècle"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782213733135"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -92,6 +156,11 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
       },
       {
         "statut": "INCERTAIN",
@@ -112,6 +181,11 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -119,18 +193,40 @@
     "verifie_le": "2026-11-24"
   },
   "9782870973400": {
-    "statut": "INCERTAIN",
-    "raison": "Catégorie bibliographique inconnue",
+    "statut": "NON_MANGA",
+    "raison": "Genre non-manga confirmé via ISBN",
     "sources": [
       {
-        "statut": "INCERTAIN",
-        "raison": "ISBN exact non trouvé ou service indisponible",
-        "source": "Google Books ISBN"
+        "statut": "NON_MANGA",
+        "raison": "Rubrique du catalogue Bédé.fr + titre et collection concordants",
+        "source": "Bédé.fr / type de couverture",
+        "url": "https://cdn.bede.fr/box/208x285/media/albums/69872.jpg?v2-1788468186"
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Catégorie bibliographique inconnue",
+        "sources": [
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN exact non trouvé ou service indisponible",
+            "source": "Google Books ISBN"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "aucune catégorie suffisamment discriminante",
+            "categories": [],
+            "titres_catalogue": [
+              "Affaires classées"
+            ],
+            "source": "BnF catalogue général SRU",
+            "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782870973400"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN absent",
+            "source": "Open Library"
+          }
+        ]
       }
     ],
     "verifie_le": "2026-11-24"
@@ -143,6 +239,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Le boyfriend"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782290422632"
       },
       {
         "statut": "INCERTAIN",
@@ -163,6 +269,16 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Gouverner"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782213736495"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -177,6 +293,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Le palais : roman / François-Henri Désérable"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782073159212"
       },
       {
         "statut": "INCERTAIN",
@@ -197,6 +323,16 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Chère Debbie"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782824624570"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -211,6 +347,11 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
       },
       {
         "statut": "INCERTAIN",
@@ -233,6 +374,16 @@
         "statut": "INCERTAIN",
         "raison": "aucune catégorie suffisamment discriminante",
         "categories": [],
+        "titres_catalogue": [
+          "Morsures : roman / Maxime Chattam"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782226470102"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
         "source": "Open Library ISBN",
         "url": "http://openlibrary.org/books/OL62699050M/Morsures"
       }
@@ -240,18 +391,40 @@
     "verifie_le": "2026-11-24"
   },
   "9782505142676": {
-    "statut": "INCERTAIN",
-    "raison": "Catégorie bibliographique inconnue",
+    "statut": "NON_MANGA",
+    "raison": "Genre non-manga confirmé via ISBN",
     "sources": [
       {
-        "statut": "INCERTAIN",
-        "raison": "ISBN exact non trouvé ou service indisponible",
-        "source": "Google Books ISBN"
+        "statut": "NON_MANGA",
+        "raison": "Rubrique du catalogue Bédé.fr + titre et collection concordants",
+        "source": "Bédé.fr / type de couverture",
+        "url": "https://cdn.bede.fr/box/208x285/media/albums/69866.jpg?v2-1788468084"
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Catégorie bibliographique inconnue",
+        "sources": [
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN exact non trouvé ou service indisponible",
+            "source": "Google Books ISBN"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "aucune catégorie suffisamment discriminante",
+            "categories": [],
+            "titres_catalogue": [
+              "Les affreux de la passion"
+            ],
+            "source": "BnF catalogue général SRU",
+            "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782505142676"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN absent",
+            "source": "Open Library"
+          }
+        ]
       }
     ],
     "verifie_le": "2026-11-24"
@@ -267,6 +440,16 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Le RN contre les français"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782228942942"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -274,18 +457,35 @@
     "verifie_le": "2026-11-24"
   },
   "9782494678828": {
-    "statut": "INCERTAIN",
-    "raison": "Catégorie bibliographique inconnue",
+    "statut": "NON_MANGA",
+    "raison": "Genre non-manga confirmé via ISBN",
     "sources": [
       {
-        "statut": "INCERTAIN",
-        "raison": "ISBN exact non trouvé ou service indisponible",
-        "source": "Google Books ISBN"
+        "statut": "NON_MANGA",
+        "raison": "Rubrique du catalogue Bédé.fr + titre et collection concordants",
+        "source": "Bédé.fr / type de couverture",
+        "url": "https://cdn.bede.fr/box/208x285/media/albums/70490.jpg?v2-1792134001"
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Catégorie bibliographique inconnue",
+        "sources": [
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN exact non trouvé ou service indisponible",
+            "source": "Google Books ISBN"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "Notice BnF absente ou genre indéterminé",
+            "source": "BnF catalogue général SRU"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN absent",
+            "source": "Open Library"
+          }
+        ]
       }
     ],
     "verifie_le": "2026-11-24"
@@ -298,6 +498,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Le fondateur"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782073170651"
       },
       {
         "statut": "INCERTAIN",
@@ -318,6 +528,16 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "La solitude des professeurs est infinie : roman / Yannick Haenel"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782073161925"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -332,6 +552,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Orlando"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782385295622"
       },
       {
         "statut": "INCERTAIN",
@@ -352,6 +582,16 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Supermad / C. S. Quill"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782755688740"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -366,6 +606,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Le dîner : une aventure dont vous êtes le héros"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782824624488"
       },
       {
         "statut": "INCERTAIN",
@@ -386,6 +636,16 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Les renaissances"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782266355490"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -400,6 +660,11 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
       },
       {
         "statut": "INCERTAIN",
@@ -420,6 +685,11 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -427,18 +697,35 @@
     "verifie_le": "2026-11-24"
   },
   "9782808218504": {
-    "statut": "INCERTAIN",
-    "raison": "Catégorie bibliographique inconnue",
+    "statut": "NON_MANGA",
+    "raison": "Genre non-manga confirmé via ISBN",
     "sources": [
       {
-        "statut": "INCERTAIN",
-        "raison": "ISBN exact non trouvé ou service indisponible",
-        "source": "Google Books ISBN"
+        "statut": "NON_MANGA",
+        "raison": "Rubrique du catalogue Bédé.fr + titre et collection concordants",
+        "source": "Bédé.fr / type de couverture",
+        "url": "https://cdn.bede.fr/box/208x285/media/albums/69425.jpg?v2-1785395278"
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Catégorie bibliographique inconnue",
+        "sources": [
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN exact non trouvé ou service indisponible",
+            "source": "Google Books ISBN"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "Notice BnF absente ou genre indéterminé",
+            "source": "BnF catalogue général SRU"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN absent",
+            "source": "Open Library"
+          }
+        ]
       }
     ],
     "verifie_le": "2026-11-24"
@@ -451,6 +738,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Rappelle-toi / Harlan Coben ; traduit de l'anglais (États-Unis) par Daphné Bernard"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782266359900"
       },
       {
         "statut": "INCERTAIN",
@@ -471,6 +768,11 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -485,6 +787,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Résurrection : le retour de la France éternelle"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782213735016"
       },
       {
         "statut": "INCERTAIN",
@@ -505,6 +817,16 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Le jour où Rose a disparu"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9791033929109"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -512,18 +834,40 @@
     "verifie_le": "2026-11-24"
   },
   "9791036396526": {
-    "statut": "INCERTAIN",
-    "raison": "Catégorie bibliographique inconnue",
+    "statut": "NON_MANGA",
+    "raison": "Genre non-manga confirmé via ISBN",
     "sources": [
       {
-        "statut": "INCERTAIN",
-        "raison": "ISBN exact non trouvé ou service indisponible",
-        "source": "Google Books ISBN"
+        "statut": "NON_MANGA",
+        "raison": "Rubrique du catalogue Bédé.fr + titre et collection concordants",
+        "source": "Bédé.fr / type de couverture",
+        "url": "https://cdn.bede.fr/box/208x285/media/albums/71267.jpg?v2-1794556806"
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Catégorie bibliographique inconnue",
+        "sources": [
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN exact non trouvé ou service indisponible",
+            "source": "Google Books ISBN"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "aucune catégorie suffisamment discriminante",
+            "categories": [],
+            "titres_catalogue": [
+              "Au pays du poisson cru"
+            ],
+            "source": "BnF catalogue général SRU",
+            "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9791036396526"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN absent",
+            "source": "Open Library"
+          }
+        ]
       }
     ],
     "verifie_le": "2026-11-24"
@@ -536,6 +880,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Lou ! Sonata. 3"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782344058817"
       },
       {
         "statut": "INCERTAIN",
@@ -556,6 +910,11 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -570,6 +929,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Les Evadées. partie 1"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782221243626"
       },
       {
         "statut": "INCERTAIN",
@@ -590,6 +959,11 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -597,18 +971,35 @@
     "verifie_le": "2026-11-24"
   },
   "9782203296602": {
-    "statut": "INCERTAIN",
-    "raison": "Catégorie bibliographique inconnue",
+    "statut": "NON_MANGA",
+    "raison": "Genre non-manga confirmé via ISBN",
     "sources": [
       {
-        "statut": "INCERTAIN",
-        "raison": "ISBN exact non trouvé ou service indisponible",
-        "source": "Google Books ISBN"
+        "statut": "NON_MANGA",
+        "raison": "Rubrique du catalogue Bédé.fr + titre et collection concordants",
+        "source": "Bédé.fr / type de couverture",
+        "url": "https://cdn.bede.fr/box/208x285/media/albums/70204.jpg?v2-1792209030"
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Catégorie bibliographique inconnue",
+        "sources": [
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN exact non trouvé ou service indisponible",
+            "source": "Google Books ISBN"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "Notice BnF absente ou genre indéterminé",
+            "source": "BnF catalogue général SRU"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN absent",
+            "source": "Open Library"
+          }
+        ]
       }
     ],
     "verifie_le": "2026-11-24"
@@ -621,6 +1012,11 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
       },
       {
         "statut": "INCERTAIN",
@@ -641,6 +1037,16 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "La pleureuse (1re édition) Camilla Läckberg ; roman traduit du suédois par Susanne Juul et Andreas Saint-Bonnet"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782330226251"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -655,6 +1061,11 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
       },
       {
         "statut": "INCERTAIN",
@@ -675,6 +1086,16 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Tokyorama"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782226480811"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -682,18 +1103,40 @@
     "verifie_le": "2026-11-24"
   },
   "9782505127444": {
-    "statut": "INCERTAIN",
-    "raison": "Catégorie bibliographique inconnue",
+    "statut": "NON_MANGA",
+    "raison": "Genre non-manga confirmé via ISBN",
     "sources": [
       {
-        "statut": "INCERTAIN",
-        "raison": "ISBN exact non trouvé ou service indisponible",
-        "source": "Google Books ISBN"
+        "statut": "NON_MANGA",
+        "raison": "Rubrique du catalogue Bédé.fr + titre et collection concordants",
+        "source": "Bédé.fr / type de couverture",
+        "url": "https://cdn.bede.fr/box/208x285/media/albums/69911.jpg?v2-1789540993"
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Catégorie bibliographique inconnue",
+        "sources": [
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN exact non trouvé ou service indisponible",
+            "source": "Google Books ISBN"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "aucune catégorie suffisamment discriminante",
+            "categories": [],
+            "titres_catalogue": [
+              "A l'ombre de Mithra"
+            ],
+            "source": "BnF catalogue général SRU",
+            "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782505127444"
+          },
+          {
+            "statut": "INCERTAIN",
+            "raison": "ISBN absent",
+            "source": "Open Library"
+          }
+        ]
       }
     ],
     "verifie_le": "2026-11-24"
@@ -706,6 +1149,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Palestine errante"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782358723374"
       },
       {
         "statut": "INCERTAIN",
@@ -726,6 +1179,16 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "A la sauce Marinade !"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9791041117956"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -740,6 +1203,11 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
       },
       {
         "statut": "INCERTAIN",
@@ -764,6 +1232,16 @@
         "statut": "INCERTAIN",
         "raison": "aucune catégorie suffisamment discriminante",
         "categories": [],
+        "titres_catalogue": [
+          "Réussir à l'ère des crises : un plan robuste pour l'économie française"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782415016722"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
         "source": "Open Library ISBN",
         "url": "http://openlibrary.org/books/OL62697396M/Réussir_à_l'ère_des_crises"
       }
@@ -778,6 +1256,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Brume - Tome 05 : La Cité d'Ys"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782344074398"
       },
       {
         "statut": "INCERTAIN",
@@ -798,6 +1286,19 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [
+          "Extrême droite -- France -- 2001-2025",
+          "Résistance politique -- France -- 2001-2025"
+        ],
+        "titres_catalogue": [
+          "Résister (Nouvelle éd. revue et enrichie) Salomé Saqué"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782228940627"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -812,6 +1313,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Tata"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782253263500"
       },
       {
         "statut": "INCERTAIN",
@@ -832,6 +1343,11 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -846,6 +1362,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Nous aussi / Anne Godard"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782330225575"
       },
       {
         "statut": "INCERTAIN",
@@ -866,6 +1392,16 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Retour à Folegandros"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782749962795"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -880,6 +1416,11 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
       },
       {
         "statut": "INCERTAIN",
@@ -902,6 +1443,16 @@
         "statut": "INCERTAIN",
         "raison": "aucune catégorie suffisamment discriminante",
         "categories": [],
+        "titres_catalogue": [
+          "Changer l'eau des fleurs : roman / Valérie Perrin"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782253238027"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
         "source": "Open Library ISBN",
         "url": "http://openlibrary.org/books/OL38575340M/Changer_l'eau_des_fleurs"
       }
@@ -919,6 +1470,16 @@
       },
       {
         "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "La Prof"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782290422649"
+      },
+      {
+        "statut": "INCERTAIN",
         "raison": "ISBN absent",
         "source": "Open Library"
       }
@@ -933,6 +1494,16 @@
         "statut": "INCERTAIN",
         "raison": "ISBN exact non trouvé ou service indisponible",
         "source": "Google Books ISBN"
+      },
+      {
+        "statut": "INCERTAIN",
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Bookboyfriend / C. S. Quill"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782755688757"
       },
       {
         "statut": "INCERTAIN",
