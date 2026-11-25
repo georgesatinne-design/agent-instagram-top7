@@ -132,8 +132,13 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "Notice BnF absente ou genre indéterminé",
-        "source": "BnF catalogue général SRU"
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Le Casse du siècle"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782213733135"
       },
       {
         "statut": "INCERTAIN",
@@ -237,8 +242,13 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "Notice BnF absente ou genre indéterminé",
-        "source": "BnF catalogue général SRU"
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Le boyfriend"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782290422632"
       },
       {
         "statut": "INCERTAIN",
@@ -286,8 +296,13 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "Notice BnF absente ou genre indéterminé",
-        "source": "BnF catalogue général SRU"
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Le palais : roman / François-Henri Désérable"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782073159212"
       },
       {
         "statut": "INCERTAIN",
@@ -308,13 +323,18 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "Notice BnF absente ou genre indéterminé",
-        "source": "BnF catalogue général SRU"
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Chère Debbie"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782824624570"
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -535,8 +555,13 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "Notice BnF absente ou genre indéterminé",
-        "source": "BnF catalogue général SRU"
+        "raison": "aucune catégorie suffisamment discriminante",
+        "categories": [],
+        "titres_catalogue": [
+          "Orlando"
+        ],
+        "source": "BnF catalogue général SRU",
+        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782385295622"
       },
       {
         "statut": "INCERTAIN",
@@ -748,8 +773,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -802,8 +827,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -868,8 +893,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -917,8 +942,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -939,8 +964,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -995,8 +1020,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -1022,8 +1047,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -1044,8 +1069,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -1137,8 +1162,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -1215,10 +1240,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "aucune catégorie suffisamment discriminante",
-        "categories": [],
-        "source": "Open Library ISBN",
-        "url": "http://openlibrary.org/books/OL62697396M/Réussir_à_l'ère_des_crises"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -1301,8 +1324,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -1323,8 +1346,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -1377,8 +1400,8 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -1445,18 +1468,13 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "aucune catégorie suffisamment discriminante",
-        "categories": [],
-        "titres_catalogue": [
-          "La Prof"
-        ],
-        "source": "BnF catalogue général SRU",
-        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782290422649"
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
@@ -1472,18 +1490,13 @@
       },
       {
         "statut": "INCERTAIN",
-        "raison": "aucune catégorie suffisamment discriminante",
-        "categories": [],
-        "titres_catalogue": [
-          "Bookboyfriend / C. S. Quill"
-        ],
-        "source": "BnF catalogue général SRU",
-        "url": "https://catalogue.bnf.fr/rechercher.do?motRecherche=9782755688757"
+        "raison": "Notice BnF absente ou genre indéterminé",
+        "source": "BnF catalogue général SRU"
       },
       {
         "statut": "INCERTAIN",
-        "raison": "ISBN absent",
-        "source": "Open Library"
+        "raison": "Métadonnées non disponibles",
+        "source": "Open Library ISBN"
       }
     ],
     "verifie_le": "2026-11-25"
