@@ -1,0 +1,57 @@
+{
+  "bruxelles-1984": {
+    "statut": "PRET",
+    "date_controle": "2026-11-25T05:40:30.476891+00:00",
+    "photos": 4,
+    "pages_illustrees": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "bruxelles-1989": {
+    "statut": "PRET",
+    "date_controle": "2026-11-25T05:40:30.476891+00:00",
+    "photos": 4,
+    "pages_illustrees": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "bruxelles-centre-doc": {
+    "statut": "PRET",
+    "date_controle": "2026-11-25T05:40:30.476891+00:00",
+    "photos": 4,
+    "pages_illustrees": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "bruxelles-horta": {
+    "statut": "PRET",
+    "date_controle": "2026-11-25T05:40:30.476891+00:00",
+    "photos": 4,
+    "pages_illustrees": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "bruxelles-textile": {
+    "statut": "PRET",
+    "date_controle": "2026-11-25T05:40:30.476891+00:00",
+    "photos": 4,
+    "pages_illustrees": [
+      1,
+      2,
+      3,
+      4
+    ]
+  }
+}
