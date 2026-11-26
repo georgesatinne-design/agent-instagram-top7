@@ -1,0 +1,24 @@
+# Audit technique — 26 novembre 2026
+
+Base examinée : 8fdfbfd4bd75779b5a08a385d04803ce10a96ff1. Dépôt agent-instagram-top7 uniquement.
+
+## Constats vérifiés
+- Trois workflows appellent un module inexistant (illiyadera_queue). Le journal Comics du run 45811090409 confirme l'erreur.
+- La réparation V10 échoue sur trois tests de calendrier (run 45815400018) et prévoit de redémarrer les agents, malgré son intitulé sans publication.
+- Les succès BD et manga du jour ont ignoré les étapes de programmation : aucun envoi ne peut être déduit de ces succès.
+- Le README ancien décrivait des brouillons manuels alors que la production est automatique.
+- public_media contient 186 fichiers totalisant 121 972 059 octets dans l'arbre étudié. Ces médias sont des ressources publiques potentiellement encore nécessaires à Buffer.
+- Les scripts manga versionnés sont encore exécutés par le workflow d'audit. Leur suppression aveugle casserait l'audit.
+
+## Changements proposés
+Correction des trois appels de module, garde main sur les agents modifiant l'état, verrou commun photothèque/production, absence d'arbitrage Comics sur plan vide, normalisation des tirets BDZoom et sélection des rangs 1 à 7 du snapshot BD. Calendrier provisoire conforme à l'intention documentée V10, déplacement limité aux anecdotes plus lointaines en remplissage, refus d'envoi si lecture globale Buffer échoue. Tests adaptés et validation PR sans secrets. Retrait de l'installateur V10 à usage unique et du duplicata de dépendances.
+
+## Points à valider avant fusion
+- La suite complète doit être verte ; aucune exécution locale complète n'a été possible dans l'environnement d'audit.
+- Vérifier les créneaux, la capacité et les reçus dans Buffer avant toute reprise de programmation réelle.
+- Vérifier les anciens scénarios de reprise d'anecdotes : les tests historiques peuvent présupposer l'ancienne politique de calendrier.
+- La suppression d'une anecdote et la création du Top sont deux opérations distinctes ; risque de perte de créneau en cas d'échec intermédiaire. Préférer à terme une stratégie durable avec journal d'intention et réconciliation, sans réessais aveugles.
+- Les médias publics et reçus sont volontairement préservés. Un nettoyage doit d'abord établir les URLs encore utilisées, y compris les contenus programmés. Ne pas réécrire l'historique Git.
+- Les anciens modules encore importés ou testés ne sont pas supprimés sans preuve de non-usage.
+- Les guides historiques MISE_EN_SERVICE et GUIDE_GITHUB_DEBUTANT peuvent contenir des procédures devenues obsolètes ; les consulter comme archives, non comme procédure de déploiement.
+- Vérifier les droits de réutilisation des visuels et les licences avant publication.

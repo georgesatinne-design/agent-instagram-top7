@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   comics:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -62,7 +63,13 @@ jobs:
           ILLYADERA_TOP_VERIFIED: 'true'
         run: |
           python -m unittest discover -s tests -p 'test_illyadera_queue.py' -q
-          python -m illiyadera_queue before-top --kind COMICS
+          if python -c 'import json,sys; from pathlib import Path; p=Path("sorties/comics_periodique/PLAN_BUFFER.json"); plan=json.loads(p.read_text()); assert isinstance(plan,list); sys.exit(0 if plan else 3)'; then
+            python -m illyadera_queue before-top --kind COMICS
+          else
+            code=$?
+            if [ "$code" -ne 3 ]; then exit "$code"; fi
+            echo 'Aucun classement prêt : aucun arbitrage Buffer.'
+          fi
           if [ -d anecdotes_state ] && [ -n "$(git status --porcelain anecdotes_state)" ]; then
             git add anecdotes_state
             git commit -m 'Queue Illyadera - place aux classements comics'

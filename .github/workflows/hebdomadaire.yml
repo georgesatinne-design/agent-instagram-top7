@@ -17,6 +17,7 @@ permissions:
 
 jobs:
   surveiller_et_programmer:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -158,7 +159,7 @@ jobs:
           ILLYADERA_TOP_VERIFIED: 'true'
         run: |
           python -m unittest discover -s tests -p 'test_illyadera_queue.py' -q
-          python -m illiyadera_queue before-top --kind BD
+          python -m illyadera_queue before-top --kind BD
           if [ -d anecdotes_state ] && [ -n "$(git status --porcelain anecdotes_state)" ]; then
             git add anecdotes_state
             git config user.name 'github-actions[bot]'

@@ -99,7 +99,10 @@ def free_capacity_for_priority(due_at, *, buffer, registry=None, registry_path=R
     if at_target:
         selected=at_target[0]
     elif len(posts)>=max_posts:
-        selected=max(owned,key=lambda x:_dt(x[2]['dueAt'])) if owned else None
+        candidates = [x for x in owned if _dt(x[2]['dueAt']) > due] if priority == 'REMPLISSAGE' else owned
+        selected=max(candidates,key=lambda x:_dt(x[2]['dueAt'])) if candidates else None
+        if selected is None and priority == 'REMPLISSAGE':
+            return {'action':'AUCUNE_ANECDOTE_PLUS_LOINTAINE','date':target,'file':len(posts)}
     else:
         return {'action':'PLACE_DISPONIBLE','file':len(posts),'date':target}
     if selected is None:
@@ -122,7 +125,7 @@ def planned_slots(kind, now=None):
     now=now or dt.datetime.now(dt.timezone.utc)
     if kind=='BD':
         from calendrier import prochain_creneau
-        suggestion=prochain_creneau('BD')
+        suggestion=prochain_creneau('BD', now=now)
         if not suggestion:raise RuntimeError('Créneau BD absent')
         return [suggestion['dueAt']]
     if kind=='MANGA':

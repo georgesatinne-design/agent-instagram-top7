@@ -1,4 +1,4 @@
-"""Réserver les tops, programmer les jours libres, repli tardif contrôlé."""
+"""Programmer les anecdotes en avance, avec priorité aux classements vérifiés."""
 from __future__ import annotations
 import datetime as dt
 from zoneinfo import ZoneInfo
@@ -20,15 +20,13 @@ def target_date_time(day):
     return dt.datetime.combine(day,dt.time(hour,0),tzinfo=PARIS)
 
 def eligible(day,now,scheduled):
-    """Une anecdote n'est jamais préprogrammée sur un slot de top."""
+    """Un créneau libre peut recevoir une anecdote provisoire, même un jour de Top."""
     now=now.astimezone(PARIS)
     due=target_date_time(day)
     if scheduled:return False,'POST_DEJA_DANS_BUFFER'
     if due-now<dt.timedelta(minutes=CONFIG['marge_programmation_minutes']):
         return False,'CRENEAU_TROP_PROCHE'
-    if reserved_kind(day) and now < due-dt.timedelta(minutes=CONFIG['repli_top_minutes_avant']):
-        return False,'RESERVE_AU_TOP'
-    return True, 'REPLI_TOP' if reserved_kind(day) else 'JOUR_LIBRE'
+    return True, 'PROVISOIRE_TOP' if reserved_kind(day) else 'JOUR_LIBRE'
 
 def next_days(now):
     local=now.astimezone(PARIS)

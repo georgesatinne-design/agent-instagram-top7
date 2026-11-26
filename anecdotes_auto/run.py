@@ -256,11 +256,17 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
         results['jours'].append({'date':key,'resultat':reason,'reservation':reserved_kind(day)})
         if not ok:continue
         creations_pretes=sum(registry[d].get('etat')=='EN_ATTENTE' for d in results['plans'])
-        if scheduled_count+creations_pretes>=max_count and reserved_kind(day) is None:
-            continue
-        # Si le TOP ne sort pas et que le délai de repli est atteint, on peut
-        # préparer son anecdote malgré la Queue pleine : la place sera libérée
-        # UNIQUEMENT juste avant l'envoi, après vérification des cinq médias.
+        if scheduled_count+creations_pretes>=max_count:
+            # Ne préparer un nouveau carrousel que si une anecdote plus lointaine
+            # appartenant à cet agent semble pouvoir être déplacée.
+            can_move = any(
+                isinstance(rec, dict) and rec.get('etat') == 'PROGRAMME' and other > key
+                and any(p.get('id') == rec.get('id_buffer') and p.get('status') == 'scheduled'
+                        and _is_our_exact(p, rec) for p in (all_scheduled or []))
+                for other, rec in registry.items())
+            if not can_move:
+                continue
+        # La place éventuelle sera libérée seulement après vérification des cinq médias.
         if len(results['plans'])>=CONFIG['max_posts_par_execution']:continue
         if item.get('etat')=='EN_ATTENTE':
             # Retry only if the files are still present and the slot still free.
@@ -326,7 +332,9 @@ def send(*,now=None,buffer=None):
         snapshot,dayposts=_day_snapshot(buffer,now)
     except Exception as exc:
         results['erreurs'].append('QUEUE_BUFFER: '+str(exc)[:260])
-        snapshot,dayposts=None,None
+        persist(registry)
+        write(REPORT/'RESULTATS_BUFFER.json',results)
+        raise RuntimeError('File Buffer non vérifiable : aucun envoi') from exc
     # Priority: if a Top arrives after a fallback, remove only our own scheduled anecdote.
     try:reconcile(buffer,registry,now,results,dayposts)
     except Exception as exc:results['erreurs'].append('RECONCILIATION: '+str(exc)[:300])
@@ -380,12 +388,12 @@ def send(*,now=None,buffer=None):
                     results['ignores'].append(key+' : UN_POST_A_PRIS_LE_CRENEAU')
                     continue
                 if len(live)>=CONFIG['max_posts_programmes_canal']:
-                    if reserved_kind(day):
-                        from illyadera_queue import free_capacity_for_priority
-                        free_capacity_for_priority(rec['due_at'],buffer=buffer,registry=registry,
-                            max_posts=CONFIG['max_posts_programmes_canal'],priority='REPLI_TOP')
-                    else:
-                        results['ignores'].append(key+' : QUEUE_PLEINE (attente prochaine place)')
+                    from illyadera_queue import free_capacity_for_priority
+                    freed = free_capacity_for_priority(rec['due_at'], buffer=buffer, registry=registry,
+                        registry_path=REGISTRY, max_posts=CONFIG['max_posts_programmes_canal'],
+                        now=now, priority='REMPLISSAGE')
+                    if freed.get('action') not in ('ANECDOTE_LIBEREE','PLACE_DISPONIBLE'):
+                        results['ignores'].append(key+' : QUEUE_PLEINE_SANS_POST_PLUS_LOINTAIN')
                         continue
             post=buffer.create(rec['texte_public'],rec['due_at'],assets)
             if dayposts is not None:

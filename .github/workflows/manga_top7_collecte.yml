@@ -19,6 +19,7 @@ concurrency:
 
 jobs:
   manga:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -144,7 +145,7 @@ jobs:
           ILLYADERA_TOP_VERIFIED: 'true'
         run: |
           python -m unittest discover -s tests -p 'test_illyadera_queue.py' -q
-          python -m illiyadera_queue before-top --kind MANGA
+          python -m illyadera_queue before-top --kind MANGA
           if [ -d anecdotes_state ] && [ -n "$(git status --porcelain anecdotes_state)" ]; then
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'

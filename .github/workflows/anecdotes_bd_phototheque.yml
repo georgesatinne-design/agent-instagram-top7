@@ -10,11 +10,12 @@ permissions:
   contents: write
 
 concurrency:
-  group: anecdotes-bd-buffer-automatique
+  group: illyadera-buffer-operations
   cancel-in-progress: false
 
 jobs:
   phototheque:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 29
     steps:
@@ -28,7 +29,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Installer les dépendances des anecdotes uniquement
-        run: python -m pip install -r anecdotes_auto/requirements_anecdotes.txt
+        run: python -m pip install -r requirements.txt
       - name: Tester les adaptateurs multi-sources sans accéder à Buffer
         run: python -m unittest discover -s tests -p 'test_anecdotes_v7_images.py' -v
       - name: Préqualifier des anecdotes avec photos réelles distinctes

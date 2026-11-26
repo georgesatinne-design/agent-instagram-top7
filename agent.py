@@ -46,6 +46,11 @@ def run(output:Path, input_file:Path|None=None, *, allow_demo=False, verified_sn
             log.append(f'{cat}: catégorie dupliquée ignorée.');continue
         seen.add(cat)
         try:
+            if verified_snapshot and cat == 'BD':
+                rows = sorted(entry.get('titres', []), key=lambda b: b.get('rang', 999))[:7]
+                if [b.get('rang') for b in rows] != list(range(1, 8)):
+                    raise ValueError('Top BD : rangs 1 à 7 obligatoires')
+                entry = dict(entry, titres=rows)
             count=verifier(entry)
             folder=output/cat
             coverdir=folder/'couvertures'

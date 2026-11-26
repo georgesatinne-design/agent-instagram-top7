@@ -1,51 +1,40 @@
-# Agent Instagram Top 7 — BD, mangas et comics (version 6)
+# Illyadera — agent Instagram BD, mangas et comics
 
-**Version 6 : les trois fonds fournis par l’utilisateur sont intégrés à l’identique.** Aucun fond n’est plus manquant. Ce projet prépare des carrousels et peut tenter de déposer des brouillons dans Buffer, **sans programmer ni publier** sur Instagram.
+Le projet collecte des classements de ventes et des anecdotes sourcées, fabrique des carrousels Instagram et programme les contenus éligibles via Buffer. Les publications programmées peuvent être publiées automatiquement par Buffer. Aucun classement ni couverture manquante ne doit être inventé.
 
-## Identité visuelle fixée
+## Production
 
-| Catégorie | Fond original inclus | Bandeau | Texte du bandeau | Pastille rang |
-|---|---|---|---|---|
-| BD | `assets/fond_bd_original.jpeg` | violet `#5E376E` | jaune `#F7E952` | jaune `#F7E952` |
-| Manga | `assets/fond_manga_original.png` | noir `#171717` | blanc `#FFFFFF` | jaune `#F7E952` |
-| Comics | `assets/fond_comics_original.png` | rouge `#970017` | blanc cassé `#FFF9F0` | jaune `#FFE45E` |
+| Contenu | Calendrier Europe/Paris | Entrée |
+|---|---|---|
+| BD Top 7 | Vendredi 17 h | surveillance_bd.py puis agent.py |
+| Manga Top 7 | Mardi 18 h | manga_pipeline_auto.py |
+| Comics Top 5 hebdomadaire | Jeudi 18 h | comics_pipeline_periodique.py |
+| Comics Top 7 mensuel | Deuxième dimanche du mois suivant, 18 h | comics_pipeline_periodique.py |
+| Anecdotes BD | 18 h, vendredi 17 h ; créneaux libres provisoires | anecdotes_auto.run |
 
-Les fichiers sources ont été copiés sans modification. Leur empreinte SHA-256 et leurs dimensions originales sont dans `assets/fonds_provenance.json`. Le moteur les adapte au format Instagram **1080 × 1350** par cadrage ; le fond comics fourni est horizontal et sera donc recadré sur la maquette verticale. Les palettes manga et comics sont des **propositions à valider visuellement**, pas un choix explicitement donné par l’utilisateur.
+Le calendrier de collecte GitHub Actions est distinct des heures de publication. Les agents partagent une file Buffer ; une anecdote appartenant à l'agent peut être déplacée pour un Top vérifié. Les publications manuelles ne doivent jamais être supprimées. Les reçus et le registre persistants participent à la prévention des doublons.
 
-Sur **chaque page**, le bandeau inférieur affiche distinctement **« TOP DES VENTES »**, la **catégorie**, et la **période de ventes vérifiée** (dates de début et de fin si disponibles). Les ronds jaunes comportent **« TOP » et le numéro de rang**.
+Les workflows de production opèrent uniquement sur main. La validation des pull requests ne reçoit pas de secrets Buffer et ne lance pas les workflows de production. Ne pas lancer les anciennes procédures de réparation.
 
-Même logique pour les trois : **8 pages**, rangs **7 → 6 → 5 → 4 → 3 → 2 → 1**, puis **récapitulatif**. Flèche vers le haut + nombre de places en **vert** (`#13853C`), flèche vers le bas + nombre de places en **rouge** (`#CB2434`), sur chaque page **et à côté de chaque titre du récapitulatif**. Stable `=`, nouvelle entrée `NOUVEAU`, information non vérifiable `—`. Jamais de déplacement inventé.
+## Contrôles locaux
 
-## Ce qui est testé
-
-- 19 tests locaux automatisés : validation des rangs et dates, 8 pages dans le bon ordre, empreintes exactes des trois fonds, couleurs, évolutions, refus de couvertures manquantes, construction de brouillons Buffer simulés.
-- Les aperçus manga/comics figurent dans `apercus/apercu_manga_comics_v5.jpg`. Ce sont des **maquettes fictives filigranées**, sans véritables couvertures et **non publiables**.
-
-## Fonctionnement voulu
-
-1. Vendredi (ou exécution manuelle) : `agent.py` tente de collecter les palmarès publics, en distinguant les catégories et les périmètres. Un Top 7 non vérifiable n’est pas inventé.
-2. `visual_top7.py` crée les huit images, la légende et le dossier de contrôle, à partir des couvertures **exactement appariées**. S’il manque une couverture, pas d’envoi chez Buffer.
-3. Un workflow GitHub Actions (`.github/workflows/hebdomadaire.yml`) peut héberger les images et déposer un post **dans les brouillons Buffer**, uniquement si les comptes, secrets, données et couvertures sont valides.
-4. Le propriétaire vérifie puis programme manuellement dans Buffer pour le jour choisi. **Aucun post automatique sans validation.**
-
-La tâche hebdomadaire ChatGPT, si elle existe, est indépendante de ce workflow GitHub et ne dépose pas d’elle-même les fichiers dans ce chat.
-
-## Installation
-
-Lire **[MISE_EN_SERVICE.md](MISE_EN_SERVICE.md)** pour les actions de mise en service. Pour tester le projet localement :
-
-```bash
-pip install -r requirements.txt
+```sh
+python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
 python agent.py --fichier donnees/demo_bd_2026.json --sortie sorties/maquette_bd
 ```
 
-`demo_bd_2026.json` contient des données de démonstration non revalidées ; les images générées avec `--fichier` sont filigranées et ne peuvent pas être envoyées automatiquement à Buffer.
+Les données de démonstration ne sont pas publiables. Les fonds et chartes d'origine restent dans assets, anecdotes_assets et templates. Les trois fonds et leur provenance sont conservés.
 
-## Ce qui n’est PAS encore prouvé
+## Organisation
 
-La collecte réellement exécutée sur les sites publics, le téléchargement des couvertures de chaque catégorie et le dépôt réel d’un brouillon chez Buffer **ne sont pas encore validés en production**. Aucun compte GitHub, Instagram ni Buffer n’a été connecté ou activé ici. Le code seul ne rend pas l’agent autonome : le workflow doit être installé et testé dans le compte de son propriétaire.
+- Sources et couverture : sources/, illyadera_covers.py, manga_sources_hebdo.py, comics_sources_periodiques.py.
+- Visuels : visual_top7.py, comics_visual_periodique.py, anecdotes_auto/visuels.py.
+- Livraison : buffer_client.py, manga_buffer_auto.py, comics_deployer_periodique.py, comics_buffer_periodique.py, anecdotes_auto/buffer.py et illyadera_queue.py.
+- Etat persistant : *_receipts/, *_history/, anecdotes_state/.
+- Média public : public_media/ (URLs consommées par Buffer, ne pas supprimer sans contrôler les références actives).
+- Audit manga : audit_manga_sources.py, verifier_manga.py et modules versionnés ; encore appelés par le workflow d'audit.
 
-Pour ce montage gratuit, les huit visuels des brouillons sont déposés dans un **dépôt GitHub public** afin que Buffer les télécharge : même non publiés sur Instagram, ces fichiers seront visibles par quiconque possède leur URL. Si ce n’est pas acceptable, ne pas connecter Buffer sans concevoir un autre hébergement.
+Un workflow vert ne prouve pas une publication : vérifier les rapports, les reçus et le statut Buffer. Le dépôt est public et les images mises en ligne sont accessibles publiquement, même avant publication Instagram. Les secrets doivent rester dans GitHub Actions, jamais dans les fichiers.
 
-Ressources : https://developers.buffer.com/examples/create-draft-post.html • https://developers.buffer.com/guides/hosting-media.html • https://docs.github.com/actions
+Voir [AUDIT_TECHNIQUE.md](AUDIT_TECHNIQUE.md) pour les limites et les décisions de nettoyage.
