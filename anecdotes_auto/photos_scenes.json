@@ -578,16 +578,27 @@
           "archive_outcault_1896": true
         },
         {
-          "titre": "Yellowkid phonograph.jpg",
+          "titre": "1896-11-15 Yellow Kid.jpg",
           "page": 4,
-          "role": "LES BULLES — 1896",
-          "pertinence": "Planche du 25 octobre 1896 : succession de cases et bulles du Yellow Kid.",
+          "role": "LA PLANCHE — 1896",
+          "pertinence": "Planche du New York Journal du 15 novembre 1896, par Outcault, montrant les procédés narratifs et le lettrage de la série.",
           "epoque": "historique",
-          "famille_source": "Yellowkid phonograph.jpg",
-          "archive_outcault_1896": true
+          "famille_source": "1896-11-15 Yellow Kid.jpg",
+          "archive_outcault_1896": true,
+          "alternatives": [
+            {
+              "titre": "Yellowkid phonograph.jpg",
+              "page": 4,
+              "role": "LES BULLES — 1896",
+              "pertinence": "Planche du 25 octobre 1896 : succession de cases et bulles du Yellow Kid.",
+              "epoque": "historique",
+              "famille_source": "Yellowkid phonograph.jpg",
+              "archive_outcault_1896": true
+            }
+          ]
         }
       ],
-      "validation": "Notices Commons et Library of Congress vérifiées : Outcault (1863-1928), œuvres publiées en 1896. Vérification API et téléchargement au rendu."
+      "validation": "Notices Commons et Library of Congress vérifiées : Outcault (1863-1928), œuvres publiées en 1896. Vérification API et téléchargement au rendu. Repli vérifié : https://commons.wikimedia.org/wiki/File:1896-11-15_Yellow_Kid.jpg (PDM, auteur et date attestés)."
     }
   }
 }

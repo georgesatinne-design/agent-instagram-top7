@@ -45,7 +45,7 @@ def _license(meta,titre,option):
             return 'Domaine public historique : artiste décédé avant 1900'
     # Archives Outcault vérifiées : publication 1896, décès 1928 (LOC).
     # Liste fermée : ne généralise pas le statut des autres images Commons.
-    archives_outcault={'1896-11-08 Yellow Kid.jpg','Yellow Kid 1896-3-15.jpg','Yellowkid phonograph.jpg'}
+    archives_outcault={'1896-11-08 Yellow Kid.jpg','Yellow Kid 1896-3-15.jpg','Yellowkid phonograph.jpg','1896-11-15 Yellow Kid.jpg'}
     if (titre in archives_outcault and option.get('archive_outcault_1896')
             and 'outcault' in (_meta_value(meta,'Artist')+' '+_meta_value(meta,'ImageDescription')).lower()
             and ('public domain' in short or 'domaine public' in short or 'pd-old' in short)):
