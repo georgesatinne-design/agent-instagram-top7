@@ -142,13 +142,13 @@
     "date_confirmation": "2026-11-26T17:33:13.763723+00:00"
   },
   "2026-12-06": {
-    "fact_id": "topffer-professeur",
-    "sujet": "topffer",
-    "etat": "PROGRAMME",
+    "fact_id": "hokusai-manga-carnets",
+    "sujet": "hokusai",
+    "etat": "EN_ATTENTE_MAJ",
     "date": "2026-12-06",
     "due_at": "2026-12-06T17:00:00.000Z",
-    "dossier": "public_media/anecdotes_bd/2026-12-06/topffer-professeur_8b55d69cc9e356a3a6",
-    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-06/topffer-professeur_8b55d69cc9e356a3a6/",
+    "dossier": "public_media/anecdotes_bd/2026-12-06/hokusai-manga-carnets_78c6547107c31a9e6a",
+    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-06/hokusai-manga-carnets_78c6547107c31a9e6a/",
     "images": [
       "01_anecdote.png",
       "02_anecdote.png",
@@ -156,12 +156,36 @@
       "04_anecdote.png",
       "05_anecdote.png"
     ],
-    "revision": "8b55d69cc9e356a3a6",
-    "date_preparation": "2026-11-26T10:44:17.283453+00:00",
-    "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nAvant les bd, töpffer enseignait\n\nRodolphe Töpffer enseignait aussi la rhétorique et les belles-lettres.\n\nTu imaginais un professeur parmi les pionniers de la BD ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "revision": "78c6547107c31a9e6a",
+    "date_preparation": "2026-11-26T17:32:52.580124+00:00",
+    "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nDes mangas existaient-ils déjà en 1814 ?\n\nLe premier volume des Hokusai Manga, des recueils de croquis de Katsushika Hokusai, paraît en 1814.\n\nTu connaissais ces ancêtres du manga ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "empreinte_fait": "07c76dd589fa909a74",
     "id_buffer": "6b080d98ed9dce3bdaff58a3",
-    "date_confirmation": "2026-11-26T17:06:11.530671+00:00",
-    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART"
+    "ancien_texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nAvant les bd, töpffer enseignait\n\nRodolphe Töpffer enseignait aussi la rhétorique et les belles-lettres.\n\nTu imaginais un professeur parmi les pionniers de la BD ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "ancien_fact_id": "topffer-professeur",
+    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART",
+    "renouvellement_original": {
+      "fact_id": "topffer-professeur",
+      "sujet": "topffer",
+      "etat": "PROGRAMME",
+      "date": "2026-12-06",
+      "due_at": "2026-12-06T17:00:00.000Z",
+      "dossier": "public_media/anecdotes_bd/2026-12-06/topffer-professeur_8b55d69cc9e356a3a6",
+      "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-06/topffer-professeur_8b55d69cc9e356a3a6/",
+      "images": [
+        "01_anecdote.png",
+        "02_anecdote.png",
+        "03_anecdote.png",
+        "04_anecdote.png",
+        "05_anecdote.png"
+      ],
+      "revision": "8b55d69cc9e356a3a6",
+      "date_preparation": "2026-11-26T10:44:17.283453+00:00",
+      "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nAvant les bd, töpffer enseignait\n\nRodolphe Töpffer enseignait aussi la rhétorique et les belles-lettres.\n\nTu imaginais un professeur parmi les pionniers de la BD ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+      "id_buffer": "6b080d98ed9dce3bdaff58a3",
+      "date_confirmation": "2026-11-26T17:06:11.530671+00:00",
+      "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART"
+    }
   },
   "2026-12-07": {
     "fact_id": "lucky-luke-morris",
