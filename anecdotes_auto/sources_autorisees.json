@@ -83,6 +83,12 @@
       "domaine": "www.bnf.fr",
       "usage": "archives et histoire documentée",
       "decouverte": true
+    },
+    {
+      "nom": "Metropolitan Museum of Art",
+      "domaine": "www.metmuseum.org",
+      "usage": "collections historiques",
+      "decouverte": false
     }
   ],
   "points_entree_decouverte": [

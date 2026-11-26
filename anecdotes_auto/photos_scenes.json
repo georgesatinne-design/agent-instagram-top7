@@ -611,6 +611,951 @@
         }
       ],
       "validation": "Archives Outcault : https://commons.wikimedia.org/wiki/File:Yellowkid_phonograph.jpg (notice sans auteur lisible par machine, original SHA-1 50fd735bca545fe0db6416d3139b10e1f066b854), https://commons.wikimedia.org/wiki/File:Yellow_Kid_1898-01-09.jpg, https://commons.wikimedia.org/wiki/File:Yellow_Kid_November_1_1896_Bryan_McKinley_election.jpg, https://commons.wikimedia.org/wiki/File:YellowKid.jpeg. Toutes soumises aux contrôles de fichier et de non-duplication."
+    },
+    "saphir-theatre-takarazuka": {
+      "intention": "Archives authentiques directement liées au récit : saphir-theatre-takarazuka",
+      "validation": "Notices Wikimedia Commons vérifiées par titre ; Photographies anonymes publiées au Japon avant 1931, domaine public ; droits revérifiés lors du téléchargement.",
+      "visuels": [
+        {
+          "titre": "Mon Paris-Takarazuka1928.jpg",
+          "role": "REVUE TAKARAZUKA, 1928",
+          "pertinence": "Finale d'une revue en 1928, illustration du théâtre qui inspira Tezuka.",
+          "epoque": "historique",
+          "famille_source": "Mon Paris-Takarazuka1928.jpg",
+          "archive_9e_art": true,
+          "page": 1,
+          "alternatives": [
+            {
+              "titre": "Donburako-Takarazuka1914.jpg",
+              "role": "REVUE TAKARAZUKA, 1914",
+              "pertinence": "Une des représentations historiques de la troupe féminine.",
+              "epoque": "historique",
+              "famille_source": "Donburako-Takarazuka1914.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Paris Sette-Takarazuka1930.jpg",
+              "role": "REVUE TAKARAZUKA, 1930",
+              "pertinence": "Spectacle d'époque de la troupe ; pas une image du manga.",
+              "epoque": "historique",
+              "famille_source": "Paris Sette-Takarazuka1930.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Asaji Shinohara as Orihime (right), Kishiko Suminoe as Iserihime (left) in the Takarazuka Revue 'Yogo no Ten-nin' , 1920.jpg",
+              "role": "REVUE TAKARAZUKA, 1920",
+              "pertinence": "Deux actrices de la revue, archive de 1920.",
+              "epoque": "historique",
+              "famille_source": "Asaji Shinohara as Orihime (right), Kishiko Suminoe as Iserihime (left) in the Takarazuka Revue 'Yogo no Ten-nin' , 1920.jpg",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Donburako-Takarazuka1914.jpg",
+          "role": "REVUE TAKARAZUKA, 1914",
+          "pertinence": "Une des représentations historiques de la troupe féminine.",
+          "epoque": "historique",
+          "famille_source": "Donburako-Takarazuka1914.jpg",
+          "archive_9e_art": true,
+          "page": 3,
+          "alternatives": [
+            {
+              "titre": "Mon Paris-Takarazuka1928.jpg",
+              "role": "REVUE TAKARAZUKA, 1928",
+              "pertinence": "Finale d'une revue en 1928, illustration du théâtre qui inspira Tezuka.",
+              "epoque": "historique",
+              "famille_source": "Mon Paris-Takarazuka1928.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Paris Sette-Takarazuka1930.jpg",
+              "role": "REVUE TAKARAZUKA, 1930",
+              "pertinence": "Spectacle d'époque de la troupe ; pas une image du manga.",
+              "epoque": "historique",
+              "famille_source": "Paris Sette-Takarazuka1930.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Asaji Shinohara as Orihime (right), Kishiko Suminoe as Iserihime (left) in the Takarazuka Revue 'Yogo no Ten-nin' , 1920.jpg",
+              "role": "REVUE TAKARAZUKA, 1920",
+              "pertinence": "Deux actrices de la revue, archive de 1920.",
+              "epoque": "historique",
+              "famille_source": "Asaji Shinohara as Orihime (right), Kishiko Suminoe as Iserihime (left) in the Takarazuka Revue 'Yogo no Ten-nin' , 1920.jpg",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Paris Sette-Takarazuka1930.jpg",
+          "role": "REVUE TAKARAZUKA, 1930",
+          "pertinence": "Spectacle d'époque de la troupe ; pas une image du manga.",
+          "epoque": "historique",
+          "famille_source": "Paris Sette-Takarazuka1930.jpg",
+          "archive_9e_art": true,
+          "page": 4,
+          "alternatives": [
+            {
+              "titre": "Mon Paris-Takarazuka1928.jpg",
+              "role": "REVUE TAKARAZUKA, 1928",
+              "pertinence": "Finale d'une revue en 1928, illustration du théâtre qui inspira Tezuka.",
+              "epoque": "historique",
+              "famille_source": "Mon Paris-Takarazuka1928.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Donburako-Takarazuka1914.jpg",
+              "role": "REVUE TAKARAZUKA, 1914",
+              "pertinence": "Une des représentations historiques de la troupe féminine.",
+              "epoque": "historique",
+              "famille_source": "Donburako-Takarazuka1914.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Asaji Shinohara as Orihime (right), Kishiko Suminoe as Iserihime (left) in the Takarazuka Revue 'Yogo no Ten-nin' , 1920.jpg",
+              "role": "REVUE TAKARAZUKA, 1920",
+              "pertinence": "Deux actrices de la revue, archive de 1920.",
+              "epoque": "historique",
+              "famille_source": "Asaji Shinohara as Orihime (right), Kishiko Suminoe as Iserihime (left) in the Takarazuka Revue 'Yogo no Ten-nin' , 1920.jpg",
+              "archive_9e_art": true
+            }
+          ]
+        }
+      ]
+    },
+    "verbeek-bd-a-retourner": {
+      "intention": "Archives authentiques directement liées au récit : verbeek-bd-a-retourner",
+      "validation": "Notices Wikimedia Commons vérifiées par titre ; Gustave Verbeek (1867–1937), planches parues en 1904 ; droits revérifiés lors du téléchargement.",
+      "visuels": [
+        {
+          "titre": "Upside-Downs of Little Lady Lovekins and Old Man Muffaroo (1904-12-18).gif",
+          "role": "PLANCHE RÉVERSIBLE, 1904",
+          "pertinence": "Exemple complet de la planche à retourner.",
+          "epoque": "historique",
+          "famille_source": "Upside-Downs of Little Lady Lovekins and Old Man Muffaroo (1904-12-18).gif",
+          "archive_9e_art": true,
+          "page": 1,
+          "alternatives": [
+            {
+              "titre": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The wonderful cure of the waterfall.jpg",
+              "role": "LA PLANCHE RÉVERSIBLE",
+              "pertinence": "Une autre planche réversible originale de la série.",
+              "epoque": "historique",
+              "famille_source": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The wonderful cure of the waterfall.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The bad snake and the good wizard.jpg",
+              "role": "AUTRE PLANCHE, 1904",
+              "pertinence": "Autre exemple de cette technique narrative.",
+              "epoque": "historique",
+              "famille_source": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The bad snake and the good wizard.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Verbeek-rocanoe.gif",
+              "role": "UNE CASE RÉVERSIBLE",
+              "pertinence": "Case du récit A Fish Story, authentique.",
+              "epoque": "historique",
+              "famille_source": "Verbeek-rocanoe.gif",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The wonderful cure of the waterfall.jpg",
+          "role": "LA PLANCHE RÉVERSIBLE",
+          "pertinence": "Une autre planche réversible originale de la série.",
+          "epoque": "historique",
+          "famille_source": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The wonderful cure of the waterfall.jpg",
+          "archive_9e_art": true,
+          "page": 3,
+          "alternatives": [
+            {
+              "titre": "Upside-Downs of Little Lady Lovekins and Old Man Muffaroo (1904-12-18).gif",
+              "role": "PLANCHE RÉVERSIBLE, 1904",
+              "pertinence": "Exemple complet de la planche à retourner.",
+              "epoque": "historique",
+              "famille_source": "Upside-Downs of Little Lady Lovekins and Old Man Muffaroo (1904-12-18).gif",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The bad snake and the good wizard.jpg",
+              "role": "AUTRE PLANCHE, 1904",
+              "pertinence": "Autre exemple de cette technique narrative.",
+              "epoque": "historique",
+              "famille_source": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The bad snake and the good wizard.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Verbeek-rocanoe.gif",
+              "role": "UNE CASE RÉVERSIBLE",
+              "pertinence": "Case du récit A Fish Story, authentique.",
+              "epoque": "historique",
+              "famille_source": "Verbeek-rocanoe.gif",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The bad snake and the good wizard.jpg",
+          "role": "AUTRE PLANCHE, 1904",
+          "pertinence": "Autre exemple de cette technique narrative.",
+          "epoque": "historique",
+          "famille_source": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The bad snake and the good wizard.jpg",
+          "archive_9e_art": true,
+          "page": 4,
+          "alternatives": [
+            {
+              "titre": "Upside-Downs of Little Lady Lovekins and Old Man Muffaroo (1904-12-18).gif",
+              "role": "PLANCHE RÉVERSIBLE, 1904",
+              "pertinence": "Exemple complet de la planche à retourner.",
+              "epoque": "historique",
+              "famille_source": "Upside-Downs of Little Lady Lovekins and Old Man Muffaroo (1904-12-18).gif",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The wonderful cure of the waterfall.jpg",
+              "role": "LA PLANCHE RÉVERSIBLE",
+              "pertinence": "Une autre planche réversible originale de la série.",
+              "epoque": "historique",
+              "famille_source": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The wonderful cure of the waterfall.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Verbeek-rocanoe.gif",
+              "role": "UNE CASE RÉVERSIBLE",
+              "pertinence": "Case du récit A Fish Story, authentique.",
+              "epoque": "historique",
+              "famille_source": "Verbeek-rocanoe.gif",
+              "archive_9e_art": true
+            }
+          ]
+        }
+      ]
+    },
+    "mccay-pseudonyme-silas": {
+      "intention": "Archives authentiques directement liées au récit : mccay-pseudonyme-silas",
+      "validation": "Notices Wikimedia Commons vérifiées par titre ; Winsor McCay (1869–1934), œuvres publiées avant 1931 ; droits revérifiés lors du téléchargement.",
+      "visuels": [
+        {
+          "titre": "Dream-of-the-Rarebit-Fiend-12-10-1904.jpg",
+          "role": "SILAS, 1904",
+          "pertinence": "Épisode signé Silas du Dream of the Rarebit Fiend.",
+          "epoque": "historique",
+          "famille_source": "Dream-of-the-Rarebit-Fiend-12-10-1904.jpg",
+          "archive_9e_art": true,
+          "page": 1,
+          "alternatives": [
+            {
+              "titre": "Dream of the Rarebit Fiend 1905-02-25.jpg",
+              "role": "DREAM OF THE RAREBIT FIEND",
+              "pertinence": "Planche authentique de la série en 1905.",
+              "epoque": "historique",
+              "famille_source": "Dream of the Rarebit Fiend 1905-02-25.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Dream of the Rarebit Fiend 1905-01-07.jpg",
+              "role": "LES RÊVES DE McCAY",
+              "pertinence": "Autre épisode authentique de 1905.",
+              "epoque": "historique",
+              "famille_source": "Dream of the Rarebit Fiend 1905-01-07.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Winsor McCay, Dream of the Rarebit Fiend - Here Comes Washington, 1908, NGA 142157.jpg",
+              "role": "ARCHIVE, 1908",
+              "pertinence": "Planche conservée à la National Gallery of Art.",
+              "epoque": "historique",
+              "famille_source": "Winsor McCay, Dream of the Rarebit Fiend - Here Comes Washington, 1908, NGA 142157.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Dream of the Rarebit Fiend 1905-01-28 (cropped).jpg",
+              "role": "ARCHIVE, 1905",
+              "pertinence": "Autre épisode de la série.",
+              "epoque": "historique",
+              "famille_source": "Dream of the Rarebit Fiend 1905-01-28 (cropped).jpg",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Dream of the Rarebit Fiend 1905-02-25.jpg",
+          "role": "DREAM OF THE RAREBIT FIEND",
+          "pertinence": "Planche authentique de la série en 1905.",
+          "epoque": "historique",
+          "famille_source": "Dream of the Rarebit Fiend 1905-02-25.jpg",
+          "archive_9e_art": true,
+          "page": 3,
+          "alternatives": [
+            {
+              "titre": "Dream-of-the-Rarebit-Fiend-12-10-1904.jpg",
+              "role": "SILAS, 1904",
+              "pertinence": "Épisode signé Silas du Dream of the Rarebit Fiend.",
+              "epoque": "historique",
+              "famille_source": "Dream-of-the-Rarebit-Fiend-12-10-1904.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Dream of the Rarebit Fiend 1905-01-07.jpg",
+              "role": "LES RÊVES DE McCAY",
+              "pertinence": "Autre épisode authentique de 1905.",
+              "epoque": "historique",
+              "famille_source": "Dream of the Rarebit Fiend 1905-01-07.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Winsor McCay, Dream of the Rarebit Fiend - Here Comes Washington, 1908, NGA 142157.jpg",
+              "role": "ARCHIVE, 1908",
+              "pertinence": "Planche conservée à la National Gallery of Art.",
+              "epoque": "historique",
+              "famille_source": "Winsor McCay, Dream of the Rarebit Fiend - Here Comes Washington, 1908, NGA 142157.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Dream of the Rarebit Fiend 1905-01-28 (cropped).jpg",
+              "role": "ARCHIVE, 1905",
+              "pertinence": "Autre épisode de la série.",
+              "epoque": "historique",
+              "famille_source": "Dream of the Rarebit Fiend 1905-01-28 (cropped).jpg",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Dream of the Rarebit Fiend 1905-01-07.jpg",
+          "role": "LES RÊVES DE McCAY",
+          "pertinence": "Autre épisode authentique de 1905.",
+          "epoque": "historique",
+          "famille_source": "Dream of the Rarebit Fiend 1905-01-07.jpg",
+          "archive_9e_art": true,
+          "page": 4,
+          "alternatives": [
+            {
+              "titre": "Dream-of-the-Rarebit-Fiend-12-10-1904.jpg",
+              "role": "SILAS, 1904",
+              "pertinence": "Épisode signé Silas du Dream of the Rarebit Fiend.",
+              "epoque": "historique",
+              "famille_source": "Dream-of-the-Rarebit-Fiend-12-10-1904.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Dream of the Rarebit Fiend 1905-02-25.jpg",
+              "role": "DREAM OF THE RAREBIT FIEND",
+              "pertinence": "Planche authentique de la série en 1905.",
+              "epoque": "historique",
+              "famille_source": "Dream of the Rarebit Fiend 1905-02-25.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Winsor McCay, Dream of the Rarebit Fiend - Here Comes Washington, 1908, NGA 142157.jpg",
+              "role": "ARCHIVE, 1908",
+              "pertinence": "Planche conservée à la National Gallery of Art.",
+              "epoque": "historique",
+              "famille_source": "Winsor McCay, Dream of the Rarebit Fiend - Here Comes Washington, 1908, NGA 142157.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Dream of the Rarebit Fiend 1905-01-28 (cropped).jpg",
+              "role": "ARCHIVE, 1905",
+              "pertinence": "Autre épisode de la série.",
+              "epoque": "historique",
+              "famille_source": "Dream of the Rarebit Fiend 1905-01-28 (cropped).jpg",
+              "archive_9e_art": true
+            }
+          ]
+        }
+      ]
+    },
+    "krazykat-brique-amour": {
+      "intention": "Archives authentiques directement liées au récit : krazykat-brique-amour",
+      "validation": "Notices Wikimedia Commons vérifiées par titre ; George Herriman (1880–1944), planches publiées avant 1931 ; droits revérifiés lors du téléchargement.",
+      "visuels": [
+        {
+          "titre": "Krazykat.jpg",
+          "role": "KRAZY KAT, 1918",
+          "pertinence": "Planche du 6 janvier 1918 de la série.",
+          "epoque": "historique",
+          "famille_source": "Krazykat.jpg",
+          "archive_9e_art": true,
+          "page": 1,
+          "alternatives": [
+            {
+              "titre": "Krazy Kat 1920-09-05 original.jpg",
+              "role": "KRAZY KAT, 1920",
+              "pertinence": "Planche originale du 5 septembre 1920.",
+              "epoque": "historique",
+              "famille_source": "Krazy Kat 1920-09-05 original.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Krazy Kat 1921-11-20 original.jpg",
+              "role": "KRAZY KAT, 1921",
+              "pertinence": "Planche originale du 20 novembre 1921.",
+              "epoque": "historique",
+              "famille_source": "Krazy Kat 1921-11-20 original.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Krazy Kat 1920-10-15 original.jpg",
+              "role": "KRAZY KAT, 1920",
+              "pertinence": "Planche originale du 15 octobre 1920.",
+              "epoque": "historique",
+              "famille_source": "Krazy Kat 1920-10-15 original.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Krazy Kat 18 Dec 1919.jpg",
+              "role": "KRAZY KAT, 1919",
+              "pertinence": "Planche du 18 décembre 1919.",
+              "epoque": "historique",
+              "famille_source": "Krazy Kat 18 Dec 1919.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Krazy Kat 1916-05-14.jpg",
+              "role": "KRAZY KAT, 1916",
+              "pertinence": "Planche du 14 mai 1916.",
+              "epoque": "historique",
+              "famille_source": "Krazy Kat 1916-05-14.jpg",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Krazy Kat 1920-09-05 original.jpg",
+          "role": "KRAZY KAT, 1920",
+          "pertinence": "Planche originale du 5 septembre 1920.",
+          "epoque": "historique",
+          "famille_source": "Krazy Kat 1920-09-05 original.jpg",
+          "archive_9e_art": true,
+          "page": 3,
+          "alternatives": [
+            {
+              "titre": "Krazykat.jpg",
+              "role": "KRAZY KAT, 1918",
+              "pertinence": "Planche du 6 janvier 1918 de la série.",
+              "epoque": "historique",
+              "famille_source": "Krazykat.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Krazy Kat 1921-11-20 original.jpg",
+              "role": "KRAZY KAT, 1921",
+              "pertinence": "Planche originale du 20 novembre 1921.",
+              "epoque": "historique",
+              "famille_source": "Krazy Kat 1921-11-20 original.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Krazy Kat 1920-10-15 original.jpg",
+              "role": "KRAZY KAT, 1920",
+              "pertinence": "Planche originale du 15 octobre 1920.",
+              "epoque": "historique",
+              "famille_source": "Krazy Kat 1920-10-15 original.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Krazy Kat 18 Dec 1919.jpg",
+              "role": "KRAZY KAT, 1919",
+              "pertinence": "Planche du 18 décembre 1919.",
+              "epoque": "historique",
+              "famille_source": "Krazy Kat 18 Dec 1919.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Krazy Kat 1916-05-14.jpg",
+              "role": "KRAZY KAT, 1916",
+              "pertinence": "Planche du 14 mai 1916.",
+              "epoque": "historique",
+              "famille_source": "Krazy Kat 1916-05-14.jpg",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Krazy Kat 1921-11-20 original.jpg",
+          "role": "KRAZY KAT, 1921",
+          "pertinence": "Planche originale du 20 novembre 1921.",
+          "epoque": "historique",
+          "famille_source": "Krazy Kat 1921-11-20 original.jpg",
+          "archive_9e_art": true,
+          "page": 4,
+          "alternatives": [
+            {
+              "titre": "Krazykat.jpg",
+              "role": "KRAZY KAT, 1918",
+              "pertinence": "Planche du 6 janvier 1918 de la série.",
+              "epoque": "historique",
+              "famille_source": "Krazykat.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Krazy Kat 1920-09-05 original.jpg",
+              "role": "KRAZY KAT, 1920",
+              "pertinence": "Planche originale du 5 septembre 1920.",
+              "epoque": "historique",
+              "famille_source": "Krazy Kat 1920-09-05 original.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Krazy Kat 1920-10-15 original.jpg",
+              "role": "KRAZY KAT, 1920",
+              "pertinence": "Planche originale du 15 octobre 1920.",
+              "epoque": "historique",
+              "famille_source": "Krazy Kat 1920-10-15 original.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Krazy Kat 18 Dec 1919.jpg",
+              "role": "KRAZY KAT, 1919",
+              "pertinence": "Planche du 18 décembre 1919.",
+              "epoque": "historique",
+              "famille_source": "Krazy Kat 18 Dec 1919.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Krazy Kat 1916-05-14.jpg",
+              "role": "KRAZY KAT, 1916",
+              "pertinence": "Planche du 14 mai 1916.",
+              "epoque": "historique",
+              "famille_source": "Krazy Kat 1916-05-14.jpg",
+              "archive_9e_art": true
+            }
+          ]
+        }
+      ]
+    },
+    "hokusai-manga-carnets": {
+      "intention": "Archives authentiques directement liées au récit : hokusai-manga-carnets",
+      "validation": "Notices Wikimedia Commons vérifiées par titre ; Katsushika Hokusai (1760–1849), gravures du XIXe siècle ; droits revérifiés lors du téléchargement.",
+      "visuels": [
+        {
+          "titre": "Hokusaimangapas.png",
+          "role": "CARNET DE HOKUSAI",
+          "pertinence": "Page originale du recueil datée de 1814.",
+          "epoque": "historique",
+          "famille_source": "Hokusaimangapas.png",
+          "archive_9e_art": true,
+          "page": 1,
+          "alternatives": [
+            {
+              "titre": "Hokusai Manga 01.jpg",
+              "role": "CROQUIS DE HOKUSAI",
+              "pertinence": "Une autre page du recueil.",
+              "epoque": "historique",
+              "famille_source": "Hokusai Manga 01.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Hokusaimanga vol1 okuzuke.jpg",
+              "role": "VOLUME 1, 1814",
+              "pertinence": "Colophon du premier volume, document d'époque.",
+              "epoque": "historique",
+              "famille_source": "Hokusaimanga vol1 okuzuke.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Hokusai Mangá.jpg",
+              "role": "CROQUIS DE HOKUSAI",
+              "pertinence": "Page de dessins du recueil.",
+              "epoque": "historique",
+              "famille_source": "Hokusai Mangá.jpg",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Hokusai Manga 01.jpg",
+          "role": "CROQUIS DE HOKUSAI",
+          "pertinence": "Une autre page du recueil.",
+          "epoque": "historique",
+          "famille_source": "Hokusai Manga 01.jpg",
+          "archive_9e_art": true,
+          "page": 3,
+          "alternatives": [
+            {
+              "titre": "Hokusaimangapas.png",
+              "role": "CARNET DE HOKUSAI",
+              "pertinence": "Page originale du recueil datée de 1814.",
+              "epoque": "historique",
+              "famille_source": "Hokusaimangapas.png",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Hokusaimanga vol1 okuzuke.jpg",
+              "role": "VOLUME 1, 1814",
+              "pertinence": "Colophon du premier volume, document d'époque.",
+              "epoque": "historique",
+              "famille_source": "Hokusaimanga vol1 okuzuke.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Hokusai Mangá.jpg",
+              "role": "CROQUIS DE HOKUSAI",
+              "pertinence": "Page de dessins du recueil.",
+              "epoque": "historique",
+              "famille_source": "Hokusai Mangá.jpg",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Hokusaimanga vol1 okuzuke.jpg",
+          "role": "VOLUME 1, 1814",
+          "pertinence": "Colophon du premier volume, document d'époque.",
+          "epoque": "historique",
+          "famille_source": "Hokusaimanga vol1 okuzuke.jpg",
+          "archive_9e_art": true,
+          "page": 4,
+          "alternatives": [
+            {
+              "titre": "Hokusaimangapas.png",
+              "role": "CARNET DE HOKUSAI",
+              "pertinence": "Page originale du recueil datée de 1814.",
+              "epoque": "historique",
+              "famille_source": "Hokusaimangapas.png",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Hokusai Manga 01.jpg",
+              "role": "CROQUIS DE HOKUSAI",
+              "pertinence": "Une autre page du recueil.",
+              "epoque": "historique",
+              "famille_source": "Hokusai Manga 01.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Hokusai Mangá.jpg",
+              "role": "CROQUIS DE HOKUSAI",
+              "pertinence": "Page de dessins du recueil.",
+              "epoque": "historique",
+              "famille_source": "Hokusai Mangá.jpg",
+              "archive_9e_art": true
+            }
+          ]
+        }
+      ]
+    },
+    "fenouillard-feuilleton": {
+      "intention": "Archives authentiques directement liées au récit : fenouillard-feuilleton",
+      "validation": "Notices Wikimedia Commons vérifiées par titre ; Georges Colomb dit Christophe (1856–1945), œuvres publiées en 1889–1895 ; droits revérifiés lors du téléchargement.",
+      "visuels": [
+        {
+          "titre": "Famille Cornouillet, future famille Fenouillard.JPEG",
+          "role": "JANVIER 1889",
+          "pertinence": "Première apparition dans le Journal de la jeunesse sous le nom Cornouillet.",
+          "epoque": "historique",
+          "famille_source": "Famille Cornouillet, future famille Fenouillard.JPEG",
+          "archive_9e_art": true,
+          "page": 1,
+          "alternatives": [
+            {
+              "titre": "Famille Fenouillard.JPEG",
+              "role": "LES QUATRE PERSONNAGES",
+              "pertinence": "Les membres de la famille dans l'album.",
+              "epoque": "historique",
+              "famille_source": "Famille Fenouillard.JPEG",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Christophe - La Famille Fenouillard, 1895 (page 1 crop).jpg",
+              "role": "L’ALBUM, 1895",
+              "pertinence": "Page numérisée de l'album de Christophe.",
+              "epoque": "historique",
+              "famille_source": "Christophe - La Famille Fenouillard, 1895 (page 1 crop).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Colomb - La Famille Fenouillard, 1895.jpg",
+              "role": "L’ALBUM DE CHRISTOPHE",
+              "pertinence": "Autre illustration de l'album.",
+              "epoque": "historique",
+              "famille_source": "Colomb - La Famille Fenouillard, 1895.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Fenouillard 2.jpg",
+              "role": "ARCHIVE DE LA SÉRIE",
+              "pertinence": "Planche de Christophe.",
+              "epoque": "historique",
+              "famille_source": "Fenouillard 2.jpg",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Famille Fenouillard.JPEG",
+          "role": "LES QUATRE PERSONNAGES",
+          "pertinence": "Les membres de la famille dans l'album.",
+          "epoque": "historique",
+          "famille_source": "Famille Fenouillard.JPEG",
+          "archive_9e_art": true,
+          "page": 3,
+          "alternatives": [
+            {
+              "titre": "Famille Cornouillet, future famille Fenouillard.JPEG",
+              "role": "JANVIER 1889",
+              "pertinence": "Première apparition dans le Journal de la jeunesse sous le nom Cornouillet.",
+              "epoque": "historique",
+              "famille_source": "Famille Cornouillet, future famille Fenouillard.JPEG",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Christophe - La Famille Fenouillard, 1895 (page 1 crop).jpg",
+              "role": "L’ALBUM, 1895",
+              "pertinence": "Page numérisée de l'album de Christophe.",
+              "epoque": "historique",
+              "famille_source": "Christophe - La Famille Fenouillard, 1895 (page 1 crop).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Colomb - La Famille Fenouillard, 1895.jpg",
+              "role": "L’ALBUM DE CHRISTOPHE",
+              "pertinence": "Autre illustration de l'album.",
+              "epoque": "historique",
+              "famille_source": "Colomb - La Famille Fenouillard, 1895.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Fenouillard 2.jpg",
+              "role": "ARCHIVE DE LA SÉRIE",
+              "pertinence": "Planche de Christophe.",
+              "epoque": "historique",
+              "famille_source": "Fenouillard 2.jpg",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Christophe - La Famille Fenouillard, 1895 (page 1 crop).jpg",
+          "role": "L’ALBUM, 1895",
+          "pertinence": "Page numérisée de l'album de Christophe.",
+          "epoque": "historique",
+          "famille_source": "Christophe - La Famille Fenouillard, 1895 (page 1 crop).jpg",
+          "archive_9e_art": true,
+          "page": 4,
+          "alternatives": [
+            {
+              "titre": "Famille Cornouillet, future famille Fenouillard.JPEG",
+              "role": "JANVIER 1889",
+              "pertinence": "Première apparition dans le Journal de la jeunesse sous le nom Cornouillet.",
+              "epoque": "historique",
+              "famille_source": "Famille Cornouillet, future famille Fenouillard.JPEG",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Famille Fenouillard.JPEG",
+              "role": "LES QUATRE PERSONNAGES",
+              "pertinence": "Les membres de la famille dans l'album.",
+              "epoque": "historique",
+              "famille_source": "Famille Fenouillard.JPEG",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Colomb - La Famille Fenouillard, 1895.jpg",
+              "role": "L’ALBUM DE CHRISTOPHE",
+              "pertinence": "Autre illustration de l'album.",
+              "epoque": "historique",
+              "famille_source": "Colomb - La Famille Fenouillard, 1895.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Fenouillard 2.jpg",
+              "role": "ARCHIVE DE LA SÉRIE",
+              "pertinence": "Planche de Christophe.",
+              "epoque": "historique",
+              "famille_source": "Fenouillard 2.jpg",
+              "archive_9e_art": true
+            }
+          ]
+        }
+      ]
+    },
+    "dore-cinq-cents-gravures": {
+      "intention": "Archives authentiques directement liées au récit : dore-cinq-cents-gravures",
+      "validation": "Notices Wikimedia Commons vérifiées par titre ; Gustave Doré (1832–1883), ouvrage publié en 1854 ; droits revérifiés lors du téléchargement.",
+      "visuels": [
+        {
+          "titre": "Histoire de la Sainte Russie LCCN2010645853.jpg",
+          "role": "L’OUVRAGE DE 1854",
+          "pertinence": "Document de l'ouvrage conservé par la Library of Congress.",
+          "epoque": "historique",
+          "famille_source": "Histoire de la Sainte Russie LCCN2010645853.jpg",
+          "archive_9e_art": true,
+          "page": 1,
+          "alternatives": [
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927547).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927547).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927589).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927589).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927599).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927599).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927969).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927969).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927527).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927527).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927737).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927737).jpg",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927547).jpg",
+          "role": "GRAVURES DE DORÉ, 1854",
+          "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+          "epoque": "historique",
+          "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927547).jpg",
+          "archive_9e_art": true,
+          "page": 3,
+          "alternatives": [
+            {
+              "titre": "Histoire de la Sainte Russie LCCN2010645853.jpg",
+              "role": "L’OUVRAGE DE 1854",
+              "pertinence": "Document de l'ouvrage conservé par la Library of Congress.",
+              "epoque": "historique",
+              "famille_source": "Histoire de la Sainte Russie LCCN2010645853.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927589).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927589).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927599).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927599).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927969).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927969).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927527).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927527).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927737).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927737).jpg",
+              "archive_9e_art": true
+            }
+          ]
+        },
+        {
+          "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927589).jpg",
+          "role": "GRAVURES DE DORÉ, 1854",
+          "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+          "epoque": "historique",
+          "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927589).jpg",
+          "archive_9e_art": true,
+          "page": 4,
+          "alternatives": [
+            {
+              "titre": "Histoire de la Sainte Russie LCCN2010645853.jpg",
+              "role": "L’OUVRAGE DE 1854",
+              "pertinence": "Document de l'ouvrage conservé par la Library of Congress.",
+              "epoque": "historique",
+              "famille_source": "Histoire de la Sainte Russie LCCN2010645853.jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927547).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927547).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927599).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927599).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927969).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927969).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927527).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927527).jpg",
+              "archive_9e_art": true
+            },
+            {
+              "titre": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927737).jpg",
+              "role": "GRAVURES DE DORÉ, 1854",
+              "pertinence": "Page de l'ouvrage numérisée par la Bibliothèque nationale de Pologne.",
+              "epoque": "historique",
+              "famille_source": "Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927737).jpg",
+              "archive_9e_art": true
+            }
+          ]
+        }
+      ]
     }
   }
 }

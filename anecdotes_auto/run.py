@@ -302,7 +302,8 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
                 item['etat']='EN_ATTENTE';item.pop('id_buffer',None)
                 registry[key]=item
                 results['plans'].append(key);continue
-        exclude=[rec.get('fact_id') for rec in registry.values() if isinstance(rec,dict) and rec.get('etat') in ('EN_ATTENTE','PROGRAMME','EN_ATTENTE_MAJ','EXPIRE_INCERTAIN')]
+        exclude=[rec.get('fact_id') for rec in registry.values() if isinstance(rec,dict) and rec.get('etat') in ('EN_ATTENTE','PROGRAMME','EN_ATTENTE_MAJ','EXPIRE_INCERTAIN','SUPPLANTE_PAR_ACTUS')]
+        exclude.extend(rec.get('ancien_fact_id') for rec in registry.values() if isinstance(rec,dict) and rec.get('ancien_fact_id'))
         # Regarder d'abord les anecdotes ayant déjà une preuve et trois photos
         # distinctes en stock. Aucune répétition du même fait, même sous un autre nom.
         accepted=False

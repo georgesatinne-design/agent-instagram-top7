@@ -50,6 +50,13 @@ def _license(meta,titre,option):
             and 'outcault' in (_meta_value(meta,'Artist')+' '+_meta_value(meta,'ImageDescription')).lower()
             and ('public domain' in short or 'domaine public' in short or 'pd-old' in short)):
         return 'Domaine public : Richard F. Outcault (1863–1928), publication 1896–1898'
+    # Corpus fermé de notices vérifiées, œuvres antérieures à 1931.
+    # Aucune photo moderne ou licence CC BY n'est admise ici.
+    archives_9e_art={"Mon Paris-Takarazuka1928.jpg":"Photographies anonymes publiées au Japon avant 1931, domaine public","Donburako-Takarazuka1914.jpg":"Photographies anonymes publiées au Japon avant 1931, domaine public","Paris Sette-Takarazuka1930.jpg":"Photographies anonymes publiées au Japon avant 1931, domaine public","Asaji Shinohara as Orihime (right), Kishiko Suminoe as Iserihime (left) in the Takarazuka Revue 'Yogo no Ten-nin' , 1920.jpg":"Photographies anonymes publiées au Japon avant 1931, domaine public","Upside-Downs of Little Lady Lovekins and Old Man Muffaroo (1904-12-18).gif":"Gustave Verbeek (1867–1937), planches parues en 1904","Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The wonderful cure of the waterfall.jpg":"Gustave Verbeek (1867–1937), planches parues en 1904","Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The bad snake and the good wizard.jpg":"Gustave Verbeek (1867–1937), planches parues en 1904","Verbeek-rocanoe.gif":"Gustave Verbeek (1867–1937), planches parues en 1904","Dream-of-the-Rarebit-Fiend-12-10-1904.jpg":"Winsor McCay (1869–1934), œuvres publiées avant 1931","Dream of the Rarebit Fiend 1905-02-25.jpg":"Winsor McCay (1869–1934), œuvres publiées avant 1931","Dream of the Rarebit Fiend 1905-01-07.jpg":"Winsor McCay (1869–1934), œuvres publiées avant 1931","Winsor McCay, Dream of the Rarebit Fiend - Here Comes Washington, 1908, NGA 142157.jpg":"Winsor McCay (1869–1934), œuvres publiées avant 1931","Dream of the Rarebit Fiend 1905-01-28 (cropped).jpg":"Winsor McCay (1869–1934), œuvres publiées avant 1931","Krazykat.jpg":"George Herriman (1880–1944), planches publiées avant 1931","Krazy Kat 1920-09-05 original.jpg":"George Herriman (1880–1944), planches publiées avant 1931","Krazy Kat 1921-11-20 original.jpg":"George Herriman (1880–1944), planches publiées avant 1931","Krazy Kat 1920-10-15 original.jpg":"George Herriman (1880–1944), planches publiées avant 1931","Krazy Kat 18 Dec 1919.jpg":"George Herriman (1880–1944), planches publiées avant 1931","Krazy Kat 1916-05-14.jpg":"George Herriman (1880–1944), planches publiées avant 1931","Hokusaimangapas.png":"Katsushika Hokusai (1760–1849), gravures du XIXe siècle","Hokusai Manga 01.jpg":"Katsushika Hokusai (1760–1849), gravures du XIXe siècle","Hokusaimanga vol1 okuzuke.jpg":"Katsushika Hokusai (1760–1849), gravures du XIXe siècle","Hokusai Mangá.jpg":"Katsushika Hokusai (1760–1849), gravures du XIXe siècle","Famille Cornouillet, future famille Fenouillard.JPEG":"Georges Colomb dit Christophe (1856–1945), œuvres publiées en 1889–1895","Famille Fenouillard.JPEG":"Georges Colomb dit Christophe (1856–1945), œuvres publiées en 1889–1895","Christophe - La Famille Fenouillard, 1895 (page 1 crop).jpg":"Georges Colomb dit Christophe (1856–1945), œuvres publiées en 1889–1895","Colomb - La Famille Fenouillard, 1895.jpg":"Georges Colomb dit Christophe (1856–1945), œuvres publiées en 1889–1895","Fenouillard 2.jpg":"Georges Colomb dit Christophe (1856–1945), œuvres publiées en 1889–1895","Histoire de la Sainte Russie LCCN2010645853.jpg":"Gustave Doré (1832–1883), ouvrage publié en 1854","Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927547).jpg":"Gustave Doré (1832–1883), ouvrage publié en 1854","Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927589).jpg":"Gustave Doré (1832–1883), ouvrage publié en 1854","Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927599).jpg":"Gustave Doré (1832–1883), ouvrage publié en 1854","Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927969).jpg":"Gustave Doré (1832–1883), ouvrage publié en 1854","Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927527).jpg":"Gustave Doré (1832–1883), ouvrage publié en 1854","Histoire pittoresque, dramatique et caricaturale de la Sainte Russie 1854 (142927737).jpg":"Gustave Doré (1832–1883), ouvrage publié en 1854"}
+    if (option.get('archive_9e_art') and titre in archives_9e_art and
+            ('public domain' in short or 'domaine public' in short or 'pd-old' in short)
+            and not any(x in short for x in ('cc by','cc-by','noncommercial','non-commercial'))):
+        return 'Domaine public : '+archives_9e_art[titre]
     raise PhotosIndisponibles('Licence sans attribution publique non prouvée : '+short[:65])
 
 
@@ -66,7 +73,7 @@ def _valid_image_url(url):
 
 
 def _fetch_file(session,titre,option):
-    if not re.fullmatch(r'[^<>\x00-\x1f]{6,210}\.(?:jpg|jpeg|png|webp)',titre,re.I):
+    if not re.fullmatch(r'[^<>\x00-\x1f]{6,210}\.(?:jpg|jpeg|png|webp|gif)',titre,re.I):
         raise PhotosIndisponibles('Nom de fichier non autorisé')
     params={'action':'query','format':'json','formatversion':'2','prop':'imageinfo',
       'iiprop':'url|mime|size|extmetadata','iiurlwidth':1600,'titles':'File:'+titre}
@@ -76,7 +83,7 @@ def _fetch_file(session,titre,option):
     if len(pages)!=1 or pages[0].get('missing') or not pages[0].get('imageinfo'):
         raise PhotosIndisponibles('Fichier absent sur Commons')
     inf=pages[0]['imageinfo'][0]
-    if inf.get('mime') not in ('image/jpeg','image/png','image/webp'):
+    if inf.get('mime') not in ('image/jpeg','image/png','image/webp','image/gif'):
         raise PhotosIndisponibles('Type de média non pris en charge')
     # La notice Commons du phonographe n'a pas de champ auteur lisible
     # par machine. L'original vérifié est identifié par son SHA-1 publié.
