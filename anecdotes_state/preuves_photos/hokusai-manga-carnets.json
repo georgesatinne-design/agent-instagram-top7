@@ -1,0 +1,55 @@
+{
+  "photos": [
+    {
+      "titre_commons": "Hokusai Manga — volume 1",
+      "url_commons": "https://www.metmuseum.org/art/collection/search/57679",
+      "image_url": "https://images.metmuseum.org/CRDImages/as/web-large/JIB_81_1_Preface_1_sf.JPG",
+      "licence": "Domaine public — Met Open Access (CC0)",
+      "auteur": "Katsushika Hokusai (1760–1849)",
+      "description": "Hokusai Manga — volume 1",
+      "sha256": "93c90cf0c2de6dc9bd069fb1fbc3b3eff60c5ed239b818da977c3812c9a4e069",
+      "illustration_IA": false,
+      "page": 1,
+      "role": "Hokusai Manga — volume 1",
+      "pertinence": "Archive de l’œuvre précisément citée dans le récit : Hokusai Manga — volume 1",
+      "epoque": "historique",
+      "famille_source": "https://www.metmuseum.org/art/collection/search/57679",
+      "fact_id": "hokusai-manga-carnets",
+      "intention_editoriale": "Des mangas existaient-ils déjà en 1814 ?"
+    },
+    {
+      "titre_commons": "Hokusai Manga — volume 4",
+      "url_commons": "https://www.metmuseum.org/art/collection/search/57682",
+      "image_url": "https://images.metmuseum.org/CRDImages/as/web-large/JIB_81_4_Preface_1_sf.JPG",
+      "licence": "Domaine public — Met Open Access (CC0)",
+      "auteur": "Katsushika Hokusai (1760–1849)",
+      "description": "Hokusai Manga — volume 4",
+      "sha256": "f9510d29ab7413617797b18a2fca7111d165d0b1e0943deaff13f950f414d6ed",
+      "illustration_IA": false,
+      "page": 3,
+      "role": "Hokusai Manga — volume 4",
+      "pertinence": "Archive de l’œuvre précisément citée dans le récit : Hokusai Manga — volume 4",
+      "epoque": "historique",
+      "famille_source": "https://www.metmuseum.org/art/collection/search/57682",
+      "fact_id": "hokusai-manga-carnets",
+      "intention_editoriale": "Des mangas existaient-ils déjà en 1814 ?"
+    },
+    {
+      "titre_commons": "Hokusai Manga — volume 10",
+      "url_commons": "https://www.metmuseum.org/art/collection/search/57687",
+      "image_url": "https://collectionapi.metmuseum.org/api/collection/v1/iiif/57687/202837/main-image",
+      "licence": "Domaine public — Met Open Access (CC0)",
+      "auteur": "Katsushika Hokusai (1760–1849)",
+      "description": "Hokusai Manga — volume 10",
+      "sha256": "15b9915f22161aa5439c9b3bc2d889fcf26fa83174095770081d393300311466",
+      "illustration_IA": false,
+      "page": 4,
+      "role": "Hokusai Manga — volume 10",
+      "pertinence": "Archive de l’œuvre précisément citée dans le récit : Hokusai Manga — volume 10",
+      "epoque": "historique",
+      "famille_source": "https://www.metmuseum.org/art/collection/search/57687",
+      "fact_id": "hokusai-manga-carnets",
+      "intention_editoriale": "Des mangas existaient-ils déjà en 1814 ?"
+    }
+  ]
+}

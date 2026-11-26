@@ -1,0 +1,55 @@
+{
+  "photos": [
+    {
+      "titre_commons": "Gravures de 1854 — exemplaire Polona 142927547",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Histoire_pittoresque%2C_dramatique_et_caricaturale_de_la_Sainte_Russie_1854_%28142927547%29.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/24/Histoire_pittoresque%2C_dramatique_et_caricaturale_de_la_Sainte_Russie_1854_(142927547).jpg",
+      "licence": "Domaine public — œuvre publiée en 1854, auteur mort en 1883",
+      "auteur": "Gustave Doré (1832–1883)",
+      "description": "Gravures de 1854 — exemplaire Polona 142927547",
+      "sha256": "2f984e6a5a07b0a28d41fd40f7ebae9672c47b886d5f61c3cf03c9c3da0d07e0",
+      "illustration_IA": false,
+      "page": 1,
+      "role": "Gravures de 1854 — exemplaire",
+      "pertinence": "Archive de l’œuvre précisément citée dans le récit : Gravures de 1854 — exemplaire Polona 142927547",
+      "epoque": "historique",
+      "famille_source": "https://commons.wikimedia.org/wiki/File:Histoire_pittoresque%2C_dramatique_et_caricaturale_de_la_Sainte_Russie_1854_%28142927547%29.jpg",
+      "fact_id": "dore-cinq-cents-gravures",
+      "intention_editoriale": "Une BD de 500 gravures en 1854 ?"
+    },
+    {
+      "titre_commons": "Gravures de 1854 — exemplaire Polona 142927589",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Histoire_pittoresque%2C_dramatique_et_caricaturale_de_la_Sainte_Russie_1854_%28142927589%29.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b9/Histoire_pittoresque%2C_dramatique_et_caricaturale_de_la_Sainte_Russie_1854_(142927589).jpg",
+      "licence": "Domaine public — œuvre publiée en 1854, auteur mort en 1883",
+      "auteur": "Gustave Doré (1832–1883)",
+      "description": "Gravures de 1854 — exemplaire Polona 142927589",
+      "sha256": "43c46190594246a5705f3d83bb503fc578e36b504ccfd8da476d52ae5e8a263b",
+      "illustration_IA": false,
+      "page": 3,
+      "role": "Gravures de 1854 — exemplaire",
+      "pertinence": "Archive de l’œuvre précisément citée dans le récit : Gravures de 1854 — exemplaire Polona 142927589",
+      "epoque": "historique",
+      "famille_source": "https://commons.wikimedia.org/wiki/File:Histoire_pittoresque%2C_dramatique_et_caricaturale_de_la_Sainte_Russie_1854_%28142927589%29.jpg",
+      "fact_id": "dore-cinq-cents-gravures",
+      "intention_editoriale": "Une BD de 500 gravures en 1854 ?"
+    },
+    {
+      "titre_commons": "Gravures de 1854 — exemplaire Polona 142927599",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Histoire_pittoresque%2C_dramatique_et_caricaturale_de_la_Sainte_Russie_1854_%28142927599%29.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Histoire_pittoresque%2C_dramatique_et_caricaturale_de_la_Sainte_Russie_1854_(142927599).jpg",
+      "licence": "Domaine public — œuvre publiée en 1854, auteur mort en 1883",
+      "auteur": "Gustave Doré (1832–1883)",
+      "description": "Gravures de 1854 — exemplaire Polona 142927599",
+      "sha256": "8080a9d3f9e7119fce3f3c0899bd7ebb15888efa26d04a263a3cd76cbfd58ff3",
+      "illustration_IA": false,
+      "page": 4,
+      "role": "Gravures de 1854 — exemplaire",
+      "pertinence": "Archive de l’œuvre précisément citée dans le récit : Gravures de 1854 — exemplaire Polona 142927599",
+      "epoque": "historique",
+      "famille_source": "https://commons.wikimedia.org/wiki/File:Histoire_pittoresque%2C_dramatique_et_caricaturale_de_la_Sainte_Russie_1854_%28142927599%29.jpg",
+      "fact_id": "dore-cinq-cents-gravures",
+      "intention_editoriale": "Une BD de 500 gravures en 1854 ?"
+    }
+  ]
+}

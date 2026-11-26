@@ -1,0 +1,55 @@
+{
+  "photos": [
+    {
+      "titre_commons": "Le tramway — Dream of the Rarebit Fiend",
+      "url_commons": "https://www.loc.gov/pictures/item/2005680624/",
+      "image_url": "https://tile.loc.gov/storage-services/service/pnp/ppmsca/07800/07860v.jpg",
+      "licence": "Domaine public — œuvre publiée avant 1931, auteur mort en 1934; LOC sans restriction connue",
+      "auteur": "Winsor McCay (1869–1934)",
+      "description": "Le tramway — Dream of the Rarebit Fiend",
+      "sha256": "5ac96b734e6dd58fa47b79cbfae0b18e674f4eed5de6ec798ddd1ec645a0f88f",
+      "illustration_IA": false,
+      "page": 1,
+      "role": "Le tramway — Dream of the Rar",
+      "pertinence": "Archive de l’œuvre précisément citée dans le récit : Le tramway — Dream of the Rarebit Fiend",
+      "epoque": "historique",
+      "famille_source": "https://www.loc.gov/pictures/item/2005680624/",
+      "fact_id": "mccay-pseudonyme-silas",
+      "intention_editoriale": "Le créateur de Little Nemo signait parfois sous un autre nom"
+    },
+    {
+      "titre_commons": "La mère et son enfant — planche de 1907",
+      "url_commons": "https://www.loc.gov/pictures/item/2016684823/",
+      "image_url": "https://tile.loc.gov/storage-services/service/pnp/ppmsca/09500/09520v.jpg",
+      "licence": "Domaine public — œuvre publiée avant 1931, auteur mort en 1934; LOC sans restriction connue",
+      "auteur": "Winsor McCay (1869–1934)",
+      "description": "La mère et son enfant — planche de 1907",
+      "sha256": "b033c1fd9d08c47c404503489398286b49ce696c9165faec5a3f0b9be9c0bf2c",
+      "illustration_IA": false,
+      "page": 3,
+      "role": "La mère et son enfant — planc",
+      "pertinence": "Archive de l’œuvre précisément citée dans le récit : La mère et son enfant — planche de 1907",
+      "epoque": "historique",
+      "famille_source": "https://www.loc.gov/pictures/item/2016684823/",
+      "fact_id": "mccay-pseudonyme-silas",
+      "intention_editoriale": "Le créateur de Little Nemo signait parfois sous un autre nom"
+    },
+    {
+      "titre_commons": "Bucking Automobile, 1907",
+      "url_commons": "https://www.nga.gov/artworks/142155-dream-rarebit-fiend-bucking-automobile",
+      "image_url": "https://api.nga.gov/iiif/b9502787-6dca-4a68-a925-ad0676150976/full/1600,/0/default.jpg",
+      "licence": "Domaine public — NGA Open Access",
+      "auteur": "Winsor McCay (1869–1934)",
+      "description": "Bucking Automobile, 1907",
+      "sha256": "52466f344761c8b6d1bde188ee91ebe63e177346ce41c814b9cfc7ba1ae70b95",
+      "illustration_IA": false,
+      "page": 4,
+      "role": "Bucking Automobile, 1907",
+      "pertinence": "Archive de l’œuvre précisément citée dans le récit : Bucking Automobile, 1907",
+      "epoque": "historique",
+      "famille_source": "https://www.nga.gov/artworks/142155-dream-rarebit-fiend-bucking-automobile",
+      "fact_id": "mccay-pseudonyme-silas",
+      "intention_editoriale": "Le créateur de Little Nemo signait parfois sous un autre nom"
+    }
+  ]
+}

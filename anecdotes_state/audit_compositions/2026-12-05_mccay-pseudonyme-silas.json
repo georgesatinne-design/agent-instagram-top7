@@ -1,0 +1,73 @@
+{
+  "version": "BD_ANECDOTE_V5_IMAGES_SCENARISEES",
+  "fact_id": "mccay-pseudonyme-silas",
+  "pages": [
+    {
+      "page": 1,
+      "image_source_sha256": "4d0041fa06a623b4adac0eaa4180c8c880800db9a70fdc92cae7525a516de177",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Le tramway — Dream of the Rar",
+      "pertinence_editoriale": "Archive de l’œuvre précisément citée dans le récit : Le tramway — Dream of the Rarebit Fiend",
+      "epoque_reelle": "historique",
+      "titre_commons": "Le tramway — Dream of the Rarebit Fiend",
+      "licence": "Domaine public — œuvre publiée avant 1931, auteur mort en 1934; LOC sans restriction connue",
+      "famille_source": "https://www.loc.gov/pictures/item/2005680624/"
+    },
+    {
+      "page": 2,
+      "image_source_sha256": null,
+      "type_page": "composition_graphique_sans_photo",
+      "role_visuel": null,
+      "pertinence_editoriale": null,
+      "epoque_reelle": null,
+      "titre_commons": null,
+      "licence": null,
+      "famille_source": null
+    },
+    {
+      "page": 3,
+      "image_source_sha256": "3f29317c08ee7563b00ea3e1ae867f6366ebcefb8406159040ff069eab6c55e5",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "La mère et son enfant — planc",
+      "pertinence_editoriale": "Archive de l’œuvre précisément citée dans le récit : La mère et son enfant — planche de 1907",
+      "epoque_reelle": "historique",
+      "titre_commons": "La mère et son enfant — planche de 1907",
+      "licence": "Domaine public — œuvre publiée avant 1931, auteur mort en 1934; LOC sans restriction connue",
+      "famille_source": "https://www.loc.gov/pictures/item/2016684823/"
+    },
+    {
+      "page": 4,
+      "image_source_sha256": "b870a859a73707451fc259624955c6c4beb2fd606d888a02ed0e90da2b90b3b8",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Bucking Automobile, 1907",
+      "pertinence_editoriale": "Archive de l’œuvre précisément citée dans le récit : Bucking Automobile, 1907",
+      "epoque_reelle": "historique",
+      "titre_commons": "Bucking Automobile, 1907",
+      "licence": "Domaine public — NGA Open Access",
+      "famille_source": "https://www.nga.gov/artworks/142155-dream-rarebit-fiend-bucking-automobile"
+    },
+    {
+      "page": 5,
+      "image_source_sha256": null,
+      "type_page": "composition_graphique_sans_photo",
+      "role_visuel": null,
+      "pertinence_editoriale": null,
+      "epoque_reelle": null,
+      "titre_commons": null,
+      "licence": null,
+      "famille_source": null
+    }
+  ],
+  "photos_recues": 3,
+  "photos_dedoublonnees": 3,
+  "photos_utilisees": 3,
+  "photos_repetees": 0,
+  "identification_couverture": "ANECDOTE DU 9e ART grand bandeau jaune",
+  "narration_verifiee": true,
+  "etapes_avec_photographie": [
+    1,
+    3,
+    4
+  ],
+  "principe": "Aucune image generative, aucune meme photographie sur deux pages."
+}

@@ -1,0 +1,73 @@
+{
+  "version": "BD_ANECDOTE_V5_IMAGES_SCENARISEES",
+  "fact_id": "dore-cinq-cents-gravures",
+  "pages": [
+    {
+      "page": 1,
+      "image_source_sha256": "b6f6602c1b87e9c81454b7405ed42720b2e3f9d35a60bc2752e47f04f168b0a1",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Gravures de 1854 — exemplaire",
+      "pertinence_editoriale": "Archive de l’œuvre précisément citée dans le récit : Gravures de 1854 — exemplaire Polona 142927547",
+      "epoque_reelle": "historique",
+      "titre_commons": "Gravures de 1854 — exemplaire Polona 142927547",
+      "licence": "Domaine public — œuvre publiée en 1854, auteur mort en 1883",
+      "famille_source": "https://commons.wikimedia.org/wiki/File:Histoire_pittoresque%2C_dramatique_et_caricaturale_de_la_Sainte_Russie_1854_%28142927547%29.jpg"
+    },
+    {
+      "page": 2,
+      "image_source_sha256": null,
+      "type_page": "composition_graphique_sans_photo",
+      "role_visuel": null,
+      "pertinence_editoriale": null,
+      "epoque_reelle": null,
+      "titre_commons": null,
+      "licence": null,
+      "famille_source": null
+    },
+    {
+      "page": 3,
+      "image_source_sha256": "e9fc91fa2311a167dddfbde3a9e61538ed897e88cc7be16b2276c44037ead346",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Gravures de 1854 — exemplaire",
+      "pertinence_editoriale": "Archive de l’œuvre précisément citée dans le récit : Gravures de 1854 — exemplaire Polona 142927589",
+      "epoque_reelle": "historique",
+      "titre_commons": "Gravures de 1854 — exemplaire Polona 142927589",
+      "licence": "Domaine public — œuvre publiée en 1854, auteur mort en 1883",
+      "famille_source": "https://commons.wikimedia.org/wiki/File:Histoire_pittoresque%2C_dramatique_et_caricaturale_de_la_Sainte_Russie_1854_%28142927589%29.jpg"
+    },
+    {
+      "page": 4,
+      "image_source_sha256": "5a3fa82c2e1e1763a8a2dc1e43628798e138ef59c9ef725655186db7d7e84da0",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Gravures de 1854 — exemplaire",
+      "pertinence_editoriale": "Archive de l’œuvre précisément citée dans le récit : Gravures de 1854 — exemplaire Polona 142927599",
+      "epoque_reelle": "historique",
+      "titre_commons": "Gravures de 1854 — exemplaire Polona 142927599",
+      "licence": "Domaine public — œuvre publiée en 1854, auteur mort en 1883",
+      "famille_source": "https://commons.wikimedia.org/wiki/File:Histoire_pittoresque%2C_dramatique_et_caricaturale_de_la_Sainte_Russie_1854_%28142927599%29.jpg"
+    },
+    {
+      "page": 5,
+      "image_source_sha256": null,
+      "type_page": "composition_graphique_sans_photo",
+      "role_visuel": null,
+      "pertinence_editoriale": null,
+      "epoque_reelle": null,
+      "titre_commons": null,
+      "licence": null,
+      "famille_source": null
+    }
+  ],
+  "photos_recues": 3,
+  "photos_dedoublonnees": 3,
+  "photos_utilisees": 3,
+  "photos_repetees": 0,
+  "identification_couverture": "ANECDOTE DU 9e ART grand bandeau jaune",
+  "narration_verifiee": true,
+  "etapes_avec_photographie": [
+    1,
+    3,
+    4
+  ],
+  "principe": "Aucune image generative, aucune meme photographie sur deux pages."
+}
