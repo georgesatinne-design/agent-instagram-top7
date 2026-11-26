@@ -25,7 +25,7 @@
   "2026-11-28": {
     "fact_id": "saphir-theatre-takarazuka",
     "sujet": "saphir",
-    "etat": "EN_ATTENTE_MAJ",
+    "etat": "PROGRAMME",
     "date": "2026-11-28",
     "due_at": "2026-11-28T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-11-28/saphir-theatre-takarazuka_09effc74915115d2b6",
@@ -42,32 +42,9 @@
     "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nUn théâtre a inspiré un manga culte\n\nPour créer Princesse Saphir, Osamu Tezuka s'est inspiré des spectacles de la revue Takarazuka.\n\nQuel manga te rappelle l'univers du théâtre ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "empreinte_fait": "9a1e7ba52014d3e0b8",
     "id_buffer": "6b05551cc2cc76a6ce6a4ad5",
-    "ancien_texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nUn des pères de la bd était suisse\n\nRodolphe Töpffer est né à Genève, en Suisse, en 1799.\n\nTu avais déjà entendu parler de Töpffer ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "ancien_fact_id": "topffer-geneve",
     "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART",
-    "renouvellement_original": {
-      "fact_id": "topffer-geneve",
-      "sujet": "topffer",
-      "etat": "PROGRAMME",
-      "date": "2026-11-28",
-      "due_at": "2026-11-28T17:00:00.000Z",
-      "dossier": "public_media/anecdotes_bd/2026-11-28/topffer-geneve_bc1feb3d5870d52c4e",
-      "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-11-28/topffer-geneve_bc1feb3d5870d52c4e/",
-      "images": [
-        "01_anecdote.png",
-        "02_anecdote.png",
-        "03_anecdote.png",
-        "04_anecdote.png",
-        "05_anecdote.png"
-      ],
-      "revision": "bc1feb3d5870d52c4e",
-      "date_preparation": "2026-11-24T13:45:31.461284+00:00",
-      "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nUn des pères de la bd était suisse\n\nRodolphe Töpffer est né à Genève, en Suisse, en 1799.\n\nTu avais déjà entendu parler de Töpffer ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
-      "id_buffer": "6b05551cc2cc76a6ce6a4ad5",
-      "ancien_fact_id": "topffer-geneve",
-      "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART",
-      "date_confirmation": "2026-11-26T17:05:45.398994+00:00"
-    }
+    "date_confirmation": "2026-11-26T17:23:25.207252+00:00"
   },
   "2026-11-29": {
     "fact_id": "bruxelles-centre-doc",
