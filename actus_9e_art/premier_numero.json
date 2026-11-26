@@ -39,28 +39,23 @@
       ]
     },
     {
-      "title": "Une librairie manga trouve un repreneur à Morlaix",
-      "body": "À 23 ans, Fabio Scalora reprend Manga No Tengoku, une librairie du Finistère spécialisée dans les mangas. Une nouvelle étape pour ce commerce indépendant.",
-      "theme": "LIBRAIRIES",
-      "source": "ActuaLitté",
-      "url": "https://actualitte.com/article/135345/librairie/morlaix-a-23-ans-fabio-scalora-reprend-manga-no-tengoku-et-prepare-la-suite",
-      "date": "2026-11-20",
-      "anchors": [
-        "Fabio Scalora",
-        "Manga No Tengoku"
-      ]
+      "title": "Star Wars et Marvel dévoilent leur crossover inédit",
+      "body": "Les premières planches de Hope Assembles ont été présentées le 25 novembre. Spider-Man, les Avengers et les héros de Star Wars se rencontrent dans cette série annoncée pour janvier 2027.",
+      "theme": "COMICS",
+      "source": "COMICSBLOG",
+      "url": "https://www.comicsblog.fr/53131-Star_WarsMarvel__Hope_assembles_1_se_deevoile_avec_une_poigneee_de_planches_inteerieures",
+      "date": "2026-11-25",
+      "corroboration": "https://www.starwars.com/news/star-wars-marvel-comics-crossover-hope-assembles"
     },
     {
-      "title": "Luminous reçoit le prix jeunesse de l'ACBD",
-      "body": "Le prix a été annoncé le 21 novembre à Blois. La remise est prévue le 28 novembre au Salon du livre et de la presse jeunesse de Montreuil.",
-      "theme": "JEUNESSE",
-      "source": "ACBD",
-      "url": "https://www.acbd.fr/12100/actualites/luminous-prix-jeunesse-de-la-critique-acbd-2026/",
-      "date": "2026-11-21",
-      "anchors": [
-        "Luminous",
-        "Montreuil"
-      ]
+      "title": "Sakamoto Days s'achève après six ans de publication",
+      "body": "Le manga de Yûto Suzuki se termine avec son chapitre 284 dans le Weekly Shônen Jump. Une page se tourne pour les lecteurs de cette série d'action.",
+      "theme": "MANGA",
+      "source": "Manga-news",
+      "url": "https://www.manga-news.com/index.php/actus/2026/11/23/Cest-fini-pour-SAKAMOTO-DAYS",
+      "date": "2026-11-23",
+      "corroboration": "https://www.oricon-group.com/news/9530/"
     }
-  ]
+  ],
+  "revision": 2
 }

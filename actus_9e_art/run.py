@@ -63,11 +63,14 @@ def prepare(repo,*,now=None,buffer=None):
     due=next_weekly('ACTUS',now);day=parse_due(due).date()
     if (day-parse_due(now).date()).days>4:raise RuntimeError('Hors fenêtre de collecte du lundi')
     receipt=STATE/(day.isoformat()+'.json');old=read(receipt,{})
-    if old.get('etat')=='PROGRAMME':write(OUT/'plan.json',{'skip':True});return
+    # Explicit, one-time editorial correction of the first issue only.
+    revision=2 if day.isoformat()=='2026-11-30' else 1
+    revising=old.get('etat')=='PROGRAMME' and old.get('revision',1)<revision
+    if old.get('etat')=='PROGRAMME' and not revising:write(OUT/'plan.json',{'skip':True});return
     # A persisted intent is reused exactly, never recreated with new content.
     if old.get('etat')=='EN_COURS':
         write(OUT/'plan.json',old);return
-    used=[u for p in STATE.glob('*.json') for u in (read(p,{}) or {}).get('urls',[])]
+    used=[u for p in STATE.glob('*.json') if not (revising and p==receipt) for u in (read(p,{}) or {}).get('urls',[])]
     items=collect(day,used=used)
     text=caption(items,day)
     digest=hashlib.sha256(json.dumps(items,sort_keys=True,ensure_ascii=False).encode()).hexdigest()[:18]
@@ -75,6 +78,8 @@ def prepare(repo,*,now=None,buffer=None):
     names=render(items,folder,day)
     plan={'date':day.isoformat(),'due':due,'etat':'PRET','text':text,'urls':[x['url'] for x in items],
           'folder':str(folder.relative_to(ROOT)),'names':names,'base_url':f'https://raw.githubusercontent.com/{repo}/main/{folder.relative_to(ROOT).as_posix()}/'}
+    plan['revision']=revision
+    if revising:plan['previous']={k:old[k] for k in ('id_buffer','text','due')}
     write(OUT/'plan.json',plan)
 def send(*,buffer=None,now=None):
     now=now or dt.datetime.now(dt.timezone.utc);buffer=buffer or Buffer()
@@ -104,7 +109,12 @@ def send(*,buffer=None,now=None):
            target.get('id_buffer')==same[0]['id'] and target.get('texte_public','').strip()==same[0]['text'].strip() and
            parse(target['due_at'])==parse(due))
     # A Monday anecdote can be replaced in place (no delete, no extra capacity).
-    if owned:
+    previous=plan.get('previous') or {}
+    revision_owned=(len(same)==1 and prior.get('etat')=='PROGRAMME'
+        and previous.get('id_buffer')==same[0]['id']==prior.get('id_buffer')
+        and previous.get('text','').strip()==same[0]['text'].strip()==prior.get('text','').strip()
+        and parse(previous['due'])==parse(due)) if previous else False
+    if owned or revision_owned:
         identifier=same[0]['id']
         final_guard('ACTUS',due,api_key='',channel_id='',post=None,buffer=buffer,expected_id=identifier,now=now)
         if not any(p==same[0] for p in buffer.list_scheduled()):raise RuntimeError('Post modifié')
@@ -132,7 +142,7 @@ def send(*,buffer=None,now=None):
     plan.update(etat='PROGRAMME',id_buffer=post['id'],confirmation_utc=dt.datetime.now(dt.timezone.utc).isoformat());write(path,plan)
     if owned:
         target['etat']='SUPPLANTE_PAR_ACTUS';save_registry(registry)
-    print('POST_PROGRAMME ACTUS',date,'6 pages, relecture Buffer confirmée')
+    print('POST_PROGRAMME ACTUS',date,'6 pages, relecture Buffer confirmée, revision',plan.get('revision',1))
 def main():
     p=argparse.ArgumentParser();p.add_argument('action',choices=['prepare','send']);a=p.parse_args()
     if a.action=='prepare':prepare(os.environ['GITHUB_REPOSITORY'])

@@ -21,6 +21,9 @@ class ActusTests(unittest.TestCase):
             for name in names:
                 with Image.open(Path(td)/name) as im:self.assertEqual(im.size,(1080,1350))
     def test_no_rumor_or_non_bd(self):
+        self.assertIsNone(theme('Une librairie manga trouve un repreneur à Morlaix','actualitte.com'))
+        self.assertEqual(theme('C’est fini pour Sakamoto Days','www.manga-news.com'),'MANGA')
+        self.assertEqual(theme('Star Wars et Marvel dévoilent leur crossover','www.comicsblog.fr'),'COMICS')
         self.assertIsNone(theme('Rumeur : nouveau manga','www.actuabd.com'))
         self.assertIsNone(theme('Prix du roman historique','actualitte.com'))
     def test_calendar_and_legacy(self):

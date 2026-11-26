@@ -20,6 +20,7 @@ SOURCES={
  'actualitte.com':('ActuaLitté',False,'https://actualitte.com/','https://actualitte.com/rss-main.rss'),
  'www.actuabd.com':('ActuaBD',False,'https://www.actuabd.com/','https://www.actuabd.com/spip.php?page=backend'),
  'www.comicsblog.fr':('COMICSBLOG',False,'https://www.comicsblog.fr/news',None),
+ 'www.manga-news.com':('Manga-news',False,'https://www.manga-news.com/index.php/actus/','https://www.manga-news.com/index.php/feed/actumanga'),
  'www.lemonde.fr':('Le Monde',False,'https://www.lemonde.fr/bande-dessinee/','https://www.lemonde.fr/bande-dessinee/rss_full.xml'),
 }
 UA='Illyadera/1.0 (https://github.com/georgesatinne-design/agent-instagram-top7)'
@@ -49,10 +50,20 @@ def date_value(s):
     except (ValueError,TypeError):pass
     try:return parsedate_to_datetime(s).date()
     except (ValueError,TypeError,OverflowError):return None
+def broad_interest(title):
+    s=fold(title)
+    # Exclude isolated shops, local signings, school events and commercial offers.
+    if re.search(r'\b(repreneur|reprend|reprise|dedicace|dedicaces|boutique|commercants|seance de signature|campagne de financement|precommande|agenda du week-end|classe de|concours local)\b',s):return False
+    if re.search(r'\b(librairie|librairies)\b',s) and not re.search(r'\b(syndicat|secteur|marche|national|france|reseau|chiffres|etude|barometre|loi)\b',s):return False
+    return True
+
 def theme(title,host):
     s=fold(title)
+    if not broad_interest(title):return None
     if re.search(r'\b(rumeur|leak|scoop|pourrait|suppose|teaser|bande-annonce|critique de|chronique|promo|concours|meilleures ventes|top 10|top 100|trailer|disparition|accuse|scandale)\b',s) or '?' in s:return None
-    if host not in ('www.acbd.fr','www.citebd.org','www.actuabd.com','www.comicsblog.fr') and not re.search(r'\b(bd|bande dessinee|manga|mangas|comics|roman graphique)\b',s):return None
+    if host not in ('www.acbd.fr','www.citebd.org','www.actuabd.com','www.comicsblog.fr','www.manga-news.com') and not re.search(r'\b(bd|bande dessinee|manga|mangas|comics|roman graphique)\b',s):return None
+    if host=='www.manga-news.com' and re.search(r'\b(fin|acheve|achevement|termine|s.acheve|prend fin|fini|nouveau manga|nouvelle serie|licence|annonce)\b',s):return 'MANGA'
+    if host=='www.comicsblog.fr' and re.search(r'\b(crossover|marvel|dc comics|batman|spider-man|star wars|superman|avengers)\b',s):return 'COMICS'
     for name,pattern in [
         ('PRIX',r'\b(prix|laureat|laureate|finalistes|recompense|palmares)\b'),
         ('EXPOSITION',r'\b(exposition|retrospective|musee)\b'),
@@ -110,7 +121,7 @@ def article(html,url,fallback_date=None):
     host=urlparse(url).hostname;kind=theme(title,host)
     if not kind or not day or not 22<=len(title)<=145 or len(title.split())>22:return None
     # Explicitly labelled short attributed title, no invented article details.
-    context={'PRIX':'Les distinctions et sélections qui mettent les albums et leurs auteurs en lumière.',
+    context={'MANGA':'Une information sur les séries et la création manga.','COMICS':'Une annonce à suivre dans le monde des comics.','PRIX':'Les distinctions et sélections qui mettent les albums et leurs auteurs en lumière.',
       'EXPOSITION':'Une piste pour découvrir la bande dessinée au-delà de la lecture des albums.',
       'FESTIVAL':'Un rendez-vous à suivre dans le calendrier des passionnés.',
       'LIBRAIRIES':'Une information sur les lieux qui font vivre la lecture et la BD.',
@@ -121,9 +132,9 @@ def article(html,url,fallback_date=None):
 def select(items,day,used=()):
     chosen=[];counts={};themes={};seen=set(used)
     def words(s):return set(re.findall(r'[a-z0-9]{4,}',fold(s)))-{'dans','pour','avec','bande','dessinee','manga','comics','nouvelle','prix','edition','2026','2027'}
-    def rank(x):return (not x.get('official',False),-dt.date.fromisoformat(x['date']).toordinal(),x['url'])
+    def rank(x):return (x['theme'] not in ('MANGA','COMICS','PRIX','EXPOSITION','PATRIMOINE'),not x.get('official',False),-dt.date.fromisoformat(x['date']).toordinal(),x['url'])
     for x in sorted(items,key=rank):
-        if not allowed(x['url']) or x['url'] in seen:continue
+        if not allowed(x['url']) or x['url'] in seen or not broad_interest(x['title']):continue
         age=(day-dt.date.fromisoformat(x['date'])).days
         if age<0 or age>14:continue
         if x.get('event') and dt.date.fromisoformat(x['event'])<day:continue
