@@ -1,0 +1,69 @@
+name: ILlyadera V10 - installation securisee sans publication
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: illyadera-buffer-operations
+  cancel-in-progress: false
+
+jobs:
+  corriger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Copier le depot main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Installer les dependances pour verifier la modification
+        run: python -m pip install -r requirements.txt
+      - name: Appliquer les changements sans toucher a Buffer
+        run: python repair_illyadera_v10.py --apply
+      - name: Verifier syntaxe et non regressions sans reseau ni Buffer
+        run: |
+          python -m compileall -q agent.py illyadera_queue.py anecdotes_auto sources/collecte.py
+          python -m unittest discover -s tests -p 'test_anecdotes_bd_auto.py' -v
+          python -m unittest discover -s tests -p 'test_illyadera_queue.py' -v
+          python -m unittest discover -s tests -p 'test_agent.py' -v
+          python -m unittest discover -s tests -p 'test_top7_buffer.py' -v
+          python -m unittest discover -s tests -p 'test_manga_production_auto.py' -v
+          python -m unittest discover -s tests -p 'test_comics_periodiques.py' -v
+          python -m unittest discover -s tests -p 'test_illyadera_v10.py' -v
+      - name: Committer les fichiers valides sur main
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/hebdomadaire.yml .github/workflows/manga_top7_collecte.yml \
+            .github/workflows/comics_top7_auto.yml .github/workflows/anecdotes_bd_auto.yml \
+            sources/collecte.py agent.py anecdotes_auto/calendrier.py \
+            anecdotes_auto/run.py illyadera_queue.py tests/test_anecdotes_bd_auto.py
+          if ! git diff --cached --quiet; then
+            git commit -m 'Illyadera V10 - queue autonome et correction des Tops'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Redemarrer les agents et reapprovisionner Buffer une seule fois
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Les workflows partagent la meme concurrence : pas d'actions
+          # Buffer simultanees, pas de doublons imposes par l'installateur.
+          for workflow in hebdomadaire.yml manga_top7_collecte.yml comics_top7_auto.yml anecdotes_bd_auto.yml; do
+            echo "Demande de controle: $workflow"
+            gh workflow run "$workflow" --ref main
+          done
+      - name: Bilan installateur
+        if: always()
+        run: |
+          echo '## V10: fichier de reparation' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Aucun appel Buffer durant cette installation. Rechercher ci-dessus le commit et les tests.' >> "$GITHUB_STEP_SUMMARY"
