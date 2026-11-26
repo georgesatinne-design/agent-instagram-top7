@@ -161,7 +161,7 @@
   "2026-12-07": {
     "fact_id": "lucky-luke-morris",
     "sujet": "lucky",
-    "etat": "EN_ATTENTE_MAJ",
+    "etat": "PROGRAMME",
     "date": "2026-12-07",
     "due_at": "2026-12-07T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-12-07/lucky-luke-morris_9cb66fdf67fa11fa5f",
@@ -177,31 +177,8 @@
     "date_preparation": "2026-11-26T10:44:17.283453+00:00",
     "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nMorris… ce n’était pas son vrai nom\n\nLe dessinateur de Lucky Luke s’appelait Maurice de Bevere.\n\nTu le savais, toi ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "id_buffer": "6b080d99d91bf30768368336",
-    "date_confirmation": "2026-11-26T10:44:38.366734+00:00",
-    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART",
-    "ancien_texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nMorris… ce n’était pas son vrai nom\n\nLe dessinateur de Lucky Luke s’appelait Maurice de Bevere.\n\nTu le savais, toi ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
-    "migration_9e_art": {
-      "fact_id": "lucky-luke-morris",
-      "sujet": "lucky",
-      "etat": "PROGRAMME",
-      "date": "2026-12-07",
-      "due_at": "2026-12-07T17:00:00.000Z",
-      "dossier": "public_media/anecdotes_bd/2026-12-07/lucky-luke-morris_b2d46bb42205e52063",
-      "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-07/lucky-luke-morris_b2d46bb42205e52063/",
-      "images": [
-        "01_anecdote.png",
-        "02_anecdote.png",
-        "03_anecdote.png",
-        "04_anecdote.png",
-        "05_anecdote.png"
-      ],
-      "revision": "b2d46bb42205e52063",
-      "date_preparation": "2026-11-26T10:44:17.283453+00:00",
-      "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nMorris… ce n’était pas son vrai nom\n\nLe dessinateur de Lucky Luke s’appelait Maurice de Bevere.\n\nTu le savais, toi ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
-      "id_buffer": "6b080d99d91bf30768368336",
-      "date_confirmation": "2026-11-26T10:44:38.366734+00:00",
-      "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11"
-    }
+    "date_confirmation": "2026-11-26T17:06:17.908575+00:00",
+    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART"
   },
   "2026-12-09": {
     "fact_id": "yellowkid-guerre-journaux",
