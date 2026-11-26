@@ -233,6 +233,8 @@ def render_top7(data,destination,cover_directory,*,use_watermark=False):
     foot(im,8)
     path=target/'08_recapitulatif.png';im.save(path,optimize=True);slides.append(path)
     caption=f'📚 TOP 7 {data["categorie"]} — Les meilleures ventes\n📅 Ventes {period}\n\n'
+    if data["categorie"]=="MANGA" and data.get("certification") in ("A_VERIFIER","TOP7_RECONSTITUE_A_VALIDER"):
+        caption+="Sélection des mangas identifiés dans le palmarès général des livres ; classement non exhaustif.\n\n"
     for book in top:
         mv=movement(book,move_ok)
         publisher=(book.get('editeur') or '').strip()

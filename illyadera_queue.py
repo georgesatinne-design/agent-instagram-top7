@@ -58,7 +58,7 @@ def _eligible_owned(posts,registry,now):
         if (post.get('text') or '').strip()!=(rec.get('texte_public') or '').strip():continue
         if not post.get('dueAt') or _dt(post['dueAt'])<=now+dt.timedelta(minutes=40):continue
         if key!=_dt(post['dueAt']).astimezone(PARIS).date().isoformat():continue
-        if rec.get('due_at') and abs((_dt(rec['due_at'])-_dt(post['dueAt'])).total_seconds())>90:
+        if not rec.get('due_at') or abs((_dt(rec['due_at'])-_dt(post['dueAt'])).total_seconds())>90:
             continue
         candidates.append((key,rec,post))
     return candidates
@@ -73,6 +73,8 @@ def free_capacity_for_priority(due_at, *, buffer, registry=None, registry_path=R
     Toujours reconsulter Buffer avant la suppression (dans le même workflow
     GitHub avec verrou de concurrence partagé entre tous les agents).
     """
+    if not 1<=max_posts<=MAX_DEFAULT:
+        raise ValueError('Capacité Buffer Free : maximum 10 posts par canal')
     now=_dt(now or dt.datetime.now(dt.timezone.utc))
     due=_dt(due_at)
     if due<=now+dt.timedelta(minutes=35):
@@ -87,7 +89,12 @@ def free_capacity_for_priority(due_at, *, buffer, registry=None, registry_path=R
                   _dt(p['dueAt']).astimezone(PARIS).date().isoformat()==target and
                   p['text'].lstrip('📚 ').upper().startswith(('TOP 7 BD','TOP 7 MANGA','TOP 5 COMICS','TOP 7 COMICS'))]
     if existing_top:
+        prefixes={'BD':('TOP 7 BD',),'MANGA':('TOP 7 MANGA',),'COMICS':('TOP 5 COMICS','TOP 7 COMICS')}
+        if len(existing_top)!=1 or priority=='REMPLISSAGE' or (priority in prefixes and not existing_top[0]['text'].lstrip('📚 ').upper().startswith(prefixes[priority])):
+            raise RuntimeError('Créneau occupé par un autre classement : arbitrage interdit')
         return {'action':'TOP_DEJA_PREVU','file':len(posts),'date':target}
+    if len(posts)>max_posts:
+        raise RuntimeError('File au-delà du plafond gratuit : aucune suppression automatique')
     owned=_eligible_owned(posts,registry,now)
     owned_ids={item[2]['id'] for item in owned}
     unknown_at_target=[p for p in posts if
@@ -108,6 +115,12 @@ def free_capacity_for_priority(due_at, *, buffer, registry=None, registry_path=R
     if selected is None:
         raise RuntimeError(f'Buffer plein ({len(posts)}/{max_posts}), mais aucune anecdote future appartenant à Illiyadera ne peut être libérée sans risque')
     key,rec,post=selected
+    # Vérifier une seconde fois le post exact avant l'opération irréversible.
+    fresh=buffer.list_scheduled()
+    if len(fresh)>max_posts or fresh!=posts:
+        raise RuntimeError('File Buffer modifiée pendant le contrôle : aucune suppression')
+    if not any(k==key and p['id']==post['id'] for k,_,p in _eligible_owned(fresh,registry,now)):
+        raise RuntimeError('Identité ou créneau de l’anecdote non confirmé')
     result=buffer.delete_own(post['id'])
     if not isinstance(result,dict) or result.get('id')!=post['id']:
         raise RuntimeError('Suppression non confirmée par Buffer, état inchangé')
@@ -120,7 +133,16 @@ def free_capacity_for_priority(due_at, *, buffer, registry=None, registry_path=R
     return {'action':'ANECDOTE_LIBEREE','date_liberation':key,'id_buffer':post['id'],'file_avant':len(posts),'priorite':priority}
 
 
-def planned_slots(kind, now=None):
+def _receipt_exists(path, edition):
+    path=Path(path)
+    if not path.is_file():return False
+    rec=json.loads(path.read_text(encoding='utf-8'))
+    if rec.get('statut')!='POST_PROGRAMME' or rec.get('edition')!=edition or not rec.get('id_buffer'):
+        raise RuntimeError('Reçu de classement incohérent : arbitrage suspendu')
+    return True
+
+
+def planned_slots(kind, now=None, *, preflight=False, edition=None, repo=None):
     """Déduit les horaires des clients existants, sans calendrier inventé."""
     now=now or dt.datetime.now(dt.timezone.utc)
     if kind=='BD':
@@ -129,17 +151,35 @@ def planned_slots(kind, now=None):
         if not suggestion:raise RuntimeError('Créneau BD absent')
         return [suggestion['dueAt']]
     if kind=='MANGA':
-        from manga_buffer_auto import mardi_suivant
+        from manga_buffer_auto import mardi_suivant, construire
+        if preflight:
+            from media_preflight import verify_public_assets
+            import re
+            if not edition or not re.fullmatch(r'MANGA_\d{4}-\d{2}-\d{2}',edition):raise RuntimeError('Edition manga absente')
+            if _receipt_exists(ROOT/'manga_buffer_receipts'/(edition+'.json'),edition):return []
+            folder=ROOT/'sorties'/'manga_production'/edition/'MANGA'
+            base=f'https://raw.githubusercontent.com/{repo}/main/public_media/{edition}/MANGA_sans_sources_v1/'
+            payload=construire(folder,base,os.environ.get('BUFFER_CHANNEL_ID',''),now=now)
+            verify_public_assets(payload['assets'])
+            return [payload['dueAt']]
         return [mardi_suivant(now)]
     if kind=='COMICS':
         from comics_pipeline_periodique import load
-        from comics_buffer_periodique import next_slot
+        from comics_buffer_periodique import next_slot, construire
+        from media_preflight import verify_public_assets
         slots=[]
         for row in load(ROOT/'sorties'/'comics_periodique'/'PLAN_BUFFER.json') or []:
             folder=Path(row.get('folder',''))
             if not folder.is_absolute():folder=ROOT/folder
             data=load(folder.parent/'classement_comics.json')
-            if data:slots.append(next_slot(data,now=now))
+            if not data:raise RuntimeError('Classement Comics du plan absent')
+            if preflight:
+                if row.get('edition')!=data.get('edition'):raise RuntimeError('Edition Comics incohérente')
+                if _receipt_exists(ROOT/'comics_buffer_receipts'/(data['edition']+'.json'),data['edition']):continue
+                payload=construire(folder,row['base_url'],os.environ.get('BUFFER_CHANNEL_ID',''),now=now)
+                verify_public_assets(payload['assets'])
+                slots.append(payload['dueAt'])
+            else:slots.append(next_slot(data,now=now))
         return list(dict.fromkeys(slots))
     raise ValueError('Catégorie non reconnue')
 
@@ -158,7 +198,7 @@ def main():
         if os.environ.get('ILLYADERA_TOP_VERIFIED','').lower()!='true':
             raise SystemExit('Arbitrage interdit hors du workflow ayant deja verifie un TOP complet')
         if not args.kind:parser.error('--kind obligatoire pour before-top')
-        slots=planned_slots(args.kind)
+        slots=planned_slots(args.kind,preflight=True,edition=os.environ.get('EDITION'),repo=os.environ.get('GITHUB_REPOSITORY'))
         out={'kind':args.kind,'slots':slots,'actions':[]}
         for slot in slots:
             out['actions'].append(free_capacity_for_priority(slot,buffer=buf,max_posts=args.max_posts,priority=args.kind))

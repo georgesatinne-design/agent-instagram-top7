@@ -209,6 +209,12 @@ def match_titles(a,b):
     stop={'tome','vol','volume','edition','les','la','le','de','des','du','the','et','d','l','t'}
     aw={x for x in aw if x not in stop and len(x)>1 and not x.isdigit()}
     bw={x for x in bw if x not in stop and len(x)>1 and not x.isdigit()}
+    # Un sous-titre complet isolé par les séparateurs de la fiche libraire
+    # est une correspondance plus forte qu'un simple mot commun.
+    if len(aw)>=2 and any(norm(part)==norm(a) for part in re.split(r'\s+[-–—|:]\s+',str(b))):
+        return True
+    if len(bw)>=2 and any(norm(part)==norm(b) for part in re.split(r'\s+[-–—|:]\s+',str(a))):
+        return True
     shared=len(aw & bw)
     # La comparaison doit rester symétrique : un seul mot commun ne suffit
     # pas à confondre une série avec une autre dont le titre est plus long.

@@ -26,3 +26,7 @@ Correction des trois appels de module, garde main sur les agents modifiant l'ét
 ## Validation du premier commit et enrichissement éditorial
 
 La CI a exécuté 298 tests : 296 réussis, 2 échecs de priorité des mises à jour d'anecdotes. Le budget de préparation réserve maintenant les réparations des publications existantes. Le coût zéro est formalisé, la découverte éditoriale séparée de la banque validée, six récits originaux sourcés sont ajoutés avec pistes de visuels à vérifier, et le rapprochement des titres manga est renforcé. La validation du nouveau commit et la disponibilité des images restent à contrôler.
+
+## Troisième intervention : sécurité et preuves
+
+Deuxième CI : 300 tests réussis sur 301. Correction du titre de BD identifié par un sous-titre exact délimité. Contrôle des médias publics avant l'arbitrage Manga/Comics ; pas d'arbitrage pour une édition déjà reçue. Plafond Free strict, relecture de la queue avant suppression, refus de modifier un Top manga/comics inconnu sans reçu correspondant. Les légendes indiquent le périmètre des palmarès sans nommer les sources commerciales. Déduplication des faits par empreinte et trois récits supplémentaires documentés ; audit des médias sans suppression. Les scripts historiques restent présents tant que leur dépendance n'est pas réfutée. Les suppressions d'anecdotes et créations Buffer ne sont pas transactionnelles ; risque résiduel en cas de panne après arbitrage. Ne pas fusionner sans CI verte.

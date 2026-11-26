@@ -42,3 +42,7 @@ Voir [AUDIT_TECHNIQUE.md](AUDIT_TECHNIQUE.md) pour les limites et les décisions
 ## Coût zéro et ligne éditoriale
 
 Voir [POLITIQUE_COUT_ZERO.md](POLITIQUE_COUT_ZERO.md). Aucune dépendance payante ; les pistes éditoriales sont séparées des faits validés. Les métadonnées de fiches commerciales ne sont pas publiées comme anecdotes.
+
+## Contrôle des médias
+
+`python audit_medias.py` inventorie les doublons exacts et le volume public sans effacer un fichier. Les URLs utilisées par Buffer doivent être vérifiées avant toute purge. Les Top manga/comics sont contrôlés avant toute libération de capacité ; les légendes précisent la portée non exhaustive ou par enseigne lorsque nécessaire.

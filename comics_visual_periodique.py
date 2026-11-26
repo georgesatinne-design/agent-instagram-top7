@@ -83,6 +83,7 @@ def render(data,folder,covers,*,watermark=False):
         draw_text_center(ImageDraw.Draw(im),(900,y+rowheight//2),compact,24 if len(compact)<=7 else 16,evo[state])
     footer(im,n+1);last=f'{n+1:02d}_recapitulatif.png';im.save(folder/last,optimize=True);files.append(last)
     caption=f'📚 TOP {n} COMICS — Les meilleures ventes\n📅 {data["periode_label"]}\n\n'
+    caption+="Classement des ventes d’une enseigne spécialisée, et non de l’ensemble du marché.\n\n"
     for b in top:
         m=movement_state(b,movements)[0]
         caption+=f'#{b["rang"]} {b["titre"]} — {b["editeur"]}'

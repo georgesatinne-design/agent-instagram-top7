@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse,datetime as dt,hashlib,os,re,traceback
 from pathlib import Path
 from zoneinfo import ZoneInfo
-from .catalogue import ROOT_REPO,STATE,CONFIG,bank,read,write,select,topic,ROOT
+from .catalogue import ROOT_REPO,STATE,CONFIG,bank,read,write,select,topic,fingerprint,ROOT
 from .qualite_editoriale import score as score_anecdote
 from .calendrier import PARIS,next_days,eligible,reserved_kind,target_date_time
 from .visuels import render,caption
@@ -61,7 +61,10 @@ def sujets_par_disponibilite(facts,registry,day,exclude_ids=()):
             continue
         if record.get('sujet') and abs((dt.date.fromisoformat(date_s)-day).days)<CONFIG.get('intervalle_sujet_jours',5):
             used_topics.append(record['sujet'])
-    candidates=[f for f in facts if f['id'] not in excluded]
+    known_fingerprints={fingerprint(f) for f in facts if f['id'] in excluded}
+    known_fingerprints.update(r['empreinte_fait'] for r in registry.values()
+        if isinstance(r,dict) and r.get('etat') in ('PROGRAMME','EN_ATTENTE','EN_ATTENTE_MAJ') and r.get('empreinte_fait'))
+    candidates=[f for f in facts if f['id'] not in excluded and fingerprint(f) not in known_fingerprints]
     candidates.sort(key=lambda f:(
         reserve.get(f['id'],{}).get('statut')!='PRET',
         topic(f) in used_topics,
@@ -101,7 +104,7 @@ def stage_fact(fact,day,repo,now):
     return {'fact_id':fact['id'],'sujet':topic(fact),'etat':'EN_ATTENTE','date':day.isoformat(),
             'due_at':utc(target_date_time(day)),'dossier':str(version_folder.relative_to(ROOT_REPO)),
             'base_url':base,'images':images,'revision':digest,'date_preparation':now.isoformat(),
-            'texte_public':text}
+            'texte_public':text,'empreinte_fait':fingerprint(fact)}
 
 def _day_snapshot(buffer, now):
     """Une seule lecture paginée de la file ; les tests anciens restent compatibles."""

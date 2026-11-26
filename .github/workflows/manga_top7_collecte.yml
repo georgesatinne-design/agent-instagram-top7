@@ -143,6 +143,7 @@ jobs:
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
           ILLYADERA_TOP_VERIFIED: 'true'
+          EDITION: ${{ steps.publication.outputs.edition }}
         run: |
           python -m unittest discover -s tests -p 'test_illyadera_queue.py' -q
           python -m illyadera_queue before-top --kind MANGA

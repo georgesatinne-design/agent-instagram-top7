@@ -136,6 +136,17 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
     matches=[p for p in current if abs((_parse_due(p['dueAt'])-due).total_seconds())<90]
     if prior:matches=[p for p in current if p['id']==prior['id_buffer']]
     if len(matches)>1 or (prior and not matches):raise RuntimeError('Post comics ambigu dans Buffer')
+    if matches and not prior:
+        if (matches[0].get('text') or '').strip()!=payload['text'].strip():
+            raise RuntimeError('Post Comics sans reçu correspondant : modification interdite')
+        # Récupération en lecture seule après une confirmation perdue.
+        old=matches[0]
+        result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':'RECU_RECONSTRUIT',
+                'id_buffer':old['id'],'status_buffer':old['status'],'edition':edition,'cadence':cadence,
+                'date_programmee_utc':old['dueAt'],'pages':len(payload['assets']),
+                'version_contenu':VERSION,'texte_public':payload['text']}
+        receipt.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+        return result
     action='CREATION';effective=payload['dueAt']
     if matches:
         old=matches[0]

@@ -195,6 +195,14 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
         raise RuntimeError('Post Buffer déjà identifié par reçu mais non retrouvé : création interdite')
     if same:
         old=same[0]
+        if not prior:
+            if (old.get('text') or '').strip()!=payload['text'].strip():
+                raise RuntimeError('Post manga sans reçu correspondant : modification interdite')
+            result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':'RECU_RECONSTRUIT',
+                    'id_buffer':old['id'],'status_buffer':old['status'],'edition':edition,
+                    'date_programmee_utc':old['dueAt'],'pages':8,'version_contenu':VERSION_PUBLIQUE}
+            receipt.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+            return result
         if prior and old['id']!=prior['id_buffer']:
             raise RuntimeError('ID Buffer différent du reçu : création et modification interdites')
         # Préserver le créneau du post déjà programmé, même si le prochain
@@ -212,15 +220,7 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
         same_slot=[p for p in posts if abs((_parse_due(p['dueAt'])-_parse_due(payload['dueAt'])).total_seconds())<90]
         if len(same_slot)>1:raise RuntimeError('Plusieurs posts manga sur le même créneau')
         if same_slot:
-            old=same_slot[0]
-            if date_periode_captation(old['text'])>current:
-                raise RuntimeError('Une édition manga plus récente est déjà planifiée')
-            edited={'id':old['id'],'text':payload['text'],'assets':payload['assets'],
-                    'metadata':payload['metadata'],'schedulingType':'automatic',
-                    'mode':'customScheduled','dueAt':payload['dueAt']}
-            response=_graphql(post,api_key,EDIT_MUTATION,{'input':edited})
-            ident,status=_mutation_result(api_key,response,'editPost',payload['dueAt'],expected_id=old['id'])
-            action='REMPLACEMENT'
+            raise RuntimeError('Créneau manga occupé par une autre édition sans reçu correspondant')
         else:
             response=_graphql(post,api_key,MUTATION,{'input':payload})
             ident,status=_mutation_result(api_key,response,'createPost',payload['dueAt'])

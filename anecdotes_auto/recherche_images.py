@@ -44,6 +44,21 @@ MIN_DISTINCTES = 3
 # Catégories très ciblées. Les images de contexte contemporain sont présentées comme
 # telles; elles ne sont jamais légendées comme témoignages photographiques d'époque.
 SCENES = {
+ 'verbeek-bd-a-retourner': [
+  (1,'LA PLANCHE RÉVERSIBLE','Gustave Verbeek Upside Downs comic',('verbeek','verbeck'),('upside','lovekins','muffaroo')),
+  (3,'UN AUTRE EXEMPLE','The Upside Downs Gustave Verbeek newspaper 1904',('verbeek','verbeck'),('upside','lovekins','muffaroo')),
+  (4,'UN DOCUMENT D ÉPOQUE','Gustave Verbeek upside downs 1903 1905',('verbeek','verbeck'),('upside','lovekins','muffaroo')),
+ ],
+ 'saphir-theatre-takarazuka': [
+  (1,'LE THÉÂTRE','Takarazuka Revue theatre Japan',('takarazuka',),('theatre','theater','revue')),
+  (3,'LE CRÉATEUR','Osamu Tezuka portrait',('osamu tezuka','tezuka osamu'),('tezuka',)),
+  (4,'LE CONTEXTE THÉÂTRAL','Takarazuka Revue historical performers',('takarazuka',),('revue','theatre','theater')),
+ ],
+ 'krazykat-brique-amour': [
+  (1,'LE PERSONNAGE - ARCHIVE','Krazy Kat George Herriman comic strip',('krazy kat',),('herriman','ignatz')),
+  (3,'LE DUO - ARCHIVE','Krazy Kat Ignatz comic strip brick',('krazy kat',),('ignatz','brick')),
+  (4,'LE POLICIER - ARCHIVE','Krazy Kat Officer Pupp George Herriman',('krazy kat',),('pupp','herriman')),
+ ],
  'asterix-idefix-lecteurs': [
   (1, 'LE CREATEUR', 'René Goscinny portrait', ('rene goscinny',), ('goscinny',)),
   (3, 'LE JOURNAL', 'Pilote magazine bande dessinée', ('pilote',), ('goscinny','magazine','journal')),
