@@ -52,6 +52,9 @@ def identifier_edition(data: dict, *, now: dt.datetime | None = None, max_age_da
 def already_processed(info: dict, *, receipts: Path = STATE_DIR) -> tuple[bool, str]:
     path = receipts / (info['edition'] + '.json')
     if not path.is_file():
+        from historique_editions import newer_receipt
+        newer=newer_receipt(receipts,info['edition'])
+        if newer:return True, 'Édition antérieure à '+newer+' : aucune republication'
         return False, 'Nouveau classement détecté'
     previous = json.loads(path.read_text(encoding='utf-8'))
     status = previous.get('statut')

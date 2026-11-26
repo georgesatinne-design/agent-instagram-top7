@@ -72,7 +72,10 @@ jobs:
               correction=encore_modifiable and old_receipt.get('version_contenu')!=VERSION_PUBLIQUE
           else:
               correction=True
-          ready=bool(report['pret_buffer']) and correction
+          from historique_editions import newer_receipt
+          newer=newer_receipt(Path('manga_buffer_receipts'),edition)
+          ready=bool(report['pret_buffer']) and correction and not newer
+          if newer:print('Edition dépassée par',newer,': aucun envoi')
           with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf8') as out:
               out.write('edition='+edition+'\n')
               out.write('ready='+str(ready).lower()+'\n')

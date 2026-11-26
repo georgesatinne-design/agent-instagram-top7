@@ -12,7 +12,7 @@ from buffer_client import _graphql,_mutation_result,_parse_due,MUTATION,EDIT_MUT
 from comics_score_periodique import calculer,SEUIL
 from comics_visual_periodique import ordered_names
 from comics_pipeline_periodique import VERSION
-from calendrier_editorial import next_weekly,monthly_slot,frozen_slot,assert_arbitrated
+from calendrier_editorial import next_weekly,monthly_slot,frozen_slot,assert_arbitrated,validate_slot
 
 HEADER=re.compile(r'^\s*(?:📚\s*)?TOP\s*(?:5|7)\s*COMICS\b',re.I)
 PUBLIC_SOURCE=re.compile(r'(?i)(?:edistat|actualitt[ée]|nielseniq|\bbnf\b|b[ée]d[ée]\.fr|fnac|bdfugue|mdcu|reconstitu[ée]|reconstitution)')
@@ -122,6 +122,9 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
     due=_parse_due(payload['dueAt'])
     matches=[p for p in current if abs((_parse_due(p['dueAt'])-due).total_seconds())<90]
     if prior:matches=[p for p in current if p['id']==prior['id_buffer']]
+    else:
+        exact=[p for p in current if (p.get('text') or '').strip()==payload['text'].strip()]
+        if any(p not in matches for p in exact):raise RuntimeError('Même édition Comics déjà présente à un autre créneau : aucun doublon')
     if len(matches)>1 or (prior and not matches):raise RuntimeError('Post comics ambigu dans Buffer')
     if matches and not prior:
         if (matches[0].get('text') or '').strip()!=payload['text'].strip():
@@ -139,6 +142,9 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
         old=matches[0]
         if _parse_due(old['dueAt'])<=now+dt.timedelta(minutes=10):raise RuntimeError('Post imminent; non modifiable')
         effective=old['dueAt']
+        if os.environ.get('ILLYADERA_SLOT_PLAN'):
+            validate_slot('COMICS_HEBDO' if cadence=='HEBDO' else 'COMICS_MENSUEL',effective,now=now,check_margin=False)
+            if _parse_due(effective)!=_parse_due(prior['date_programmee_utc']):raise RuntimeError('Créneau modifié depuis le reçu : édition non autorisée')
         fields={'id':old['id'],'text':payload['text'],'assets':payload['assets'],
                 'metadata':payload['metadata'],'schedulingType':'automatic',
                 'mode':'customScheduled','dueAt':effective}
@@ -146,7 +152,7 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
         ident,status=_mutation_result(api_key,ans,'editPost',effective,expected_id=old['id'])
         action='MISE_A_JOUR'
     else:
-        if os.environ.get('ILLYADERA_SLOT_PLAN'):assert_arbitrated('COMICS_HEBDO' if cadence=='HEBDO' else 'COMICS_MENSUEL',payload['dueAt'],now=now)
+        if os.environ.get('ILLYADERA_SLOT_PLAN'):assert_arbitrated('COMICS_HEBDO' if cadence=='HEBDO' else 'COMICS_MENSUEL',payload['dueAt'])
         ans=_graphql(post,api_key,MUTATION,{'input':payload})
         ident,status=_mutation_result(api_key,ans,'createPost',effective)
     result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':action,

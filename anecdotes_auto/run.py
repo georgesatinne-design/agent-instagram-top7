@@ -281,9 +281,18 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
         # La place éventuelle sera libérée seulement après vérification des cinq médias.
         reserved_repairs = sum(other > key for other in repair_days)
         if len(results['plans'])+reserved_repairs>=CONFIG['max_posts_par_execution']:continue
-        if item.get('etat')=='EN_ATTENTE':
-            # Retry only if the files are still present and the slot still free.
-            if (ROOT_REPO/item.get('dossier','')).is_dir():
+        if item.get('etat')=='EN_ATTENTE' or str(item.get('etat','')).startswith('LIBERE_POUR_'):
+            # Réutiliser le carrousel déjà préparé, sans acheter ni chercher de nouveaux médias.
+            dossier=item.get('dossier');names=item.get('images') or []
+            same_fact=not any(d!=key and isinstance(r,dict) and r.get('fact_id')==item.get('fact_id')
+                and r.get('etat') in ('PROGRAMME','EN_ATTENTE','EN_ATTENTE_MAJ') for d,r in registry.items())
+            if (dossier and len(names)==5 and same_fact and item.get('due_at') and
+                    parse(item['due_at'])==parse(utc(target_date_time(day))) and
+                    all((ROOT_REPO/dossier/name).is_file() for name in names) and
+                    editorial_eligible(facts_by_id.get(item.get('fact_id'),{})) and
+                    item.get('fact_id') in facts_by_id):
+                item['etat']='EN_ATTENTE';item.pop('id_buffer',None)
+                registry[key]=item
                 results['plans'].append(key);continue
         exclude=[rec.get('fact_id') for rec in registry.values() if isinstance(rec,dict) and rec.get('etat') in ('EN_ATTENTE','PROGRAMME','EN_ATTENTE_MAJ')]
         # Regarder d'abord les anecdotes ayant déjà une preuve et trois photos

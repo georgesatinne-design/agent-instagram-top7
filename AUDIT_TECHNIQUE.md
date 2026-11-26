@@ -34,3 +34,7 @@ Deuxième CI : 300 tests réussis sur 301. Correction du titre de BD identifié 
 ## Quatrième intervention : calendrier
 
 CI du troisième commit réussie. Centralisation des créneaux, des marges et du fuseau. Suppression du report automatique du Comics mensuel au troisième dimanche (décision : respecter le deuxième dimanche strictement). Validation des nouvelles anecdotes contre leur date et heure, tri chronologique des arbitrages Comics, vérification du créneau arbitré lors des envois de production. Le calendrier historique BD reste en compatibilité ; la production utilise la marge commune de 45 min. La CI du nouveau commit reste à vérifier. Aucun appel Buffer réalisé.
+
+## Cinquième intervention : ordre et réutilisation
+
+CI du calendrier : 312 tests réussis. Blocage des éditions antérieures à un reçu plus récent, séparation des cadences Comics, traitement Comics chronologique et arbitrage immédiatement avant chaque envoi, arrêt des arbitrages suivants en cas d'échec. Réutilisation possible d'une anecdote libérée si son carrousel est intact, son fait admissible et son créneau encore libre. Les reçus locaux ne constituent pas une lecture live de Buffer. La mise à jour du registre après un arrêt brutal du runner reste un risque non transactionnel. La CI du nouveau commit doit être vérifiée avant fusion.

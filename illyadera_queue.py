@@ -89,8 +89,10 @@ def free_capacity_for_priority(due_at, *, buffer, registry=None, registry_path=R
                   _dt(p['dueAt']).astimezone(PARIS).date().isoformat()==target and
                   p['text'].lstrip('📚 ').upper().startswith(('TOP 7 BD','TOP 7 MANGA','TOP 5 COMICS','TOP 7 COMICS'))]
     if existing_top:
-        prefixes={'BD':('TOP 7 BD',),'MANGA':('TOP 7 MANGA',),'COMICS':('TOP 5 COMICS','TOP 7 COMICS')}
-        if len(existing_top)!=1 or priority=='REMPLISSAGE' or (priority in prefixes and not existing_top[0]['text'].lstrip('📚 ').upper().startswith(prefixes[priority])):
+        prefixes={'BD':('TOP 7 BD',),'MANGA':('TOP 7 MANGA',),'COMICS':('TOP 5 COMICS','TOP 7 COMICS'),
+                  'COMICS_HEBDO':('TOP 5 COMICS',),'COMICS_MENSUEL':('TOP 7 COMICS',)}
+        same_day=[p for p in posts if _dt(p['dueAt']).astimezone(PARIS).date().isoformat()==target]
+        if len(same_day)!=1 or len(existing_top)!=1 or priority=='REMPLISSAGE' or (priority in prefixes and not existing_top[0]['text'].lstrip('📚 ').upper().startswith(prefixes[priority])):
             raise RuntimeError('Créneau occupé par un autre classement : arbitrage interdit')
         return {'action':'TOP_DEJA_PREVU','file':len(posts),'date':target}
     if len(posts)>max_posts:
