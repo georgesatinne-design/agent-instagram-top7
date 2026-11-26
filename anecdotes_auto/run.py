@@ -9,7 +9,9 @@ from .catalogue import ROOT_REPO,STATE,CONFIG,bank,read,write,select,topic,finge
 from .qualite_editoriale import score as score_anecdote
 from .calendrier import PARIS,next_days,eligible,reserved_kind,target_date_time
 from .visuels import render,caption
-from .storytelling import editorial_eligible
+from .storytelling import editorial_eligible as _editorial_eligible
+from .politique_editoriale import accepte
+def editorial_eligible(fact):return _editorial_eligible(fact) and accepte(fact)
 from .photos_reelles import PhotosIndisponibles
 from .recherche_images import resolve_avance as resolve
 from .buffer import Buffer,BufferError,is_top,is_anecdote,utc,parse
@@ -188,7 +190,7 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
             if len(same)==1 and parse(same[0]['dueAt'])>now+dt.timedelta(minutes=35):
                 original=facts_by_id.get(item.get('fact_id'))
                 candidates=[]
-                if original:candidates.append(original)
+                if original and editorial_eligible(original):candidates.append(original)
                 # Si le sujet original n'a aucun visuel réel admissible, trouver
                 # une autre anecdote *prouvée* et illustrable, sans inventer d'image.
                 used_ids={r.get('fact_id') for d,r in registry.items()

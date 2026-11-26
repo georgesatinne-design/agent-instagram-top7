@@ -434,6 +434,10 @@ def resolve_avance(fact,*,session=None,cache=None):
     If a curated scenario is incomplete, the system does not publish it; an
     independently verified alternative is searched and audited separately.
     """
+    from .archives_institutionnelles import FACTS,resolve as resolve_institution
+    if fact['id'] in FACTS:
+        try:return resolve_institution(fact,session=session)
+        except PhotosIndisponibles as exc:print('ARCHIVES_INSTITUTIONNELLES',str(exc)[:350],flush=True)
     from .photos_reelles import resolve as resolve_curated
     old_problem=''
     try:

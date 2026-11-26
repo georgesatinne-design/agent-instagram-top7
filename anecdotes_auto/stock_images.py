@@ -9,7 +9,7 @@ import datetime as dt
 from pathlib import Path
 
 from .catalogue import STATE, bank, read, write
-from .storytelling import editorial_eligible
+from .run import editorial_eligible
 from .recherche_images import resolve_avance, PhotosIndisponibles
 
 STOCK = STATE/'stock_photos_verifiees.json'

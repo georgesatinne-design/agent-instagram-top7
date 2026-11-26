@@ -19,9 +19,9 @@ DATES={
  '2026-12-02':('lucky-luke-80','fenouillard-feuilleton'),
  '2026-12-05':('bruxelles-horta','mccay-pseudonyme-silas'),
  '2026-12-06':('topffer-professeur','hokusai-manga-carnets'),
- '2026-12-07':('lucky-luke-morris','krazykat-brique-amour'),
+ '2026-12-07':('lucky-luke-morris','dore-cinq-cents-gravures'),
 }
-CANDIDATES=[x[1] for x in DATES.values()]+['dore-cinq-cents-gravures']
+CANDIDATES=list(dict.fromkeys([x[1] for x in DATES.values()]+['dore-cinq-cents-gravures','krazykat-brique-amour']))
 PLAN=run.REPORT/'RENOUVELLEMENT.json'
 
 def match(posts,date,old):
