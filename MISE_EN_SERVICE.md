@@ -1,40 +1,23 @@
-# Mise en service — agent Instagram Top 7 v6
+# Mise en service — Illyadera
 
-## Déjà fait : tu n’as plus de fonds à envoyer
+Le dépôt est déjà installé. Ne pas réimporter une ancienne archive ZIP ni réinstaller les fonds. Le projet est public ; les médias accessibles par URL et les journaux non secrets peuvent être visibles. Aucun service payant supplémentaire.
 
-Les trois fonds sont déjà installés : **BD violet**, **manga noir et blanc**, **comics rouge**. Les originaux sont archivés sans modification. Le carrousel de chaque catégorie est de huit pages, rangs 7 à 1, puis récapitulatif. Chaque page affiche « TOP DES VENTES » et la période des ventes, y compris le récapitulatif. Le rond jaune indique « TOP » et le rang. Les écarts de rang sont affichés en vert (↑) ou rouge (↓) sur chaque page et à côté des titres de la dernière page. Voir l’aperçu `apercus/apercu_manga_comics_v6.jpg` pour valider les couleurs du bandeau et de la pastille.
+## Validation avant fusion
 
-## Actions à effectuer sur tes comptes
+1. Vérifier la CI « Validation hors production » sur la pull request : compilation et suite complète, sans accès Buffer.
+2. Contrôler le diff et l'état de main. Ne pas écraser les reçus ni le registre existants.
+3. Si une pause de production est nécessaire, créer la variable de dépôt Actions `ILLYADERA_PAUSE_PUBLICATION` avec la valeur `1` avant fusion ; elle bloque les quatre workflows producteurs après fusion. Les posts déjà programmés dans Buffer ne sont pas annulés. Par défaut, les agents gardent leur fonctionnement automatique.
+4. Après fusion, lancer uniquement « Audit Buffer en lecture seule » depuis main, lire le résultat. Si erreur, conserver la pause et examiner les conflits ; ne pas relancer un workflow producteur pour diagnostiquer.
+5. Retirer la variable de pause ou lui donner la valeur `0` une fois l'audit satisfaisant. Ne pas lancer tous les agents simultanément.
 
-### 1. Créer / préparer un dépôt GitHub
+## Configuration
 
-- Créer un compte sur https://github.com si besoin.
-- Créer un dépôt pour ce projet. Le montage actuel avec Buffer exige un **dépôt public** pour les URL des huit images ; tu dois accepter que les médias de brouillon soient publiquement accessibles par lien.
-- Dézipper `agent_instagram_top7_v6.zip` et importer le **contenu** (dont le dossier caché `.github`) **à la racine du dépôt**. Ne pas créer involontairement un niveau de dossier supplémentaire.
-- Dans Settings → Actions → General → Workflow permissions, autoriser `Read and write permissions` au workflow. Attention, cette autorisation lui donne la possibilité d’écrire des fichiers dans le dépôt.
+Les secrets GitHub Actions `BUFFER_API_KEY`, `BUFFER_CHANNEL_ID` et, si nécessaire, `BUFFER_ORGANIZATION_ID` restent secrets. Ne jamais les envoyer dans une conversation, un fichier ou un log. Utiliser Buffer Free et le runner standard GitHub Actions. Vérifier les plafonds et le budget du compte à zéro. Voir POLITIQUE_COUT_ZERO.md.
 
-### 2. Préparer Buffer et Instagram
+## Calendrier
 
-- Créer ou utiliser un compte gratuit sur https://buffer.com, puis connecter le bon canal Instagram.
-- Générer la clé API dans Buffer (si ce droit est bien proposé à ton compte) et récupérer l’ID du canal Instagram avec `buffer_setup.py`.
-- Dans GitHub → Settings → Secrets and variables → Actions, créer deux secrets : `BUFFER_API_KEY` et `BUFFER_CHANNEL_ID`. **Ne jamais coller de clé API ou de mot de passe dans ChatGPT ou dans le dépôt.**
+Mardi 18h Manga ; jeudi 18h Comics Top 5 ; vendredi 17h BD ; deuxième dimanche 18h Comics Top 7 du mois précédent ; anecdotes aux créneaux libres. Heure Europe/Paris. Une anecdote peut être provisoire un jour de classement. Pas de report automatique du mensuel au troisième dimanche.
 
-### 3. Test réel, AVANT d’activer la routine
+## En cas d'incident
 
-- Aller dans GitHub → Actions → « Agent Top 7 - brouillons Instagram uniquement » → « Run workflow ».
-- Vérifier l’artefact « dossiers-a-valider » : données sourcées, dates, huit PNG dans l’ordre, correctes couvertures, récapitulatif, légende, évolutions, traces d’erreur.
-- Si un Top 7 national manque, si une source change ou si une couverture n’est pas vérifiable, l’agent refuse le brouillon incomplet : c’est normal et doit être corrigé avant d’affirmer qu’il fonctionne en autonomie.
-- Vérifier qu’un **brouillon**, pas un post programmé ni publié, apparaît dans Buffer. Contrôler huit images, légende et absence de doublon. N’approuver la charte manga/comics qu’après lecture des aperçus.
-
-### 4. Utilisation une fois validé
-
-- Automatique : le vendredi à **17 h, heure de Paris** (déclenchement GitHub susceptible de retard).
-- À la demande : GitHub → Actions → « Run workflow ».
-- Résultats : archive téléchargeable dans GitHub Actions + brouillons des posts complets dans Buffer si les contrôles passent. **Les fichiers ne sont pas encore livrés automatiquement dans cette conversation ChatGPT.**
-- Tu valides et programmes la publication Instagram dans Buffer pour le jour choisi. Le système ne programme ni ne publie sans toi.
-
-## À savoir
-
-- Le projet est **testé localement**, mais pas déployé dans tes comptes : je ne peux pas prétendre qu’il tourne déjà chaque semaine.
-- Les données de ventes et couvertures doivent venir de sites accessibles publiquement ; un classement d’enseigne ne doit pas être présenté comme national.
-- L’envoi via API Buffer, les autorisations GitHub et le fonctionnement exact du canal Instagram doivent être vérifiés lors du test réel. Le budget visé reste **0 € supplémentaire**, mais vérifie les restrictions de tes offres gratuites avant toute activation.
+Ne jamais effacer un reçu ou une intention de création pour forcer une relance. Si le journal indique une mutation incertaine, contrôler la queue et les publications passées en lecture seule. La présence d'un post exact à l'identité et au créneau attendus permet une réconciliation ; une absence ne prouve pas que l'opération n'a jamais eu lieu. Conserver les médias jusqu'à contrôle de leurs références. Une CI verte ne garantit ni l'accès aux sources ni la publication Instagram.

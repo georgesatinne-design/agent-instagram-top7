@@ -118,8 +118,12 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
             if valid:break
             if attempt<4:time.sleep(5)
         if not valid:raise RuntimeError('Image inaccessible depuis Buffer: '+url)
-    current=_listed(api_key,channel_id,payload['dueAt'],post=post,now=now)
-    due=_parse_due(payload['dueAt'])
+    from intentions_tops import enabled,lookup
+    intent=lookup(edition) if enabled() and not prior else None
+    if intent and _parse_due(intent['due_at'])<=now:
+        raise RuntimeError('Création Comics ancienne sans reçu : contrôle humain, aucun renvoi')
+    current=_listed(api_key,channel_id,intent['due_at'] if intent else payload['dueAt'],post=post,now=now)
+    due=_parse_due(intent['due_at'] if intent else payload['dueAt'])
     matches=[p for p in current if abs((_parse_due(p['dueAt'])-due).total_seconds())<90]
     if prior:matches=[p for p in current if p['id']==prior['id_buffer']]
     else:
@@ -127,6 +131,9 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
         if any(p not in matches for p in exact):raise RuntimeError('Même édition Comics déjà présente à un autre créneau : aucun doublon')
     if len(matches)>1 or (prior and not matches):raise RuntimeError('Post comics ambigu dans Buffer')
     if matches and not prior:
+        from intentions_tops import enabled,lookup,recoverable,confirm
+        if enabled() and (not lookup(edition) or not recoverable(edition,matches[0],payload)):
+            raise RuntimeError('Post Comics sans intention correspondante : vérification nécessaire')
         if (matches[0].get('text') or '').strip()!=payload['text'].strip():
             raise RuntimeError('Post Comics sans reçu correspondant : modification interdite')
         # Récupération en lecture seule après une confirmation perdue.
@@ -136,6 +143,7 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
                 'date_programmee_utc':old['dueAt'],'pages':len(payload['assets']),
                 'version_contenu':VERSION,'texte_public':payload['text']}
         receipt.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+        if enabled():confirm(edition,old['id'],old['dueAt'])
         return result
     action='CREATION';effective=payload['dueAt']
     if matches:
@@ -160,6 +168,8 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
             kind='COMICS_HEBDO' if cadence=='HEBDO' else 'COMICS_MENSUEL'
             assert_arbitrated(kind,payload['dueAt'])
             final_guard(kind,payload['dueAt'],api_key=api_key,channel_id=channel_id,post=post)
+        from intentions_tops import enabled,reserve
+        if enabled():reserve(edition,payload)
         ans=_graphql(post,api_key,MUTATION,{'input':payload})
         ident,status=_mutation_result(api_key,ans,'createPost',effective)
     result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':action,
@@ -167,6 +177,8 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
             'date_programmee_utc':effective,'pages':len(payload['assets']),
             'version_contenu':VERSION,'texte_public':payload['text']}
     receipt.write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n',encoding='utf8')
+    from intentions_tops import enabled,confirm
+    if enabled() and action=='CREATION':confirm(edition,ident,effective)
     return result
 
 def main():

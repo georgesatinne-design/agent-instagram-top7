@@ -12,14 +12,16 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parent
 REGISTRY=ROOT/'anecdotes_state'/'programmes.json'
+TOP_INTENTS=ROOT/'anecdotes_state'/'intentions_tops.json'
 
 def checkpoint(path):
     if os.environ.get('ILLYADERA_DURABLE_JOURNAL')!='1':return
     if os.environ.get('GITHUB_ACTIONS')!='true' or os.environ.get('GITHUB_REF')!='refs/heads/main':
         raise RuntimeError('Journal durable interdit hors de main')
-    if Path(path).resolve()!=REGISTRY.resolve():
-        raise RuntimeError('Le journal ne peut enregistrer que le registre d’anecdotes')
-    relative=REGISTRY.relative_to(ROOT).as_posix()
+    path=Path(path).resolve()
+    if path not in (REGISTRY.resolve(),TOP_INTENTS.resolve()):
+        raise RuntimeError('Le journal ne peut enregistrer que les fichiers de reprise autorisés')
+    relative=path.relative_to(ROOT).as_posix()
     def git(*args):
         return subprocess.run(['git',*args],cwd=ROOT,check=True,capture_output=True,text=True,timeout=60)
     git('add','--',relative)

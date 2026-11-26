@@ -70,11 +70,15 @@ def send(*,arbitrate=False,buffer=None,now=None):
             data=load(Path(item['folder']).parent/'classement_comics.json')
             receipt_file=Path('comics_buffer_receipts')/(item['edition']+'.json')
             if newer_receipt(receipt_file.parent,item['edition']):continue
+            from intentions_tops import lookup
+            intent=lookup(item['edition'])
             if receipt_file.exists():
                 prior=json.loads(receipt_file.read_text(encoding='utf8'))
                 if prior.get('statut')!='POST_PROGRAMME' or prior.get('edition')!=item['edition']:
                     raise RuntimeError('Reçu non interprétable')
                 due=prior['date_programmee_utc']
+            elif intent:
+                due=intent['due_at']
             else:
                 due=next_slot(data,now=now)
             ordered.append((parse_due(due),item))
@@ -86,7 +90,8 @@ def send(*,arbitrate=False,buffer=None,now=None):
             receipt_file=Path('comics_buffer_receipts')/(edition+'.json')
             if arbitrate:
                 os.environ.pop('ILLYADERA_SLOT_PLAN',None)
-                if not receipt_file.exists():
+                from intentions_tops import lookup
+                if not receipt_file.exists() and not lookup(edition):
                     current=now or dt.datetime.now(dt.timezone.utc)
                     payload=construire(dest,item['base_url'],os.environ.get('BUFFER_CHANNEL_ID',''),now=current)
                     kind='COMICS_HEBDO' if item['cadence']=='HEBDO' else 'COMICS_MENSUEL'

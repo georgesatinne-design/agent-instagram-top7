@@ -186,7 +186,11 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
             if attempt<5:time.sleep(8)
         if not confirmed:
             raise RuntimeError('Image non encore accessible publiquement : '+url)
-    posts=_list_manga_programmes(api_key,channel_id,payload['dueAt'],post=post)
+    from intentions_tops import enabled,lookup
+    intent=lookup(edition) if enabled() and not prior else None
+    if intent and _parse_due(intent['due_at'])<=now:
+        raise RuntimeError('Création Manga ancienne sans reçu : contrôle humain, aucun renvoi')
+    posts=_list_manga_programmes(api_key,channel_id,intent['due_at'] if intent else payload['dueAt'],post=post)
     current=date_periode_captation(payload['text'])
     same=[p for p in posts if date_periode_captation(p['text'])==current]
     if len(same)>1:raise RuntimeError('Plusieurs posts manga pour la même période existent dans Buffer')
@@ -198,12 +202,16 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
     if same:
         old=same[0]
         if not prior:
+            from intentions_tops import enabled,lookup,recoverable,confirm
+            if enabled() and (not lookup(edition) or not recoverable(edition,old,payload)):
+                raise RuntimeError('Post Manga sans intention correspondante : vérification nécessaire')
             if (old.get('text') or '').strip()!=payload['text'].strip():
                 raise RuntimeError('Post manga sans reçu correspondant : modification interdite')
             result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':'RECU_RECONSTRUIT',
                     'id_buffer':old['id'],'status_buffer':old['status'],'edition':edition,
                     'date_programmee_utc':old['dueAt'],'pages':8,'version_contenu':VERSION_PUBLIQUE}
             receipt.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+            if enabled():confirm(edition,old['id'],old['dueAt'])
             return result
         if prior and old['id']!=prior['id_buffer']:
             raise RuntimeError('ID Buffer différent du reçu : création et modification interdites')
@@ -232,12 +240,16 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
                 from controle_file import final_guard
                 assert_arbitrated('MANGA',payload['dueAt'])
                 final_guard('MANGA',payload['dueAt'],api_key=api_key,channel_id=channel_id,post=post)
+            from intentions_tops import enabled,reserve
+            if enabled():reserve(edition,payload)
             response=_graphql(post,api_key,MUTATION,{'input':payload})
             ident,status=_mutation_result(api_key,response,'createPost',payload['dueAt'])
     result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':action,
             'id_buffer':ident,'status_buffer':status,'edition':edition,
             'date_programmee_utc':effective_due,'pages':8,'version_contenu':VERSION_PUBLIQUE}
     receipt.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+    from intentions_tops import enabled,confirm
+    if enabled() and action=='CREATION':confirm(edition,ident,effective_due)
     return result
 
 

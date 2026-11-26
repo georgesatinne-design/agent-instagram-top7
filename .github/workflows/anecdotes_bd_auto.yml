@@ -21,9 +21,7 @@ concurrency:
 
 jobs:
   anecdotes:
-    if: github.ref == 'refs/heads/main'
-    env:
-      ILLYADERA_DURABLE_JOURNAL: '1'
+    if: github.ref == 'refs/heads/main' && vars.ILLYADERA_PAUSE_PUBLICATION != '1'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -72,6 +70,7 @@ jobs:
 
       - name: Remplir Buffer et retirer nos anecdotes si un TOP a pris la place
         env:
+          ILLYADERA_DURABLE_JOURNAL: '1'
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}

@@ -444,7 +444,8 @@ def send(*,now=None,buffer=None):
                         results['ignores'].append(key+' : QUEUE_PLEINE_SANS_POST_PLUS_LOINTAIN')
                         continue
             if os.environ.get('ILLYADERA_DURABLE_JOURNAL')=='1':
-                validate_slot('ANECDOTE',rec['due_at'])
+                from controle_file import final_guard
+                final_guard('ANECDOTE',rec['due_at'],api_key='',channel_id='',post=None,buffer=buffer)
             post=buffer.create(rec['texte_public'],rec['due_at'],assets)
             if dayposts is not None:
                 dayposts.setdefault(key,[]).append({'id':post['id'],'status':'scheduled',

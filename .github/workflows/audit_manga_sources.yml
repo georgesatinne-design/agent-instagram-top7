@@ -1,10 +1,7 @@
-name: Manga V7 - bilan complet, couvertures et semaine (sans publication)
+name: Archive diagnostic Manga V1-V7 (manuel, sans publication)
 
 on:
   workflow_dispatch:
-  schedule:
-    # L'agent manga de production surveille déjà les nouveautés. Audit hebdomadaire seulement.
-    - cron: '17 6 * * 1'
 
 permissions:
   contents: read
@@ -24,13 +21,6 @@ jobs:
           python-version: '3.12'
       - name: Installer les bibliotheques gratuites
         run: python -m pip install -r requirements.txt
-      - name: Restaurer la precedente observation manga pour detecter une nouveaute
-        uses: actions/cache/restore@v4
-        with:
-          path: .cache_manga_v6/etat_manga_v6.json
-          key: manga-observation-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: |
-            manga-observation-
       - name: Tester les modules manga V1 a V7
         run: python -m unittest discover -s tests -p 'test_*manga*.py' -v
       - name: Observer les sources de classements
@@ -47,12 +37,6 @@ jobs:
         run: python controle_manga_v6.py
       - name: V7 - couvertures manquantes, types d images, periode et dossier a valider
         run: python manga_v7_complet.py
-      - name: Sauvegarder l'observation pour le prochain controle automatique
-        if: success()
-        uses: actions/cache/save@v4
-        with:
-          path: .cache_manga_v6/etat_manga_v6.json
-          key: manga-observation-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Recuperer tous les rapports et visuels
         if: always()
         uses: actions/upload-artifact@v4

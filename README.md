@@ -56,3 +56,7 @@ Les éditions antérieures à un reçu plus récent sont bloquées. Les deux cad
 ## Reprise et audit de production
 
 Les workflows producteurs enregistrent une intention de libération dans Git avant toute suppression, puis vérifient la file au plus près de la mutation. Une reprise s'appuie sur une lecture complète de Buffer ; les situations ambiguës restent bloquées. Le workflow manuel `Audit Buffer en lecture seule` publie uniquement des compteurs anonymisés (aucune mutation). Lancer depuis main après validation et fusion. Ne jamais copier les secrets dans le dépôt.
+
+## Exploitation et modules historiques
+
+Voir [MISE_EN_SERVICE.md](MISE_EN_SERVICE.md) pour la procédure de déploiement. La variable facultative `ILLYADERA_PAUSE_PUBLICATION=1` suspend les quatre workflows producteurs sans annuler les posts déjà programmés. Les intentions de création Manga/Comics sont persistées avant l'appel API : jamais de nouvel envoi aveugle après une interruption. Le diagnostic Manga V1-V7 est désormais manuel et sans cache cumulatif ; les modules restent présents car ils sont testés et certains partagent encore des fonctions avec la production.

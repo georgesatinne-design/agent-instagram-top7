@@ -42,3 +42,7 @@ CI du calendrier : 312 tests réussis. Blocage des éditions antérieures à un 
 ## Sixième intervention : journal durable et contrôle de file
 
 CI précédente : 316/316 tests. Point de reprise Git avant la suppression, réconciliation des intentions, contrôle final du canal avant création/édition d'un Top. Workflow manuel d'audit agrégé en lecture seule. Le connecteur GitHub ne permet pas le lancement manuel d'un workflow ; aucune lecture directe de Buffer n'a été effectuée pendant cet audit. Les opérations distantes ne deviennent pas atomiques : en cas de panne, réconciliation ou blocage plutôt que répétition aveugle. Aucun service payant ajouté.
+
+## Septième intervention : préparation à la mise en service
+
+CI précédente : 320/320. Correction d'un défaut propre aux jobs de production : la variable de journal durable ne doit pas contaminer les tests avec chemins temporaires. Activation limitée aux étapes de mutation. Journal de création des Tops Manga/Comics, contrôles de récupération, contrôle final des anecdotes, pause explicite facultative des workflows producteurs. Les anciens guides sont remplacés ; diagnostic Manga V1-V7 manuel uniquement et suppression du cache cumulatif. Les modules historiques testés et les fonctions partagées sont conservés plutôt que supprimés sans preuve. La nouvelle CI reste nécessaire. L'audit live de Buffer reste bloqué par l'absence d'accès direct et de déclenchement manuel via le connecteur.

@@ -172,6 +172,8 @@ def planned_slots(kind, now=None, *, preflight=False, edition=None, repo=None):
             import re
             if not edition or not re.fullmatch(r'MANGA_\d{4}-\d{2}-\d{2}',edition):raise RuntimeError('Edition manga absente')
             if _receipt_exists(ROOT/'manga_buffer_receipts'/(edition+'.json'),edition):return []
+            from intentions_tops import lookup
+            if lookup(edition):return []  # lecture/reprise uniquement ; aucune nouvelle suppression
             folder=ROOT/'sorties'/'manga_production'/edition/'MANGA'
             base=f'https://raw.githubusercontent.com/{repo}/main/public_media/{edition}/MANGA_sans_sources_v1/'
             payload=construire(folder,base,os.environ.get('BUFFER_CHANNEL_ID',''),now=now)
