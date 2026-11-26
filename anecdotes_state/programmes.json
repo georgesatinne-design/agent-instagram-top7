@@ -118,13 +118,13 @@
     "date_confirmation": "2026-11-26T17:23:36.997502+00:00"
   },
   "2026-12-05": {
-    "fact_id": "bruxelles-horta",
-    "sujet": "bruxelles",
-    "etat": "PROGRAMME",
+    "fact_id": "mccay-pseudonyme-silas",
+    "sujet": "mccay",
+    "etat": "EN_ATTENTE_MAJ",
     "date": "2026-12-05",
     "due_at": "2026-12-05T17:00:00.000Z",
-    "dossier": "public_media/anecdotes_bd/2026-12-05/bruxelles-horta_8587b6c6443a01e5a5",
-    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-05/bruxelles-horta_8587b6c6443a01e5a5/",
+    "dossier": "public_media/anecdotes_bd/2026-12-05/mccay-pseudonyme-silas_ef94e1a9906e1ee28a",
+    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-05/mccay-pseudonyme-silas_ef94e1a9906e1ee28a/",
     "images": [
       "01_anecdote.png",
       "02_anecdote.png",
@@ -132,12 +132,36 @@
       "04_anecdote.png",
       "05_anecdote.png"
     ],
-    "revision": "8587b6c6443a01e5a5",
-    "date_preparation": "2026-11-26T10:44:17.283453+00:00",
-    "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nCe musée cache une surprise\n\nLe bâtiment du Musée de la BD de Bruxelles a été conçu par Victor Horta.\n\nTu aurais deviné qui a dessiné ce bâtiment ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "revision": "ef94e1a9906e1ee28a",
+    "date_preparation": "2026-11-26T17:32:52.580124+00:00",
+    "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nLe créateur de little nemo signait parfois sous un autre nom\n\nWinsor McCay a publié Dream of the Rarebit Fiend sous le pseudonyme Silas.\n\nQuel univers de rêve en BD t’a le plus marqué ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "empreinte_fait": "d5f4fd06f27f8d48f4",
     "id_buffer": "6b080d97d91bf307683682cc",
-    "date_confirmation": "2026-11-26T17:06:04.735088+00:00",
-    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART"
+    "ancien_texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nCe musée cache une surprise\n\nLe bâtiment du Musée de la BD de Bruxelles a été conçu par Victor Horta.\n\nTu aurais deviné qui a dessiné ce bâtiment ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "ancien_fact_id": "bruxelles-horta",
+    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART",
+    "renouvellement_original": {
+      "fact_id": "bruxelles-horta",
+      "sujet": "bruxelles",
+      "etat": "PROGRAMME",
+      "date": "2026-12-05",
+      "due_at": "2026-12-05T17:00:00.000Z",
+      "dossier": "public_media/anecdotes_bd/2026-12-05/bruxelles-horta_8587b6c6443a01e5a5",
+      "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-05/bruxelles-horta_8587b6c6443a01e5a5/",
+      "images": [
+        "01_anecdote.png",
+        "02_anecdote.png",
+        "03_anecdote.png",
+        "04_anecdote.png",
+        "05_anecdote.png"
+      ],
+      "revision": "8587b6c6443a01e5a5",
+      "date_preparation": "2026-11-26T10:44:17.283453+00:00",
+      "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nCe musée cache une surprise\n\nLe bâtiment du Musée de la BD de Bruxelles a été conçu par Victor Horta.\n\nTu aurais deviné qui a dessiné ce bâtiment ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+      "id_buffer": "6b080d97d91bf307683682cc",
+      "date_confirmation": "2026-11-26T17:06:04.735088+00:00",
+      "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART"
+    }
   },
   "2026-12-06": {
     "fact_id": "topffer-professeur",
