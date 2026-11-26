@@ -35,7 +35,13 @@ jobs:
 
       - name: Tester l'agent uniquement si un nouveau classement existe
         if: steps.source.outputs.new == 'true'
-        run: python -m unittest discover -s tests -v
+        run: |
+          # Ne tester que les composants BD et la Queue commune.
+          # Les tests Manga, Comics et Anecdotes ont leurs propres workflows.
+          set -e
+          for fichier in test_agent.py test_top7_buffer.py test_surveillance_bd_v17.py test_snapshot_auto_v17.py test_couvertures_v8.py test_illyadera_covers.py test_illyadera_queue.py test_calendrier_v12.py test_top_et_dates_v6.py test_evolutions_v5.py; do
+            python -m unittest discover -s tests -p "$fichier" -v
+          done
 
       - name: Produire le Top 7 depuis le classement vérifié
         env:
