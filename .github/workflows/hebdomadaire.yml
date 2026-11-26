@@ -4,12 +4,12 @@ on:
   schedule:
     # Contrôle toutes les heures, à :23, en heure de Paris.
     # Seule une nouvelle période de ventes déclenche la fabrication et l'envoi.
-    - cron: '23 * * * *'
+    - cron: '23 7,12,16,20 * * *'
       timezone: 'Europe/Paris'
   workflow_dispatch:
 
 concurrency:
-  group: surveillance-bd-buffer
+  group: illyadera-buffer-operations
   cancel-in-progress: false
 
 permissions:
@@ -42,6 +42,7 @@ jobs:
         run: python agent.py --sortie sorties/hebdomadaire --snapshot-auto sorties/snapshot_bd_verifie.json
 
       - name: Vérifier le dossier, la légende et préparer les images publiques
+        id: dossier
         if: steps.source.outputs.new == 'true'
         env:
           EDITION: ${{ steps.source.outputs.edition }}
@@ -51,31 +52,46 @@ jobs:
           python - <<'PY'
           import json,os,re,shutil
           from pathlib import Path
-          root=Path('sorties/hebdomadaire')
-          folder=root/'BD'
-          report=json.loads((root/'rapport.json').read_text(encoding='utf-8'))
-          if not any(d.get('categorie')=='BD' and d.get('diapositives')==8 and d.get('couvertures')==7 for d in report.get('dossiers',[])):
-              raise SystemExit('Top 7 BD incomplet : dépôt automatique refusé (une nouvelle tentative aura lieu à la prochaine surveillance).')
-          manifest=json.loads((folder/'post_manifest.json').read_text(encoding='utf-8'))
-          if manifest.get('category')!='BD' or not manifest.get('ready_to_stage'):
-              raise SystemExit('Carrousel non prêt : dépôt Buffer refusé.')
-          if len(manifest.get('pages',[]))!=8:
-              raise SystemExit('Huit pages sont obligatoires.')
-          caption=(folder/'legende_instagram.txt').read_text(encoding='utf-8')
-          if re.search(r'\b(source|sources|GfK|BDZoom|Edistat|Livres Hebdo)\b|https?://',caption,re.I):
-              raise SystemExit('Sources détectées dans la légende : dépôt refusé.')
-          if os.environ['REPO_PRIVATE']=='true':
-              raise SystemExit('Les images doivent être accessibles à Buffer via un dépôt public.')
-          target=Path('public_media')/os.environ['EDITION']/'BD'
-          target.mkdir(parents=True,exist_ok=True)
-          for name in manifest['pages']:
-              shutil.copy2(folder/name,target/name)
-          (root/'edition.json').write_text(json.dumps({'edition':os.environ['EDITION'],'signature':os.environ['SIGNATURE']}),encoding='utf-8')
-          print('Carrousel complet, images préparées, sans sources dans la légende.')
+          root=Path('sorties/hebdomadaire');folder=root/'BD'
+          ready=False;why=''
+          try:
+              report=json.loads((root/'rapport.json').read_text(encoding='utf8'))
+              complete=any(d.get('categorie')=='BD' and d.get('diapositives')==8 and d.get('couvertures')==7 for d in report.get('dossiers',[]))
+              if not complete:
+                  why='Classement BD ou couvertures incomplets; attente des prochaines données'
+              else:
+                  manifest=json.loads((folder/'post_manifest.json').read_text(encoding='utf8'))
+                  pages=manifest.get('pages',[])
+                  if manifest.get('category')!='BD' or not manifest.get('ready_to_stage') or len(pages)!=8:
+                      why='Carrousel BD non prêt ou format incorrect'
+                  elif os.environ['REPO_PRIVATE']=='true':
+                      why='Dépôt privé : images inaccessibles par Buffer'
+                  else:
+                      caption=(folder/'legende_instagram.txt').read_text(encoding='utf8')
+                      if re.search(r'\b(source|sources|GfK|BDZoom|Edistat|Livres Hebdo)\b|https?://',caption,re.I):
+                          why='Source dans la légende, publication refusée'
+                      else:
+                          target=Path('public_media')/os.environ['EDITION']/'BD'
+                          for name in pages:
+                              if not (folder/name).is_file():
+                                  raise FileNotFoundError('Fichier carrousel manquant '+name)
+                          target.mkdir(parents=True,exist_ok=True)
+                          for name in pages:shutil.copy2(folder/name,target/name)
+                          (root/'edition.json').write_text(json.dumps({'edition':os.environ['EDITION'],'signature':os.environ['SIGNATURE']}),encoding='utf8')
+                          ready=True
+          except (ValueError,FileNotFoundError,KeyError,OSError) as exc:
+              why='Dossier BD non publiable: '+str(exc)[:220]
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf8') as out:
+              out.write('ready='+str(ready).lower()+'\n')
+          if not ready:
+              print('::warning title=Top BD différé::'+why)
+              print('Aucun appel Buffer et aucune réservation. Retentative lors du prochain contrôle.')
+          else:
+              print('Top 7 BD complet. Images publiques prêtes.')
           PY
 
       - name: Héberger les huit images du nouveau classement
-        if: steps.source.outputs.new == 'true'
+        if: steps.source.outputs.new == 'true' && steps.dossier.outputs.ready == 'true'
         run: |
           if [ -n "$(git status --porcelain public_media)" ]; then
             git config user.name "github-actions[bot]"
@@ -86,7 +102,7 @@ jobs:
           fi
 
       - name: Vérifier la disponibilité publique des images avant toute réservation
-        if: steps.source.outputs.new == 'true'
+        if: steps.source.outputs.new == 'true' && steps.dossier.outputs.ready == 'true'
         env:
           EDITION: ${{ steps.source.outputs.edition }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -115,7 +131,7 @@ jobs:
           PY
 
       - name: Vérifier les accès Buffer AVANT de réserver l'édition
-        if: steps.source.outputs.new == 'true'
+        if: steps.source.outputs.new == 'true' && steps.dossier.outputs.ready == 'true'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
@@ -125,8 +141,27 @@ jobs:
             exit 1
           fi
 
+      - name: Protéger le Top BD face à la capacité de Buffer
+        if: steps.source.outputs.new == 'true' && steps.dossier.outputs.ready == 'true'
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
+          ILLYADERA_TOP_VERIFIED: 'true'
+        run: |
+          python -m unittest discover -s tests -p 'test_illyadera_queue.py' -q
+          python -m illiyadera_queue before-top --kind BD
+          if [ -d anecdotes_state ] && [ -n "$(git status --porcelain anecdotes_state)" ]; then
+            git add anecdotes_state
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Queue Illyadera - place au classement BD'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
       - name: Réserver cette édition AVANT l'appel à Buffer (anti-doublon)
-        if: steps.source.outputs.new == 'true'
+        if: steps.source.outputs.new == 'true' && steps.dossier.outputs.ready == 'true'
         env:
           EDITION: ${{ steps.source.outputs.edition }}
           SIGNATURE: ${{ steps.source.outputs.signature }}
@@ -154,7 +189,7 @@ jobs:
           git push origin HEAD:main
 
       - name: Envoyer automatiquement le carrousel dans la Queue Buffer
-        if: steps.source.outputs.new == 'true'
+        if: steps.source.outputs.new == 'true' && steps.dossier.outputs.ready == 'true'
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}

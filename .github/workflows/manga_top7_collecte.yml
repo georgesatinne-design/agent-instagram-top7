@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: manga-production-top7
+  group: illyadera-buffer-operations
   cancel-in-progress: false
 
 jobs:
@@ -133,6 +133,25 @@ jobs:
             git pull --rebase origin main
             git push origin HEAD:main
           fi
+      - name: Préparer la capacité Buffer pour le Top manga validé
+        if: steps.publication.outputs.ready == 'true'
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
+          ILLYADERA_TOP_VERIFIED: 'true'
+        run: |
+          python -m unittest discover -s tests -p 'test_illyadera_queue.py' -q
+          python -m illiyadera_queue before-top --kind MANGA
+          if [ -d anecdotes_state ] && [ -n "$(git status --porcelain anecdotes_state)" ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add anecdotes_state
+            git commit -m 'Queue Illyadera - place au Top manga'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
       - name: Déposer le Top 7 manga à la date programmée dans Buffer
         if: steps.publication.outputs.ready == 'true'
         env:

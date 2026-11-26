@@ -5,16 +5,18 @@ on:
   schedule:
     # Tous les jours : anticiper les jours libres. Vérifications tardives pour
     # remplacer les TOP absents au dernier moment, sans préempter leur créneau.
-    - cron: '17 8,12,15,19 * * *'
+    - cron: '37 8 * * *'
       timezone: 'Europe/Paris'
-    - cron: '47 15,16,17 * * *'
+    - cron: '47 15,16 * * *'
+    # Rechargement rapide apres la publication habituelle des tops (17h/18h)
+    - cron: '17 17,18 * * *'
       timezone: 'Europe/Paris'
 
 permissions:
   contents: write
 
 concurrency:
-  group: anecdotes-bd-buffer-automatique
+  group: illyadera-buffer-operations
   cancel-in-progress: false
 
 jobs:
@@ -42,7 +44,9 @@ jobs:
         run: python -m pip install -r anecdotes_auto/requirements_anecdotes.txt
 
       - name: Tester le moteur anecdotes sans aucune publication
-        run: python -m unittest discover -s tests -p 'test_anecdotes*.py' -v
+        run: |
+          python -m unittest discover -s tests -p 'test_anecdotes*.py' -v
+          python -m unittest discover -s tests -p 'test_illyadera_queue.py' -v
 
       - name: Vérifier Buffer, chercher les faits et produire les 5 images par jour
         env:

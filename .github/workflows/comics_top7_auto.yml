@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: comics-top7-automatique
+  group: illyadera-buffer-operations
   cancel-in-progress: false
 
 jobs:
@@ -52,6 +52,22 @@ jobs:
             git pull --rebase origin main
             git push origin HEAD:main
           fi
+      - name: Préparer une place pour chaque Top comics complet
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
+          ILLYADERA_TOP_VERIFIED: 'true'
+        run: |
+          python -m unittest discover -s tests -p 'test_illyadera_queue.py' -q
+          python -m illiyadera_queue before-top --kind COMICS
+          if [ -d anecdotes_state ] && [ -n "$(git status --porcelain anecdotes_state)" ]; then
+            git add anecdotes_state
+            git commit -m 'Queue Illyadera - place aux classements comics'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
       - name: Programmer dès disponibilité dans Buffer
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
