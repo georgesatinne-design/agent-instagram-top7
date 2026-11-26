@@ -62,3 +62,7 @@ CI précédente : 333/333. Ajout d'une découverte structurée depuis un index p
 ## Clôture : correction des derniers blocages
 
 CI précédente : 338/338 tests réussis. Relecture du workflow Manga : correction de la sortie skip_history qui était écrite après fermeture du fichier et de la branche de traitement déjà finalisé. Test du bloc Python réel. Les anciennes intentions d'anecdotes arrivées à échéance sont écartées avant de consommer le budget d'envoi ; contrôle final et sauvegarde durable des corrections d'anecdotes. Aucun nouveau service, aucune extension fonctionnelle. Le déploiement doit être conditionné à la CI du commit final ; les performances des sources, les licences d'images et la publication réelle restent des contrôles d'exploitation, pas des garanties de la CI.
+
+## Correctif de production BD — 26 novembre 2026
+
+Le run BD 45819380837 a détecté BD_2026-11-15 mais a refusé la génération « Albums non uniques », avant arbitrage Buffer. L'ancien collecteur ne reconnaissait pas les tirets Unicode – et — ; le code fusionné les reconnaît. Tests de régression reproduisant les variations répétées et les cellules vides, contrôle d'unicité dès la collecte, déclenchement automatique BD limité aux modifications du collecteur ou du workflow sur main. Aucun post supprimé directement. La file auditée contenait 10 posts (1 Comics et 9 anecdotes), aucun conflit ; cela ne prouve pas la présence des Tops attendus. L'arbitrage ne libère une anecdote que pour un classement réellement complet.
