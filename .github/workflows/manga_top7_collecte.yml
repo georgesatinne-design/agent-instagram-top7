@@ -188,4 +188,4 @@ jobs:
           name: dossier-manga-complet
           path: sorties/manga_production/
           if-no-files-found: warn
-          retention-days: 30
+          retention-days: 1

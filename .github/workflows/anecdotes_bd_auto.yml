@@ -94,7 +94,7 @@ jobs:
         with:
           name: rapport-anecdotes-bd
           path: sorties/anecdotes_bd/
-          retention-days: 30
+          retention-days: 1
           if-no-files-found: warn
 
       - name: Contrôler les reprises et afficher les vrais incidents

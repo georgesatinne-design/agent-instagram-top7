@@ -54,8 +54,16 @@ def preparer_stock(*,limit=5,now=None,resolver=resolve_avance):
     # Priority to facts already scenarized / and those with broad public-domain corpus.
     from .catalogue import ROOT
     scenarios=(read(ROOT/'photos_scenes.json',{}) or {}).get('scenarios',{})
-    pending.sort(key=lambda f:(f['id'] not in scenarios,
-                               f['id'].split('-')[0] not in ('bruxelles','topffer','lucky','angouleme'),f['id']))
+    from .qualite_editoriale import score
+    from .catalogue import topic
+    pending.sort(key=lambda f:(-score(f), f['id'] not in scenarios, f['id']))
+    # Un premier tour par univers avant de réessayer un deuxième sujet du même univers.
+    first=[]; rest=[]; seen_topics=set()
+    for f in pending:
+        key=topic(f)
+        (rest if key in seen_topics else first).append(f)
+        seen_topics.add(key)
+    pending=first+rest
     attempts=[]
     for f in pending[:max(0,int(limit))]:
         try:

@@ -157,6 +157,15 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
         results['jours'].append({'date':'FILE_BUFFER','resultat':'CAPACITE_ATTEINTE',
                                  'en_queue':scheduled_count,'plafond':max_count})
     photos_indisponibles=set()
+    # Les publications déjà en file et à restaurer passent avant les créations.
+    # Réserver leur budget, même si leur date est postérieure au premier créneau libre.
+    repair_days = {key for key, posts in dayposts.items()
+        if (registry.get(key) or {}).get('etat') == 'PROGRAMME'
+        and (registry.get(key) or {}).get('version_visuelle') not in VERSIONS_DEJA_VALIDES
+        and any(p.get('id') == registry[key].get('id_buffer')
+                and _is_our_exact(p, registry[key])
+                and p.get('dueAt') and parse(p['dueAt']) > now + dt.timedelta(minutes=35)
+                for p in posts)}
     for day in next_days(now):
         key=day.isoformat();posts=dayposts[key]
         item=registry.get(key) or {}
@@ -267,7 +276,8 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
             if not can_move:
                 continue
         # La place éventuelle sera libérée seulement après vérification des cinq médias.
-        if len(results['plans'])>=CONFIG['max_posts_par_execution']:continue
+        reserved_repairs = sum(other > key for other in repair_days)
+        if len(results['plans'])+reserved_repairs>=CONFIG['max_posts_par_execution']:continue
         if item.get('etat')=='EN_ATTENTE':
             # Retry only if the files are still present and the slot still free.
             if (ROOT_REPO/item.get('dossier','')).is_dir():

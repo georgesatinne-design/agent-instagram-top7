@@ -44,6 +44,36 @@ MIN_DISTINCTES = 3
 # Catégories très ciblées. Les images de contexte contemporain sont présentées comme
 # telles; elles ne sont jamais légendées comme témoignages photographiques d'époque.
 SCENES = {
+ 'asterix-idefix-lecteurs': [
+  (1, 'LE CREATEUR', 'René Goscinny portrait', ('rene goscinny',), ('goscinny',)),
+  (3, 'LE JOURNAL', 'Pilote magazine bande dessinée', ('pilote',), ('goscinny','magazine','journal')),
+  (4, 'LE DESSINATEUR', 'Albert Uderzo portrait', ('albert uderzo',), ('uderzo',)),
+ ],
+ 'peanuts-spike-snoopy': [
+  (1, 'LE CREATEUR', 'Charles Schulz portrait', ('charles schulz','charles m schulz'), ('schulz',)),
+  (3, 'LE CHIEN SPIKE - ARCHIVE', 'Charles Schulz dog Spike', ('spike',), ('schulz',)),
+  (4, 'LE PERSONNAGE', 'Snoopy Peanuts sculpture', ('snoopy',), ('peanuts',)),
+ ],
+ 'peanuts-niche-incendie': [
+  (1, 'LE CREATEUR', 'Charles Schulz portrait', ('charles schulz','charles m schulz'), ('schulz',)),
+  (3, 'LE STUDIO - ARCHIVE', 'Charles Schulz studio 1966 fire', ('schulz',), ('fire','1966')),
+  (4, 'LE PERSONNAGE', 'Snoopy doghouse Peanuts', ('snoopy',), ('doghouse','peanuts')),
+ ],
+ 'astro-figurant-vedette': [
+  (1, 'LE CREATEUR', 'Osamu Tezuka portrait', ('osamu tezuka','tezuka osamu'), ('tezuka',)),
+  (3, 'LE PERSONNAGE', 'Astro Boy statue', ('astro boy','mighty atom','tetsuwan atom'), ('statue','sculpture')),
+  (4, 'LE CONTEXTE ANIMATION', 'Mushi Production studio Astro Boy', ('mushi production',), ('astro boy','tezuka')),
+ ],
+ 'tintin-chromos-savoirs': [
+  (1, 'LE CREATEUR', 'Hergé Georges Remi portrait', ('herge','georges remi'), ('herge','remi')),
+  (3, 'LES CHROMOS - DOCUMENT', 'Tintin chromos collection', ('tintin',), ('chromo','chromos')),
+  (4, 'LE PERSONNAGE', 'Tintin monument statue', ('tintin',), ('statue','sculpture')),
+ ],
+ 'yellowkid-guerre-journaux': [
+  (1, 'LE PERSONNAGE - ARCHIVE', 'Yellow Kid Richard Outcault', ('yellow kid',), ('outcault','1896','1895')),
+  (3, 'LA PRESSE - ARCHIVE', 'New York World Yellow Kid 1895', ('yellow kid',), ('world','1895')),
+  (4, 'UN AUTRE DOCUMENT D EPOQUE', 'Yellow Kid New York Journal 1896', ('yellow kid',), ('journal','1896')),
+ ],
  'bruxelles': [
   (1, 'LE LIEU', 'Magasins Waucquez', ('waucquez','comic strip center','comics art museum'), ('waucquez','bruxelles','brussels')),
   (3, 'LE CONTEXTE', 'Belgian Comic Strip Center', ('comic strip center','waucquez','centre belge'), ('bruxelles','brussels','waucquez')),

@@ -100,5 +100,5 @@ jobs:
         with:
           name: dossier-comics-hebdo-mensuel
           path: sorties/comics_periodique/
-          retention-days: 30
+          retention-days: 1
           if-no-files-found: warn

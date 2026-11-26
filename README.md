@@ -38,3 +38,7 @@ Les données de démonstration ne sont pas publiables. Les fonds et chartes d'or
 Un workflow vert ne prouve pas une publication : vérifier les rapports, les reçus et le statut Buffer. Le dépôt est public et les images mises en ligne sont accessibles publiquement, même avant publication Instagram. Les secrets doivent rester dans GitHub Actions, jamais dans les fichiers.
 
 Voir [AUDIT_TECHNIQUE.md](AUDIT_TECHNIQUE.md) pour les limites et les décisions de nettoyage.
+
+## Coût zéro et ligne éditoriale
+
+Voir [POLITIQUE_COUT_ZERO.md](POLITIQUE_COUT_ZERO.md). Aucune dépendance payante ; les pistes éditoriales sont séparées des faits validés. Les métadonnées de fiches commerciales ne sont pas publiées comme anecdotes.

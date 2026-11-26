@@ -22,3 +22,7 @@ Correction des trois appels de module, garde main sur les agents modifiant l'ét
 - Les anciens modules encore importés ou testés ne sont pas supprimés sans preuve de non-usage.
 - Les guides historiques MISE_EN_SERVICE et GUIDE_GITHUB_DEBUTANT peuvent contenir des procédures devenues obsolètes ; les consulter comme archives, non comme procédure de déploiement.
 - Vérifier les droits de réutilisation des visuels et les licences avant publication.
+
+## Validation du premier commit et enrichissement éditorial
+
+La CI a exécuté 298 tests : 296 réussis, 2 échecs de priorité des mises à jour d'anecdotes. Le budget de préparation réserve maintenant les réparations des publications existantes. Le coût zéro est formalisé, la découverte éditoriale séparée de la banque validée, six récits originaux sourcés sont ajoutés avec pistes de visuels à vérifier, et le rapprochement des titres manga est renforcé. La validation du nouveau commit et la disponibilité des images restent à contrôler.

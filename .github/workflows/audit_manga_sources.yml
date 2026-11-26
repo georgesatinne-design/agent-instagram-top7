@@ -3,7 +3,8 @@ name: Manga V7 - bilan complet, couvertures et semaine (sans publication)
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 */6 * * *'
+    # L'agent manga de production surveille déjà les nouveautés. Audit hebdomadaire seulement.
+    - cron: '17 6 * * 1'
 
 permissions:
   contents: read
@@ -59,4 +60,4 @@ jobs:
           name: dossier-manga-v7
           path: rapports_manga/
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 1

@@ -52,4 +52,4 @@ jobs:
           path: |
             anecdotes_state/stock_photos_rapport.json
             anecdotes_state/stock_photos_verifiees.json
-          retention-days: 30
+          retention-days: 1

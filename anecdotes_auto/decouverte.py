@@ -1,6 +1,5 @@
-"""Nouveaux candidats UNIQUEMENT depuis des fiches éditeur structurées.
-Pas d'IA externe, pas d'inférence narrative: les champs sont cités et archivés.
-Une panne du web n'empêche pas l'utilisation de la banque historique sourcée.
+"""Repérage de pistes historiques gratuites ; aucun texte libre promu automatiquement.
+Le parseur de fiches commerciales reste disponible pour les contrôles historiques.
 """
 from __future__ import annotations
 import datetime as dt,hashlib,json,re,time
@@ -116,42 +115,55 @@ def structured_fact(url,html,stamp=None):
     }
     return fact if valid_fact(fact) else None
 
+SIGNALS = ('coulisse','secret','origine','histoire','naissance','archive','anecdote',
+           'creation','personnage','concours','inspiration','portrait','chronologie',
+           'behind','history','origin','archive','inspiration','character','timeline')
+
+def editorial_links(html, base):
+    """Ne retourne que des pistes ; jamais des faits ou des textes publiables."""
+    soup=BeautifulSoup(html,'html.parser')
+    out={}
+    for a in soup.select('a[href]'):
+        url=urldefrag(urljoin(base,a['href']))[0].split('?')[0]
+        if not valid_url(url) or urlparse(url).hostname!=urlparse(base).hostname:continue
+        title=' '.join(a.stripped_strings)
+        if not 15<=len(title)<=160:continue
+        raw=normalized(title+' '+urlparse(url).path)
+        weight=sum(token in raw for token in SIGNALS)
+        if not weight:continue
+        if url not in out or weight>out[url]['priorite']:
+            out[url]={'url':url,'titre':title,'priorite':weight,'statut':'A_VERIFIER'}
+    return sorted(out.values(),key=lambda row:(-row['priorite'],row['url']))
+
 def discover(session=None,*,limit=None,now=None):
     session=session or requests.Session()
     now=now or dt.datetime.now(dt.timezone.utc)
-    # Les contrôles Buffer sont fréquents, pas la lecture des sites éditeurs.
     last=read(STATE/'collecte_rapport.json',{}) or {}
-    if last.get('controle_date_utc'):
+    if last.get('controle_date_utc') and last.get('mode')=='PISTES_EDITORIALES':
         try:
             previous=dt.datetime.fromisoformat(last['controle_date_utc'])
             if previous.tzinfo and now-previous<dt.timedelta(hours=20):
                 return {**last,'rapport_reutilise':True}
         except (TypeError,ValueError):pass
-    cfg=CONFIG['collecte'];max_pages=limit or cfg['max_pages_par_execution']
-    errors=[];saved=[];seen=set();pages=0
-    cached=(read(STATE/'decouvertes.json',{}) or {}).get('faits',[])
-    ids={r['id'] for r in cached if isinstance(r,dict) and 'id' in r}
-    for portal in SOURCES['points_entree_decouverte']:
-        if pages>=max_pages or len(saved)>=cfg['max_nouveaux_faits']:break
+    cfg=CONFIG['collecte']
+    max_pages=max(0,min(18,int(limit if limit is not None else cfg['max_pages_par_execution'])))
+    old=read(STATE/'pistes_editoriales.json',{}) or {}
+    candidates={r['url']:r for r in old.get('pistes',[]) if isinstance(r,dict) and r.get('url')}
+    before=set(candidates);errors=[];pages=0
+    for portal in SOURCES.get('points_entree_editoriaux',[])[:max_pages]:
+        pages+=1
         try:
-            content=html_get(portal,session,cfg['timeout_secondes']);pages+=1
-            links=candidate_links(BeautifulSoup(content,'html.parser'),portal)[:cfg['max_liens_par_source']]
+            content=html_get(portal,session,cfg['timeout_secondes'])
+            for row in editorial_links(content,portal)[:cfg['max_liens_par_source']]:
+                if row['url'] not in candidates:
+                    candidates[row['url']]={**row,'date_detection':now.isoformat()}
         except Exception as exc:
-            errors.append(f'{urlparse(portal).hostname}: {type(exc).__name__}');continue
-        for url in links:
-            if pages>=max_pages or len(saved)>=cfg['max_nouveaux_faits']:break
-            if url in seen:continue
-            seen.add(url)
-            try:
-                body=html_get(url,session,cfg['timeout_secondes']);pages+=1
-                fact=structured_fact(url,body,now.isoformat())
-                if fact and fact['id'] not in ids:
-                    saved.append(fact);ids.add(fact['id'])
-            except Exception as exc:
-                errors.append(f'{urlparse(url).hostname}: {type(exc).__name__}')
-            time.sleep(.2)
-    if saved:write(STATE/'decouvertes.json',{'faits':cached+saved})
-    report={'pages_consultees':pages,'nouveaux_faits':len(saved),'total_decouvertes':len(cached)+len(saved),'erreurs':errors[:40],
-            'controle_date_utc':now.isoformat()}
+            errors.append(f'{urlparse(portal).hostname}: {type(exc).__name__}')
+        time.sleep(.2)
+    ranked=sorted(candidates.values(),key=lambda r:(-r['priorite'],r['url']))[:250]
+    write(STATE/'pistes_editoriales.json',{'note':'Pistes à lire et vérifier. Jamais publiées directement.', 'pistes':ranked})
+    report={'mode':'PISTES_EDITORIALES','pages_consultees':pages,'nouveaux_faits':0,
+            'nouvelles_pistes':len(set(candidates)-before),'total_pistes':len(ranked),
+            'erreurs':errors,'controle_date_utc':now.isoformat()}
     write(STATE/'collecte_rapport.json',report)
     return report

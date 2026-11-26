@@ -233,4 +233,4 @@ jobs:
           name: dossier-bd-automatique
           path: sorties/hebdomadaire/
           if-no-files-found: ignore
-          retention-days: 30
+          retention-days: 1

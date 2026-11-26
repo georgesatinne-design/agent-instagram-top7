@@ -66,6 +66,7 @@ class MangaSourcesTests(unittest.TestCase):
         self.assertFalse(match_titles('Blue Lock tome 35','Blue Lock tome 34'))
         self.assertFalse(match_titles('Atelier des Sorciers tome 16 Collector','Atelier des Sorciers tome 16 Standard'))
         self.assertTrue(match_titles('Kagurabachi tome 11','Kagurabachi tome 11 - Kana'))
+        self.assertFalse(match_titles('Instinct tome 3','Instinct de survie tome 3 édition poche'))
     def test_top7_sur_fixtures_synthetiques(self):
         data,evidence=source_report(article(),bede(),root=self.root,source_url='https://actualitte.com/article/135341/meilleures-ventes/test')
         self.assertEqual([x['ean'] for x in data['titres']],[x[1] for x in KNOWN])
