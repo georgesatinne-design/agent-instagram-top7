@@ -7,6 +7,7 @@ from pathlib import Path
 from sources.collecte import collect_bd, fetch, rangs_bede, top_par_genre_bede, BEDE
 from sources.couvertures import lookup_bede, search_bede_catalog, search_google_books, download_cover
 from studio import verifier, render
+from illyadera_covers import resolve_cover
 from visual_top7 import render_top7
 
 ROOT=Path(__file__).resolve().parent
@@ -68,6 +69,14 @@ def run(output:Path, input_file:Path|None=None, *, allow_demo=False, verified_sn
                     backup=search_google_books(book)
                     if backup:
                         ok,message=download_cover(book,{book['rang']:backup},coverdir)
+                if not ok and (not input_file or verified_snapshot):
+                    extra=resolve_cover(book,coverdir)
+                    if extra['ok']:
+                        ok=True;message=extra['source']
+                    else:
+                        (coverdir/'COUVERTURES_TENTATIVES').mkdir(parents=True,exist_ok=True)
+                        (coverdir/'COUVERTURES_TENTATIVES'/f"rang_{book['rang']}.json").write_text(
+                            json.dumps(extra,ensure_ascii=False,indent=2),encoding='utf8')
                 if not ok:log.append(f'{cat} #{book["rang"]}: couverture absente : {message}')
             # Un seul moteur graphique pour BD / MANGA / COMICS, trois fonds indépendants.
             # Sans les fichiers et couleurs transmis pour le genre, la génération est bloquée.
