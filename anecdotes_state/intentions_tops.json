@@ -1,12 +1,13 @@
 {
   "BD_2026-11-15": {
-    "etat": "CREATION_EN_COURS",
+    "etat": "CONFIRME",
     "edition": "BD_2026-11-15",
     "due_at": "2026-11-27T16:00:00.000Z",
     "empreinte_texte": "0e09f0acaeca378b025a395b6dca1467ee8a19a17cdb3d4182669ae049482143",
     "date_utc": "2026-11-26T14:59:33.771765+00:00",
     "recu": {
       "empreinte_classement": "398ecda881aa46bcb1bf0bc8f1312c96b52755d0a367b87bf7ac0274697fc79a"
-    }
+    },
+    "id_buffer": "6b08495702d874faa50589d4"
   }
 }
