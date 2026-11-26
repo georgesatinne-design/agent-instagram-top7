@@ -1,7 +1,7 @@
 {
   "date": "2026-11-30",
   "due": "2026-11-30T17:00:00.000Z",
-  "etat": "EN_COURS",
+  "etat": "PROGRAMME",
   "text": "📰 LES 5 ACTUS DU 9e ART — 30/11/2026\n\n1. Le Lézard Noir entre au musée\nSource : Cité internationale de la BD — https://www.citebd.org/agenda/le-lezard-noir-le-manga-dans-les-marges\n\n2. Laura Pozzi récompensée pour La Dernière Forêt\nSource : Palais de la Porte Dorée — https://www.palais-portedoree.fr/actualites/mariana-alves-et-laura-pozzi-laureates-2026-des-prix-litteraire-et-bd-de-la-porte-doree\n\n3. Cinq albums encore en lice pour le Grand Prix ACBD\nSource : ACBD — https://www.acbd.fr/12097/actualites/selection-finale-du-grand-prix-de-la-critique-acbd-2027/\n\n4. Luminous reçoit le prix jeunesse de l'ACBD\nSource : ACBD — https://www.acbd.fr/12100/actualites/luminous-prix-jeunesse-de-la-critique-acbd-2026/\n\n5. Une librairie manga trouve un repreneur à Morlaix\nSource : ActuaLitté — https://actualitte.com/article/135345/librairie/morlaix-a-23-ans-fabio-scalora-reprend-manga-no-tengoku-et-prepare-la-suite\n\n#BD #Manga #Comics #9eArt #ActualitesBD",
   "urls": [
     "https://www.citebd.org/agenda/le-lezard-noir-le-manga-dans-les-marges",
@@ -19,5 +19,7 @@
     "05_actus.png",
     "06_actus.png"
   ],
-  "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/actus_9e_art/2026-11-30/d29ae6685034f3417c/"
+  "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/actus_9e_art/2026-11-30/d29ae6685034f3417c/",
+  "id_buffer": "6b055520428d2546b7f840e5",
+  "confirmation_utc": "2026-11-26T17:05:25.767736+00:00"
 }

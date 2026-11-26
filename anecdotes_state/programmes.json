@@ -71,7 +71,7 @@
   "2026-11-30": {
     "fact_id": "bruxelles-1984",
     "sujet": "bruxelles",
-    "etat": "PROGRAMME",
+    "etat": "SUPPLANTE_PAR_ACTUS",
     "date": "2026-11-30",
     "due_at": "2026-11-30T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-11-30/bruxelles-1984_aaa8819a8d15d53698",
