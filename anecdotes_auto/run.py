@@ -30,7 +30,7 @@ def persist(registry):write(REGISTRY,registry)
 
 def proof(fact,now):
     output={k:fact.get(k) for k in ('id','url_source','preuve_courte','type_preuve',
-        'controle_editorial','empreinte_page_sha256','controle_date_utc') if fact.get(k)}
+        'controle_editorial','empreinte_page_sha256','controle_date_utc','preuve_structuree') if fact.get(k)}
     output.update({'consultation_interne':now.isoformat(),'note':'Les sources ne sont jamais envoyées dans les images ou légendes.'})
     write(STATE/'preuves'/f'{fact["id"]}.json',output)
 
@@ -95,10 +95,12 @@ def stage_fact(fact,day,repo,now):
         import shutil
         for img in images:shutil.copyfile(folder/img,version_folder/img)
         shutil.copyfile(folder/'legende_instagram.txt',version_folder/'legende_instagram.txt')
-        shutil.copyfile(folder/'apercu.png',version_folder/'apercu.png')
+        preview=REPORT/'apercus'/day.isoformat()/(fact['id']+'.png')
+        preview.parent.mkdir(parents=True,exist_ok=True)
+        shutil.copyfile(folder/'apercu.png',preview)
         shutil.rmtree(folder)
     proof(fact,now)
-    # L'audit photo reste privé dans anecdotes_state, pas dans le texte public.
+    # L'audit photo est documentaire, hors texte Instagram ; le dépôt reste public.
     write(STATE/'preuves_photos'/f'{fact["id"]}.json',{'photos':media_proofs})
     base=f'https://raw.githubusercontent.com/{repo}/main/{version_folder.relative_to(ROOT_REPO).as_posix()}/'
     return {'fact_id':fact['id'],'sujet':topic(fact),'etat':'EN_ATTENTE','date':day.isoformat(),

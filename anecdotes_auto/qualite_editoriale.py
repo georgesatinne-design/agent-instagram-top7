@@ -20,7 +20,7 @@ def score(fact):
     if fact.get('theme') in ('COULISSES','PERSONNAGES','HISTOIRE','PATRIMOINE'):score+=5
     if fact.get('theme') in ('COULISSES','PERSONNAGES'):score+=8
     if any(x in hook for x in ('lecteurs','chien','incendie','secondaire','concours','origine','inspire')):score+=8
-    if fact.get('type_preuve')=='SOURCE_PRIMAIRE_OFFICIELLE':score+=7
+    if fact.get('type_preuve') in ('SOURCE_PRIMAIRE_OFFICIELLE','SOURCE_INSTITUTIONNELLE_CORROBOREE'):score+=7
     if fact.get('type_preuve')=='METADONNEES_EDITEUR_OFFICIEL':score-=25
     if any(x in hook for x in ('trois details','pages','date de sortie','cette edition','ce tome')):score-=22
     if body.count('pages')>=1 and 'para' in body:score-=7

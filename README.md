@@ -68,3 +68,7 @@ Les audits Manga et Buffer sont planifiés automatiquement. La réconciliation B
 ## Cadence de collecte et réserve utile
 
 Voir [STRATEGIE_COLLECTE.md](STRATEGIE_COLLECTE.md). Les collectes sont calées sur les fenêtres habituelles des sources, avec relances automatiques et contrôle anticipé des reçus. Le mensuel Comics est séparé de l'hebdomadaire. La préparation des anecdotes est limitée à 14 jours, 4 plans par exécution, 10 posts Buffer et une réserve photographique cible de 10 faits non utilisés. Aucun horaire de publication Instagram n'est modifié.
+
+## Découverte documentaire autonome
+
+Un index structuré public Wikidata propose des pistes (nom de personnage et adaptations). Une piste n'est promue qu'après vérification de deux assertions explicites dans une archive institutionnelle autorisée ; les sources seules fournissent les relations, les modèles de phrases français ne les inventent pas. Les trois scènes d'illustration restent soumises aux vérifications de licence et d'identité. Limites : une requête index/jour, huit pages, trois faits, seulement sous le seuil de 30 faits inutilisés. La disponibilité et le rendement de ces sources ne sont pas garantis. Les aperçus des nouveaux carrousels restent dans les rapports temporaires, pas dans public_media.

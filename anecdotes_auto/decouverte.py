@@ -162,7 +162,10 @@ def discover(session=None,*,limit=None,now=None):
         time.sleep(.2)
     ranked=sorted(candidates.values(),key=lambda r:(-r['priorite'],r['url']))[:250]
     write(STATE/'pistes_editoriales.json',{'note':'Pistes à lire et vérifier. Jamais publiées directement.', 'pistes':ranked})
-    report={'mode':'PISTES_EDITORIALES','pages_consultees':pages,'nouveaux_faits':0,
+    from .decouverte_structuree import enrich
+    structured=enrich(session=session,now=now,state=STATE)
+    report={'mode':'PISTES_EDITORIALES','pages_consultees':pages,'nouveaux_faits':structured.get('nouveaux',0),
+            'decouverte_structuree':structured,
             'nouvelles_pistes':len(set(candidates)-before),'total_pistes':len(ranked),
             'erreurs':errors,'controle_date_utc':now.isoformat()}
     write(STATE/'collecte_rapport.json',report)

@@ -63,7 +63,7 @@ def preparer_stock(*,limit=5,now=None,resolver=resolve_avance):
         # A successful set lives in the shared image-cache; refresh on new week.
         if rec.get('statut')=='PRET' and age<dt.timedelta(days=CONFIG.get('stock_validite_jours',21)):
             ready_count+=1;continue
-        if rec.get('statut')=='INDISPONIBLE' and age<dt.timedelta(hours=20):continue
+        if rec.get('statut')=='INDISPONIBLE' and age<dt.timedelta(days=min(7,2**min(int(rec.get('echecs',0)),3))):continue
         pending.append(f)
     # Priority to facts already scenarized / and those with broad public-domain corpus.
     from .catalogue import ROOT
@@ -94,7 +94,8 @@ def preparer_stock(*,limit=5,now=None,resolver=resolve_avance):
         except (PhotosIndisponibles,ValueError,KeyError,OSError) as exc:
             waiting='Budget de recherches atteint' in str(exc)
             book[f['id']]={'statut':'A_REPORTER' if waiting else 'INDISPONIBLE',
-                           'date_controle':now.isoformat(),'raison':str(exc)[:400]}
+                           'date_controle':now.isoformat(),'raison':str(exc)[:400],
+                           'echecs':0 if waiting else min(4,int(book.get(f['id'],{}).get('echecs',0))+1)}
             attempts.append({'fait':f['id'],'statut':'INDISPONIBLE','raison':str(exc)[:180]})
         # Persistence after each attempt, even if a subsequent API times out.
         write(STOCK,book)

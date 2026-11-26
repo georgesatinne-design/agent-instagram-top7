@@ -54,3 +54,7 @@ CI précédente : 325/325. Rétablissement de l'observation Manga quatre fois pa
 ## Neuvième intervention : cadence et stock utiles
 
 CI précédente : 329/329. Fenêtres de collecte fondées sur les parutions constatées (BD mercredi, Manga vendredi, Comics dimanche) ; relances automatiques, arrêt du rendu des éditions finalisées, mensuel distinct et limité au deuxième dimanche, audit Manga automatique allégé. Horizon anecdotes 14 jours, maximum 4 plans/run, stock cible de 10 faits inutilisés et cache de recherche borné. Les médias publics restent préservés. La CI et les sources en production restent à confirmer. Voir STRATEGIE_COLLECTE.md.
+
+## Dixième intervention : autonomie éditoriale
+
+CI précédente : 333/333. Ajout d'une découverte structurée depuis un index public et des archives autorisées, contrôles explicites de relation et de créateur, modèles français sans génération externe, scènes photographiques ancrées dans les entités, limites de requêtes et réserve. Six nouvelles histoires sourcées, pas déclarées illustrées. Mise à l'écart des aperçus publics futurs ; cache de recherche réutilisé et temporisation progressive des recherches infructueuses. Le rendement réel de la découverte reste à mesurer, et l'agent peut refuser un sujet si les preuves ou images manquent. Aucun service facturable ajouté.
