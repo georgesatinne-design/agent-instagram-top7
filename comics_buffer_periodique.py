@@ -148,11 +148,18 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
         fields={'id':old['id'],'text':payload['text'],'assets':payload['assets'],
                 'metadata':payload['metadata'],'schedulingType':'automatic',
                 'mode':'customScheduled','dueAt':effective}
+        if os.environ.get('ILLYADERA_SLOT_PLAN'):
+            from controle_file import final_guard
+            final_guard('COMICS_HEBDO' if cadence=='HEBDO' else 'COMICS_MENSUEL',effective,api_key=api_key,channel_id=channel_id,post=post,expected_id=old['id'])
         ans=_graphql(post,api_key,EDIT_MUTATION,{'input':fields})
         ident,status=_mutation_result(api_key,ans,'editPost',effective,expected_id=old['id'])
         action='MISE_A_JOUR'
     else:
-        if os.environ.get('ILLYADERA_SLOT_PLAN'):assert_arbitrated('COMICS_HEBDO' if cadence=='HEBDO' else 'COMICS_MENSUEL',payload['dueAt'])
+        if os.environ.get('ILLYADERA_SLOT_PLAN'):
+            from controle_file import final_guard
+            kind='COMICS_HEBDO' if cadence=='HEBDO' else 'COMICS_MENSUEL'
+            assert_arbitrated(kind,payload['dueAt'])
+            final_guard(kind,payload['dueAt'],api_key=api_key,channel_id=channel_id,post=post)
         ans=_graphql(post,api_key,MUTATION,{'input':payload})
         ident,status=_mutation_result(api_key,ans,'createPost',effective)
     result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':action,

@@ -38,3 +38,7 @@ CI du troisième commit réussie. Centralisation des créneaux, des marges et du
 ## Cinquième intervention : ordre et réutilisation
 
 CI du calendrier : 312 tests réussis. Blocage des éditions antérieures à un reçu plus récent, séparation des cadences Comics, traitement Comics chronologique et arbitrage immédiatement avant chaque envoi, arrêt des arbitrages suivants en cas d'échec. Réutilisation possible d'une anecdote libérée si son carrousel est intact, son fait admissible et son créneau encore libre. Les reçus locaux ne constituent pas une lecture live de Buffer. La mise à jour du registre après un arrêt brutal du runner reste un risque non transactionnel. La CI du nouveau commit doit être vérifiée avant fusion.
+
+## Sixième intervention : journal durable et contrôle de file
+
+CI précédente : 316/316 tests. Point de reprise Git avant la suppression, réconciliation des intentions, contrôle final du canal avant création/édition d'un Top. Workflow manuel d'audit agrégé en lecture seule. Le connecteur GitHub ne permet pas le lancement manuel d'un workflow ; aucune lecture directe de Buffer n'a été effectuée pendant cet audit. Les opérations distantes ne deviennent pas atomiques : en cas de panne, réconciliation ou blocage plutôt que répétition aveugle. Aucun service payant ajouté.

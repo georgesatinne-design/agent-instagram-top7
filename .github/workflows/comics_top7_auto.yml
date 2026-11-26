@@ -17,6 +17,8 @@ concurrency:
 jobs:
   comics:
     if: github.ref == 'refs/heads/main'
+    env:
+      ILLYADERA_DURABLE_JOURNAL: '1'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:

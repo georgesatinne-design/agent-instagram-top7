@@ -142,6 +142,8 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
         if byday is not None:
             dayposts={d.isoformat():list(byday.get(d.isoformat(),[])) for d in next_days(now)}
             scheduled_count=len(all_scheduled)  # y compris au-delà de l'horizon éditorial
+            from journal_publication import reconcile_intents
+            if reconcile_intents(registry,all_scheduled,now):persist(registry)
         else:
             for day in next_days(now):
                 dayposts[day.isoformat()]=buffer.day(day)
@@ -262,7 +264,7 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
                 results['jours'].append({'date':key,'resultat':'POST_ANCIEN_NON_MODIFIABLE',
                      'raison':failure['raison']})
             continue
-        if item.get('etat') in ('PROGRAMME','SUPPLANTE_PAR_TOP','EN_ATTENTE_MAJ'):
+        if item.get('etat') in ('PROGRAMME','SUPPLANTE_PAR_TOP','EN_ATTENTE_MAJ','LIBERATION_EN_COURS','LIBERATION_A_VERIFIER'):
             results['jours'].append({'date':key,'resultat':'DEJA_TRAITE'});continue
         ok,reason=eligible(day,now,posts)
         results['jours'].append({'date':key,'resultat':reason,'reservation':reserved_kind(day)})
@@ -338,9 +340,25 @@ def reconcile(buffer,registry,now,results,dayposts=None):
         if parse(ours[0]['dueAt'])<=now+dt.timedelta(minutes=10):
             results['erreurs'].append(f'Top arrive tardivement {key}: anecdote imminente, suppression automatique refusée')
             continue
+        # Journaliser également les réconciliations tardives. Les tests anciens
+        # utilisent des registres incomplets ; la production exige le créneau exact.
+        from journal_publication import checkpoint
+        if os.environ.get('ILLYADERA_DURABLE_JOURNAL')=='1':
+            if not rec.get('due_at') or parse(rec['due_at'])!=parse(ours[0]['dueAt']):
+                raise RuntimeError('Horaire de l’anecdote non confirmé')
+            live=buffer.list_scheduled()
+            if not any(p==ours[0] for p in live) or not any(p in live for p in tops):
+                raise RuntimeError('File modifiée avant réconciliation')
+        rec['etat']='LIBERATION_EN_COURS'
+        rec['intention_liberation']={'id_buffer':rec['id_buffer'],'due_at':ours[0]['dueAt'],
+            'priorite':'TOP','cible':key,'date_utc':now.isoformat()}
+        persist(registry)
+        checkpoint(REGISTRY)
         buffer.delete_own(rec['id_buffer'])
         rec['etat']='SUPPLANTE_PAR_TOP'
         rec['top_detecte_le']=now.isoformat()
+        persist(registry)
+        checkpoint(REGISTRY)
         results['supprimes_pour_top'].append({'jour':key,'id':rec['id_buffer']})
 
 def send(*,now=None,buffer=None):
@@ -353,6 +371,9 @@ def send(*,now=None,buffer=None):
     # Une lecture complète au début pour limiter la consommation du quota API.
     try:
         snapshot,dayposts=_day_snapshot(buffer,now)
+        if snapshot is not None:
+            from journal_publication import reconcile_intents
+            if reconcile_intents(registry,snapshot,now):persist(registry)
     except Exception as exc:
         results['erreurs'].append('QUEUE_BUFFER: '+str(exc)[:260])
         persist(registry)
@@ -422,6 +443,8 @@ def send(*,now=None,buffer=None):
                     if freed.get('action') not in ('ANECDOTE_LIBEREE','PLACE_DISPONIBLE'):
                         results['ignores'].append(key+' : QUEUE_PLEINE_SANS_POST_PLUS_LOINTAIN')
                         continue
+            if os.environ.get('ILLYADERA_DURABLE_JOURNAL')=='1':
+                validate_slot('ANECDOTE',rec['due_at'])
             post=buffer.create(rec['texte_public'],rec['due_at'],assets)
             if dayposts is not None:
                 dayposts.setdefault(key,[]).append({'id':post['id'],'status':'scheduled',

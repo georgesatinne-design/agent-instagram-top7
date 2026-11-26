@@ -215,6 +215,10 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
         edited={'id':old['id'],'text':payload['text'],'assets':payload['assets'],
                 'metadata':payload['metadata'],'schedulingType':'automatic',
                 'mode':'customScheduled','dueAt':effective_due}
+        if os.environ.get('ILLYADERA_SLOT_PLAN'):
+            from controle_file import final_guard
+            final_guard('MANGA',effective_due,api_key=api_key,channel_id=channel_id,post=post,expected_id=old['id'])
+            if _parse_due(effective_due)!=_parse_due(prior['date_programmee_utc']):raise RuntimeError('Créneau du reçu modifié')
         response=_graphql(post,api_key,EDIT_MUTATION,{'input':edited})
         ident,status=_mutation_result(api_key,response,'editPost',effective_due,expected_id=old['id'])
         action='CORRECTION_PROGRAMMEE'
@@ -224,7 +228,10 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
         if same_slot:
             raise RuntimeError('Créneau manga occupé par une autre édition sans reçu correspondant')
         else:
-            if os.environ.get('ILLYADERA_SLOT_PLAN'):assert_arbitrated('MANGA',payload['dueAt'],now=now)
+            if os.environ.get('ILLYADERA_SLOT_PLAN'):
+                from controle_file import final_guard
+                assert_arbitrated('MANGA',payload['dueAt'])
+                final_guard('MANGA',payload['dueAt'],api_key=api_key,channel_id=channel_id,post=post)
             response=_graphql(post,api_key,MUTATION,{'input':payload})
             ident,status=_mutation_result(api_key,response,'createPost',payload['dueAt'])
     result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':action,

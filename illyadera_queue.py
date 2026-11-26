@@ -84,6 +84,12 @@ def free_capacity_for_priority(due_at, *, buffer, registry=None, registry_path=R
     if any(not isinstance(p,dict) or not all(p.get(k) for k in ('id','status','dueAt','text','channelId')) for p in posts):
         raise RuntimeError('Post Buffer incomplet, arbitrage suspendu')
     registry=registry if registry is not None else read_registry(registry_path)
+    from journal_publication import reconcile_intents,checkpoint
+    if reconcile_intents(registry,posts,now):
+        save_registry(registry,registry_path)
+        checkpoint(registry_path)
+    if any(isinstance(r,dict) and r.get('etat')=='LIBERATION_A_VERIFIER' and r.get('due_at') and _dt(r['due_at'])>now for r in registry.values()):
+        raise RuntimeError('Intention de libération incertaine : aucun nouvel arbitrage')
     target=due.astimezone(PARIS).date().isoformat()
     existing_top=[p for p in posts if p['status']=='scheduled' and
                   _dt(p['dueAt']).astimezone(PARIS).date().isoformat()==target and
@@ -105,6 +111,8 @@ def free_capacity_for_priority(due_at, *, buffer, registry=None, registry_path=R
     if unknown_at_target:
         raise RuntimeError('Créneau du Top déjà occupé par une publication non gérée : aucun remplacement ni doublon automatique')
     at_target=[x for x in owned if x[0]==target]
+    if len(at_target)>1:
+        raise RuntimeError('Plusieurs anecdotes le même jour : arbitrage suspendu')
     if at_target:
         selected=at_target[0]
     elif len(posts)>=max_posts:
@@ -123,15 +131,22 @@ def free_capacity_for_priority(due_at, *, buffer, registry=None, registry_path=R
         raise RuntimeError('File Buffer modifiée pendant le contrôle : aucune suppression')
     if not any(k==key and p['id']==post['id'] for k,_,p in _eligible_owned(fresh,registry,now)):
         raise RuntimeError('Identité ou créneau de l’anecdote non confirmé')
+    rec['etat']='LIBERATION_EN_COURS'
+    rec['intention_liberation']={'id_buffer':post['id'],'due_at':post['dueAt'],'priorite':priority,
+                               'cible':target,'date_utc':now.isoformat()}
+    registry[key]=rec
+    save_registry(registry,registry_path)
+    checkpoint(registry_path)
     result=buffer.delete_own(post['id'])
     if not isinstance(result,dict) or result.get('id')!=post['id']:
-        raise RuntimeError('Suppression non confirmée par Buffer, état inchangé')
+        raise RuntimeError('Suppression non confirmée par Buffer, intention conservée')
     rec['etat']='LIBERE_POUR_'+priority
     rec['date_liberation_utc']=now.isoformat()
     rec['raison_liberation']=f'Priorité {priority} pour {target}'
     rec['ancien_id_buffer']=rec.get('id_buffer')
     registry[key]=rec
     save_registry(registry,registry_path)
+    checkpoint(registry_path)
     return {'action':'ANECDOTE_LIBEREE','date_liberation':key,'id_buffer':post['id'],'file_avant':len(posts),'priorite':priority}
 
 

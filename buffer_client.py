@@ -272,9 +272,15 @@ def deposit_draft(folder, public_base_url, channel_id, api_key, *, send=False, c
                 'dueAt': request_data['dueAt'],
                 'schedulingType': 'automatic',
             }
+            if os.environ.get('ILLYADERA_SLOT_PLAN'):
+                from controle_file import final_guard
+                final_guard('BD',request_data['dueAt'],api_key=api_key,channel_id=channel_id,post=post,expected_id=existing['id'])
             result = _graphql(post, api_key, EDIT_MUTATION, {'input': edited})
             identifier, status = _mutation_result(api_key, result, 'editPost', request_data['dueAt'], expected_id=existing['id'])
     else:
+        if os.environ.get('ILLYADERA_SLOT_PLAN'):
+            from controle_file import final_guard
+            final_guard('BD',request_data['dueAt'],api_key=api_key,channel_id=channel_id,post=post)
         result = _graphql(post, api_key, MUTATION, payload['variables'])
         identifier, status = _mutation_result(api_key, result, 'createPost', request_data['dueAt'])
     out = {

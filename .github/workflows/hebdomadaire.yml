@@ -18,6 +18,8 @@ permissions:
 jobs:
   surveiller_et_programmer:
     if: github.ref == 'refs/heads/main'
+    env:
+      ILLYADERA_DURABLE_JOURNAL: '1'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:

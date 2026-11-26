@@ -52,3 +52,7 @@ Voir [POLITIQUE_COUT_ZERO.md](POLITIQUE_COUT_ZERO.md). Aucune dépendance payant
 Les créneaux de production sont définis dans `calendrier_publication.json` (section `calendrier_editorial`) et interprétés par `calendrier_editorial.py`. Les Tops sont programmés avec une marge de 45 min ; les anecdotes avec 30 min. Le mensuel ne migre pas au troisième dimanche. Un créneau arbitré est conservé jusqu'à l'envoi ou l'envoi échoue sans déplacement silencieux. Les anciennes fonctions de calendrier restent compatibles avec les tests historiques.
 
 Les éditions antérieures à un reçu plus récent sont bloquées. Les deux cadences Comics sont traitées séparément et dans l'ordre des créneaux ; chaque arbitrage précède son propre envoi, et aucun autre arbitrage n'est effectué après un échec. Une anecdote libérée peut être réutilisée si les cinq médias sont disponibles et le créneau exact reste libre.
+
+## Reprise et audit de production
+
+Les workflows producteurs enregistrent une intention de libération dans Git avant toute suppression, puis vérifient la file au plus près de la mutation. Une reprise s'appuie sur une lecture complète de Buffer ; les situations ambiguës restent bloquées. Le workflow manuel `Audit Buffer en lecture seule` publie uniquement des compteurs anonymisés (aucune mutation). Lancer depuis main après validation et fusion. Ne jamais copier les secrets dans le dépôt.
