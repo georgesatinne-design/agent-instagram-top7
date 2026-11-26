@@ -34,5 +34,34 @@
       "commentaire": "Réservé aux publications quotidiennes quand leur format et source seront définis."
     }
   },
-  "delai_minimum_minutes": 10
+  "delai_minimum_minutes": 10,
+  "calendrier_editorial": {
+    "marge_top_minutes": 45,
+    "marge_anecdote_minutes": 30,
+    "heure_anecdote": "18:00",
+    "heure_vendredi": "17:00",
+    "regles": {
+      "BD": {
+        "jour": 4,
+        "heure": "17:00",
+        "frequence": "hebdomadaire"
+      },
+      "MANGA": {
+        "jour": 1,
+        "heure": "18:00",
+        "frequence": "hebdomadaire"
+      },
+      "COMICS_HEBDO": {
+        "jour": 3,
+        "heure": "18:00",
+        "frequence": "hebdomadaire"
+      },
+      "COMICS_MENSUEL": {
+        "jour": 6,
+        "heure": "18:00",
+        "frequence": "mensuelle",
+        "occurrence": 2
+      }
+    }
+  }
 }

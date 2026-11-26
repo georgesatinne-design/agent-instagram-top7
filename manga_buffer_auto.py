@@ -16,6 +16,7 @@ from zoneinfo import ZoneInfo
 import requests
 from PIL import Image
 from manga_score_publication import evaluer, SEUIL
+from calendrier_editorial import next_weekly, frozen_slot, assert_arbitrated
 
 # Réutilisation des fonctions GraphQL testées du projet BD, sans modifier leur code.
 from buffer_client import (_graphql, _mutation_result, _parse_due,
@@ -40,6 +41,7 @@ def mardi_suivant(now=None,*,weekday=1,hour=18,minute=0) -> str:
     Ne dépend pas du calendrier BD. La valeur peut être personnalisée dans
     les variables du workflow sans modifier la production BD.
     """
+    if (weekday,hour,minute)==(1,18,0):return next_weekly('MANGA',now)
     now=now or dt.datetime.now(dt.timezone.utc)
     if now.tzinfo is None:raise ValueError('Date courante sans timezone')
     paris=ZoneInfo('Europe/Paris')
@@ -100,7 +102,7 @@ def construire(folder,base_url,channel_id,*,now=None):
         raise ValueError('Classement trop ancien ou futur : aucun dépôt Buffer')
     if not channel_id:raise ValueError('Identifiant canal Buffer absent')
     return {'text':caption,'channelId':channel_id,'schedulingType':'automatic',
-            'mode':'customScheduled','dueAt':mardi_suivant(now=now),
+            'mode':'customScheduled','dueAt':frozen_slot('MANGA',mardi_suivant(now=now),now=now),
             'needsApproval':False, 'assets':media,
             'metadata':{'instagram':{'type':'post','shouldShareToFeed':True}}}
 
@@ -222,6 +224,7 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
         if same_slot:
             raise RuntimeError('Créneau manga occupé par une autre édition sans reçu correspondant')
         else:
+            if os.environ.get('ILLYADERA_SLOT_PLAN'):assert_arbitrated('MANGA',payload['dueAt'],now=now)
             response=_graphql(post,api_key,MUTATION,{'input':payload})
             ident,status=_mutation_result(api_key,response,'createPost',payload['dueAt'])
     result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':action,

@@ -12,6 +12,7 @@ from buffer_client import _graphql,_mutation_result,_parse_due,MUTATION,EDIT_MUT
 from comics_score_periodique import calculer,SEUIL
 from comics_visual_periodique import ordered_names
 from comics_pipeline_periodique import VERSION
+from calendrier_editorial import next_weekly,monthly_slot,frozen_slot,assert_arbitrated
 
 HEADER=re.compile(r'^\s*(?:📚\s*)?TOP\s*(?:5|7)\s*COMICS\b',re.I)
 PUBLIC_SOURCE=re.compile(r'(?i)(?:edistat|actualitt[ée]|nielseniq|\bbnf\b|b[ée]d[ée]\.fr|fnac|bdfugue|mdcu|reconstitu[ée]|reconstitution)')
@@ -19,25 +20,11 @@ PUBLIC_SOURCE=re.compile(r'(?i)(?:edistat|actualitt[ée]|nielseniq|\bbnf\b|b[ée
 def utc(t):return t.astimezone(dt.timezone.utc).isoformat(timespec='milliseconds').replace('+00:00','Z')
 
 def next_slot(data,*,now=None):
-    now=now or dt.datetime.now(dt.timezone.utc)
-    local=now.astimezone(ZoneInfo('Europe/Paris'))
     if data['cadence']=='HEBDO':
-        for i in range(16):
-            target=local.date()+dt.timedelta(days=i)
-            if target.weekday()!=3:continue
-            slot=dt.datetime.combine(target,dt.time(18),tzinfo=ZoneInfo('Europe/Paris'))
-            if slot>=local+dt.timedelta(minutes=45):return utc(slot)
-        raise RuntimeError('Aucun jeudi futur')
-    # Pour un bilan mensuel de novembre: deuxième dimanche de décembre.
-    y,m=data['annee'],data['mois'];y+=m//12;m=m%12+1
-    first=dt.date(y,m,1)
-    second_sunday=first+dt.timedelta(days=(6-first.weekday())%7+7)
-    slot=dt.datetime.combine(second_sunday,dt.time(18),tzinfo=ZoneInfo('Europe/Paris'))
-    if slot>=local+dt.timedelta(minutes=45):return utc(slot)
-    # Si le bilan arrive exceptionnellement tard, troisième dimanche, jamais avant l'envoi.
-    late=slot+dt.timedelta(days=7)
-    if late>=local+dt.timedelta(minutes=45):return utc(late)
-    raise RuntimeError('Mensuel arrivé après le créneau du mois; ne pas publier un vieux classement')
+        return next_weekly('COMICS_HEBDO',now)
+    if data['cadence']=='MENSUEL':
+        return monthly_slot(data['annee'],data['mois'],now)
+    raise ValueError('Cadence Comics inconnue')
 
 def construire(folder,base_url,channel_id,*,now=None):
     folder=Path(folder);now=now or dt.datetime.now(dt.timezone.utc)
@@ -68,7 +55,7 @@ def construire(folder,base_url,channel_id,*,now=None):
         raise ValueError('Légende publique interdite ou incomplète')
     if not channel_id:raise ValueError('Identifiant canal Buffer manquant')
     return {'text':text,'channelId':channel_id,'schedulingType':'automatic',
-            'mode':'customScheduled','dueAt':next_slot(data,now=now),'needsApproval':False,
+            'mode':'customScheduled','dueAt':frozen_slot('COMICS_HEBDO' if n==5 else 'COMICS_MENSUEL',next_slot(data,now=now),now=now),'needsApproval':False,
             'assets':assets,'metadata':{'instagram':{'type':'post','shouldShareToFeed':True}}}
 
 def _listed(api_key,channel_id,due,*,post=requests.post,now=None):
@@ -159,6 +146,7 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
         ident,status=_mutation_result(api_key,ans,'editPost',effective,expected_id=old['id'])
         action='MISE_A_JOUR'
     else:
+        if os.environ.get('ILLYADERA_SLOT_PLAN'):assert_arbitrated('COMICS_HEBDO' if cadence=='HEBDO' else 'COMICS_MENSUEL',payload['dueAt'],now=now)
         ans=_graphql(post,api_key,MUTATION,{'input':payload})
         ident,status=_mutation_result(api_key,ans,'createPost',effective)
     result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':action,

@@ -68,6 +68,8 @@ jobs:
           else
             code=$?
             if [ "$code" -ne 3 ]; then exit "$code"; fi
+            mkdir -p sorties/queue_illyadera
+            echo '{"kind":"COMICS","slots":[],"actions":[]}' > sorties/queue_illyadera/ARBITRAGE_TOP.json
             echo 'Aucun classement prêt : aucun arbitrage Buffer.'
           fi
           if [ -d anecdotes_state ] && [ -n "$(git status --porcelain anecdotes_state)" ]; then
@@ -79,6 +81,7 @@ jobs:
 
       - name: Programmer dès disponibilité dans Buffer
         env:
+          ILLYADERA_SLOT_PLAN: sorties/queue_illyadera/ARBITRAGE_TOP.json
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}

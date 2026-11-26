@@ -146,10 +146,8 @@ def planned_slots(kind, now=None, *, preflight=False, edition=None, repo=None):
     """Déduit les horaires des clients existants, sans calendrier inventé."""
     now=now or dt.datetime.now(dt.timezone.utc)
     if kind=='BD':
-        from calendrier import prochain_creneau
-        suggestion=prochain_creneau('BD', now=now)
-        if not suggestion:raise RuntimeError('Créneau BD absent')
-        return [suggestion['dueAt']]
+        from calendrier_editorial import next_weekly
+        return [next_weekly('BD',now)]
     if kind=='MANGA':
         from manga_buffer_auto import mardi_suivant, construire
         if preflight:
@@ -180,7 +178,7 @@ def planned_slots(kind, now=None, *, preflight=False, edition=None, repo=None):
                 verify_public_assets(payload['assets'])
                 slots.append(payload['dueAt'])
             else:slots.append(next_slot(data,now=now))
-        return list(dict.fromkeys(slots))
+        return sorted(set(slots),key=_dt)
     raise ValueError('Catégorie non reconnue')
 
 
@@ -200,7 +198,13 @@ def main():
         if not args.kind:parser.error('--kind obligatoire pour before-top')
         slots=planned_slots(args.kind,preflight=True,edition=os.environ.get('EDITION'),repo=os.environ.get('GITHUB_REPOSITORY'))
         out={'kind':args.kind,'slots':slots,'actions':[]}
+        from calendrier_editorial import validate_slot,reserved_kind,parse_due
         for slot in slots:
+            category=reserved_kind(parse_due(slot).date())
+            if args.kind=='COMICS':
+                if category not in ('COMICS_HEBDO','COMICS_MENSUEL'):raise RuntimeError('Créneau Comics invalide')
+            elif category!=args.kind:raise RuntimeError('Créneau incompatible')
+            validate_slot(category,slot)
             out['actions'].append(free_capacity_for_priority(slot,buffer=buf,max_posts=args.max_posts,priority=args.kind))
     print(json.dumps(out,ensure_ascii=False,indent=2))
     # Un rapport reste consultable depuis Actions; aucune clé n'est écrite.

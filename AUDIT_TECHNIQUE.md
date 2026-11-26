@@ -30,3 +30,7 @@ La CI a exécuté 298 tests : 296 réussis, 2 échecs de priorité des mises à 
 ## Troisième intervention : sécurité et preuves
 
 Deuxième CI : 300 tests réussis sur 301. Correction du titre de BD identifié par un sous-titre exact délimité. Contrôle des médias publics avant l'arbitrage Manga/Comics ; pas d'arbitrage pour une édition déjà reçue. Plafond Free strict, relecture de la queue avant suppression, refus de modifier un Top manga/comics inconnu sans reçu correspondant. Les légendes indiquent le périmètre des palmarès sans nommer les sources commerciales. Déduplication des faits par empreinte et trois récits supplémentaires documentés ; audit des médias sans suppression. Les scripts historiques restent présents tant que leur dépendance n'est pas réfutée. Les suppressions d'anecdotes et créations Buffer ne sont pas transactionnelles ; risque résiduel en cas de panne après arbitrage. Ne pas fusionner sans CI verte.
+
+## Quatrième intervention : calendrier
+
+CI du troisième commit réussie. Centralisation des créneaux, des marges et du fuseau. Suppression du report automatique du Comics mensuel au troisième dimanche (décision : respecter le deuxième dimanche strictement). Validation des nouvelles anecdotes contre leur date et heure, tri chronologique des arbitrages Comics, vérification du créneau arbitré lors des envois de production. Le calendrier historique BD reste en compatibilité ; la production utilise la marge commune de 45 min. La CI du nouveau commit reste à vérifier. Aucun appel Buffer réalisé.

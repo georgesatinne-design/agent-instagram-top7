@@ -18,6 +18,7 @@ import requests
 from PIL import Image
 
 from calendrier import prochain_creneau
+from calendrier_editorial import next_weekly,frozen_slot,assert_arbitrated
 
 API_URL = 'https://api.buffer.com'
 
@@ -101,7 +102,7 @@ def construct_draft(folder, public_base_url):
     if not suggestion:
         raise ValueError('Aucune règle de programmation active pour cette catégorie : dépôt interdit')
     payload['mode'] = 'customScheduled'
-    payload['dueAt'] = suggestion['dueAt']
+    payload['dueAt'] = (frozen_slot('BD',next_weekly('BD')) if os.environ.get('ILLYADERA_SLOT_PLAN') else suggestion['dueAt'])
     return payload
 
 
@@ -244,6 +245,7 @@ def deposit_draft(folder, public_base_url, channel_id, api_key, *, send=False, c
         check_urls(payload)
     # Crucial: BEFORE creating anything, read Buffer to detect a post created
     # by an older version, even when it is absent from GitHub's receipts.
+    if os.environ.get('ILLYADERA_SLOT_PLAN'):assert_arbitrated('BD',request_data['dueAt'])
     existing = _find_scheduled_bd_slot(api_key, channel_id, request_data['dueAt'], post=post)
     action = 'CREATION'
     previous_period = None

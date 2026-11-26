@@ -46,3 +46,7 @@ Voir [POLITIQUE_COUT_ZERO.md](POLITIQUE_COUT_ZERO.md). Aucune dépendance payant
 ## Contrôle des médias
 
 `python audit_medias.py` inventorie les doublons exacts et le volume public sans effacer un fichier. Les URLs utilisées par Buffer doivent être vérifiées avant toute purge. Les Top manga/comics sont contrôlés avant toute libération de capacité ; les légendes précisent la portée non exhaustive ou par enseigne lorsque nécessaire.
+
+## Calendrier centralisé
+
+Les créneaux de production sont définis dans `calendrier_publication.json` (section `calendrier_editorial`) et interprétés par `calendrier_editorial.py`. Les Tops sont programmés avec une marge de 45 min ; les anecdotes avec 30 min. Le mensuel ne migre pas au troisième dimanche. Un créneau arbitré est conservé jusqu'à l'envoi ou l'envoi échoue sans déplacement silencieux. Les anciennes fonctions de calendrier restent compatibles avec les tests historiques.

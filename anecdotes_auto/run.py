@@ -336,6 +336,7 @@ def reconcile(buffer,registry,now,results,dayposts=None):
 
 def send(*,now=None,buffer=None):
     now=now or dt.datetime.now(dt.timezone.utc)
+    from calendrier_editorial import validate_slot
     buffer=buffer or Buffer()
     registry=get_registry();results={'date_utc':now.isoformat(),'programmes':[],
                                    'deja_programmes':[],'ignores':[],'supprimes_pour_top':[],'erreurs':[],
@@ -389,6 +390,10 @@ def send(*,now=None,buffer=None):
             if not ok:
                 if why=='CRENEAU_TROP_PROCHE':rec['etat']='EXPIRE'
                 results['ignores'].append(key+' : '+why);continue
+            # Un plan ancien ou incohérent ne peut jamais déplacer la publication.
+            if parse(rec['due_at'])!=parse(utc(target_date_time(day))):
+                raise ValueError('Date du registre différente du calendrier éditorial')
+            validate_slot('ANECDOTE',rec['due_at'],now=now)
             folder=ROOT_REPO/rec['dossier']
             for file in rec['images']:
                 if not (folder/file).is_file():raise RuntimeError('Media absent: '+file)

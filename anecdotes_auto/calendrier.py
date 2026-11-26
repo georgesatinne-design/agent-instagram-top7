@@ -1,34 +1,21 @@
-"""Programmer les anecdotes en avance, avec priorité aux classements vérifiés."""
+"""Les anecdotes occupent les créneaux libres, provisoirement sur les jours de Top."""
 from __future__ import annotations
 import datetime as dt
-from zoneinfo import ZoneInfo
 from .catalogue import CONFIG
+from calendrier_editorial import PARIS,aware,reserved_kind,slot_on,ANECDOTE_MARGIN
 
-PARIS=ZoneInfo('Europe/Paris')
+def is_second_sunday(date):return reserved_kind(date)=='COMICS_MENSUEL'
 
-def is_second_sunday(date):return date.weekday()==6 and 8<=date.day<=14
-
-def reserved_kind(day):
-    if day.weekday()==1:return 'MANGA'
-    if day.weekday()==3:return 'COMICS_HEBDO'
-    if day.weekday()==4:return 'BD'
-    if is_second_sunday(day):return 'COMICS_MENSUEL'
-    return None
-
-def target_date_time(day):
-    hour=17 if day.weekday()==4 else 18
-    return dt.datetime.combine(day,dt.time(hour,0),tzinfo=PARIS)
+def target_date_time(day):return slot_on(day)
 
 def eligible(day,now,scheduled):
-    """Un créneau libre peut recevoir une anecdote provisoire, même un jour de Top."""
-    now=now.astimezone(PARIS)
-    due=target_date_time(day)
+    now=aware(now)
     if scheduled:return False,'POST_DEJA_DANS_BUFFER'
-    if due-now<dt.timedelta(minutes=CONFIG['marge_programmation_minutes']):
+    if target_date_time(day)-now<=dt.timedelta(minutes=ANECDOTE_MARGIN):
         return False,'CRENEAU_TROP_PROCHE'
-    return True, 'PROVISOIRE_TOP' if reserved_kind(day) else 'JOUR_LIBRE'
+    return True,'PROVISOIRE_TOP' if reserved_kind(day) else 'JOUR_LIBRE'
 
 def next_days(now):
-    local=now.astimezone(PARIS)
+    local=aware(now)
     for i in range(CONFIG['horizon_jours']+1):
         yield local.date()+dt.timedelta(days=i)
