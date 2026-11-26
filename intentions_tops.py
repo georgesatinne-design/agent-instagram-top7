@@ -36,7 +36,7 @@ def write(data,path=None):
 def fingerprint(text):
     return hashlib.sha256(text.strip().encode('utf8')).hexdigest()
 
-def reserve(edition,payload,*,path=None,now=None):
+def reserve(edition,payload,*,path=None,now=None,receipt_fields=None):
     edition_key(edition)
     data=read(path)
     if edition in data:
@@ -45,6 +45,10 @@ def reserve(edition,payload,*,path=None,now=None):
          'due_at':utc(parse_due(payload['dueAt'])),
          'empreinte_texte':fingerprint(payload['text']),
          'date_utc':(now or dt.datetime.now(dt.timezone.utc)).isoformat()}
+    if receipt_fields:
+        allowed={'empreinte_classement','version_contenu','cadence'}
+        if set(receipt_fields)-allowed:raise ValueError('Métadonnées du reçu non autorisées')
+        rec['recu']=dict(receipt_fields)
     data[edition]=rec
     write(data,path)
     return rec

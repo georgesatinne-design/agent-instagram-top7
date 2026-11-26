@@ -73,8 +73,11 @@ jobs:
           else:
               correction=True
           from historique_editions import newer_receipt
+          from intentions_tops import lookup
           newer=newer_receipt(Path('manga_buffer_receipts'),edition)
-          ready=bool(report['pret_buffer']) and correction and not newer
+          waiting=not receipt.exists() and bool(lookup(edition))
+          ready=bool(report['pret_buffer']) and correction and not newer and not waiting
+          if waiting:print('Édition réservée : réconciliation automatique, aucun nouvel envoi')
           if newer:print('Edition dépassée par',newer,': aucun envoi')
           with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf8') as out:
               out.write('edition='+edition+'\n')

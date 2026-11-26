@@ -59,4 +59,8 @@ Les workflows producteurs enregistrent une intention de libération dans Git ava
 
 ## Exploitation et modules historiques
 
-Voir [MISE_EN_SERVICE.md](MISE_EN_SERVICE.md) pour la procédure de déploiement. La variable facultative `ILLYADERA_PAUSE_PUBLICATION=1` suspend les quatre workflows producteurs sans annuler les posts déjà programmés. Les intentions de création Manga/Comics sont persistées avant l'appel API : jamais de nouvel envoi aveugle après une interruption. Le diagnostic Manga V1-V7 est désormais manuel et sans cache cumulatif ; les modules restent présents car ils sont testés et certains partagent encore des fonctions avec la production.
+Voir [MISE_EN_SERVICE.md](MISE_EN_SERVICE.md) pour la procédure de déploiement. La variable facultative `ILLYADERA_PAUSE_PUBLICATION=1` suspend les quatre workflows producteurs sans annuler les posts déjà programmés. Les intentions de création Manga/Comics sont persistées avant l'appel API : jamais de nouvel envoi aveugle après une interruption. Le diagnostic Manga V1-V7 est automatique chaque semaine, avec une observation légère toutes les six heures et sans cache cumulatif ; les modules restent présents car ils sont testés et certains partagent encore des fonctions avec la production.
+
+## Autonomie des contrôles
+
+Les audits Manga et Buffer sont planifiés automatiquement. La réconciliation Buffer ne crée, ne modifie et ne supprime aucun post ; elle reconstruit les reçus sur preuve exacte, ou classe une édition incertaine arrivée à échéance sans la renvoyer. Les producteurs continuent pour les éditions suivantes. L'arrêt d'urgence est facultatif. Aucun contrôle quotidien manuel n'est nécessaire.

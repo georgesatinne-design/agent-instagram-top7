@@ -1,7 +1,10 @@
-name: Archive diagnostic Manga V1-V7 (manuel, sans publication)
+name: Manga - contrôle automatique des sources et diagnostic complet
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '17 0,6,12,18 * * *'
+    - cron: '31 6 * * 1'
 
 permissions:
   contents: read
@@ -22,20 +25,27 @@ jobs:
       - name: Installer les bibliotheques gratuites
         run: python -m pip install -r requirements.txt
       - name: Tester les modules manga V1 a V7
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '31 6 * * 1'
         run: python -m unittest discover -s tests -p 'test_*manga*.py' -v
       - name: Observer les sources de classements
         run: python audit_manga_sources.py
       - name: Identifier les mangas possibles
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '31 6 * * 1'
         run: python verifier_manga.py
       - name: Comparer les autres sources
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '31 6 * * 1'
         run: python enquete_manga_v3.py
       - name: Generer la maquette de 8 pages
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '31 6 * * 1'
         run: python maquette_manga_v4.py
       - name: Retrouver les bonnes editions et les couvertures
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '31 6 * * 1'
         run: python enrichissement_manga_v5.py
       - name: Valider la periode de ventes et evaluer les couvertures (aucun envoi Buffer)
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '31 6 * * 1'
         run: python controle_manga_v6.py
       - name: V7 - couvertures manquantes, types d images, periode et dossier a valider
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '31 6 * * 1'
         run: python manga_v7_complet.py
       - name: Recuperer tous les rapports et visuels
         if: always()

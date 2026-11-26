@@ -88,8 +88,8 @@ def free_capacity_for_priority(due_at, *, buffer, registry=None, registry_path=R
     if reconcile_intents(registry,posts,now):
         save_registry(registry,registry_path)
         checkpoint(registry_path)
-    if any(isinstance(r,dict) and r.get('etat')=='LIBERATION_A_VERIFIER' and r.get('due_at') and _dt(r['due_at'])>now for r in registry.values()):
-        raise RuntimeError('Intention de libération incertaine : aucun nouvel arbitrage')
+    # Les entrées incertaines ne sont jamais éligibles à une suppression.
+    # La vérification du créneau et de la capacité reste locale : les autres jours continuent.
     target=due.astimezone(PARIS).date().isoformat()
     existing_top=[p for p in posts if p['status']=='scheduled' and
                   _dt(p['dueAt']).astimezone(PARIS).date().isoformat()==target and

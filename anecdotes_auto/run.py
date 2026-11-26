@@ -454,8 +454,14 @@ def send(*,now=None,buffer=None):
             rec.update({'etat':'PROGRAMME','id_buffer':post['id'],'date_confirmation':now.isoformat(),
                         'due_at':post.get('dueAt') or rec['due_at'],'version_visuelle':VERSION_VISUELLE})
             results['programmes'].append({'date':key,'id_buffer':post['id'],'pages':len(rec['images'])})
+            from journal_publication import checkpoint
+            persist(registry)
+            checkpoint(REGISTRY)
         except Exception as exc:
             results['erreurs'].append(key+': '+type(exc).__name__+' '+str(exc)[:260])
+            if os.environ.get('ILLYADERA_DURABLE_JOURNAL')=='1':
+                # Nouvelle lecture au prochain run automatique, jamais d'enchaînement aveugle.
+                break
     # Vérification post-envoi : ne pas annoncer une exécution saine si un post
     # en ancienne DA est resté dans Buffer sans remplacement effectif.
     backlog=read(REPORT/'REPRISES_A_FAIRE.json',[]) or []

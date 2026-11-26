@@ -241,7 +241,7 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
                 assert_arbitrated('MANGA',payload['dueAt'])
                 final_guard('MANGA',payload['dueAt'],api_key=api_key,channel_id=channel_id,post=post)
             from intentions_tops import enabled,reserve
-            if enabled():reserve(edition,payload)
+            if enabled():reserve(edition,payload,receipt_fields={'version_contenu':VERSION_PUBLIQUE})
             response=_graphql(post,api_key,MUTATION,{'input':payload})
             ident,status=_mutation_result(api_key,response,'createPost',payload['dueAt'])
     result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':action,

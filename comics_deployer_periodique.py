@@ -26,6 +26,8 @@ def prepare(repo):
         edition=state['edition'];manifest=load(folder/'COMICS'/'post_manifest.json')
         if newer_receipt(Path('comics_buffer_receipts'),edition):continue
         receipt=Path('comics_buffer_receipts')/(edition+'.json')
+        from intentions_tops import lookup
+        if not receipt.exists() and lookup(edition):continue
         if receipt.is_file():
             previous=json.loads(receipt.read_text(encoding='utf8'))
             if previous.get('statut')!='POST_PROGRAMME' or previous.get('edition')!=edition:

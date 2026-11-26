@@ -170,34 +170,6 @@ jobs:
             git push origin HEAD:main
           fi
 
-      - name: Réserver cette édition AVANT l'appel à Buffer (anti-doublon)
-        if: steps.source.outputs.new == 'true' && steps.dossier.outputs.ready == 'true'
-        env:
-          EDITION: ${{ steps.source.outputs.edition }}
-          SIGNATURE: ${{ steps.source.outputs.signature }}
-          RUN_ID: ${{ github.run_id }}
-        run: |
-          python - <<'PY'
-          import json,os
-          from pathlib import Path
-          receipt=Path('buffer_receipts')/(os.environ['EDITION']+'.json')
-          if receipt.exists():
-              raise SystemExit('Édition déjà enregistrée. Appel à Buffer refusé pour éviter un doublon.')
-          receipt.parent.mkdir(parents=True,exist_ok=True)
-          receipt.write_text(json.dumps({
-              'statut':'RESERVATION_AVANT_ENVOI',
-              'edition':os.environ['EDITION'],
-              'empreinte_classement':os.environ['SIGNATURE'],
-              'run_id':os.environ['RUN_ID'],
-              'note':'Si le run échoue à cette étape, vérifier la Queue avant de supprimer la réservation.'
-          },ensure_ascii=False,indent=2),encoding='utf-8')
-          PY
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add buffer_receipts
-          git commit -m "Top 7 BD - réservation anti-doublon avant programmation"
-          git push origin HEAD:main
-
       - name: Envoyer automatiquement le carrousel dans la Queue Buffer
         if: steps.source.outputs.new == 'true' && steps.dossier.outputs.ready == 'true'
         env:

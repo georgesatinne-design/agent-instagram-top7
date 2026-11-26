@@ -169,7 +169,7 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
             assert_arbitrated(kind,payload['dueAt'])
             final_guard(kind,payload['dueAt'],api_key=api_key,channel_id=channel_id,post=post)
         from intentions_tops import enabled,reserve
-        if enabled():reserve(edition,payload)
+        if enabled():reserve(edition,payload,receipt_fields={'version_contenu':VERSION,'cadence':cadence})
         ans=_graphql(post,api_key,MUTATION,{'input':payload})
         ident,status=_mutation_result(api_key,ans,'createPost',effective)
     result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':action,
