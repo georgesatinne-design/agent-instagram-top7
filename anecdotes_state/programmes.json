@@ -49,7 +49,7 @@
   "2026-11-29": {
     "fact_id": "verbeek-bd-a-retourner",
     "sujet": "verbeek",
-    "etat": "EN_ATTENTE_MAJ",
+    "etat": "PROGRAMME",
     "date": "2026-11-29",
     "due_at": "2026-11-29T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-11-29/verbeek-bd-a-retourner_9b40368f0be0365881",
@@ -66,32 +66,9 @@
     "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nCette bd se lit… à l’envers !\n\nGustave Verbeek dessinait des planches qui changeaient de sens lorsqu'on les retournait.\n\nTu arriverais à dessiner une case qui se lit dans les deux sens ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "empreinte_fait": "d57db8170a69fff24d",
     "id_buffer": "6b05551e428d2546b7f84066",
-    "ancien_texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nCe musée ne garde pas que des bd\n\nLe Musée de la BD de Bruxelles abrite aussi un centre de documentation.\n\nTu savais qu’il avait aussi un centre de documentation ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "ancien_fact_id": "bruxelles-centre-doc",
     "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART",
-    "renouvellement_original": {
-      "fact_id": "bruxelles-centre-doc",
-      "sujet": "bruxelles",
-      "etat": "PROGRAMME",
-      "date": "2026-11-29",
-      "due_at": "2026-11-29T17:00:00.000Z",
-      "dossier": "public_media/anecdotes_bd/2026-11-29/bruxelles-centre-doc_f64c9f4cc56b76b3dc",
-      "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-11-29/bruxelles-centre-doc_f64c9f4cc56b76b3dc/",
-      "images": [
-        "01_anecdote.png",
-        "02_anecdote.png",
-        "03_anecdote.png",
-        "04_anecdote.png",
-        "05_anecdote.png"
-      ],
-      "revision": "f64c9f4cc56b76b3dc",
-      "date_preparation": "2026-11-24T15:35:09.026214+00:00",
-      "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nCe musée ne garde pas que des bd\n\nLe Musée de la BD de Bruxelles abrite aussi un centre de documentation.\n\nTu savais qu’il avait aussi un centre de documentation ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
-      "id_buffer": "6b05551e428d2546b7f84066",
-      "ancien_fact_id": "festival-scolaire-1975",
-      "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART",
-      "date_confirmation": "2026-11-26T17:05:51.388142+00:00"
-    }
+    "date_confirmation": "2026-11-26T17:23:30.538354+00:00"
   },
   "2026-11-30": {
     "fact_id": "bruxelles-1984",
