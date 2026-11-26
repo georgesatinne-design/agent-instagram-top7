@@ -1,0 +1,20 @@
+{
+  "statut": "DOCUMENTATION_INTERNE_PAS_UNE_BANQUE_DE_FAITS_PUBLIABLES",
+  "note": "Pistes d'enquête et de contenus originaux. Ne pas copier les textes, ni récupérer les images des articles sans autorisation. Exiger la preuve précise de chaque affirmation et 3 photos distinctes admissibles.",
+  "corpus": [
+    {"nom":"BDZoom — Le Coin du patrimoine", "url":"https://www.bdzoom.com/patrimoine/", "genre":"articles de fond sur auteurs, personnages, magazines et anecdotes historiques", "utilisation":"Identifier des révélations étonnantes et les recouper avec archives/éditeurs"},
+    {"nom":"Tintin.com — Les coulisses d'une œuvre", "url":"https://www.tintin.com/fr/news/6664/les-coulisses-dune-oeuvre-n%C2%B011-le-secret-de-la-licorne", "genre":"sources de la création et archives officielles Tintin", "utilisation":"Rechercher des coulisses factuelles, avec attention particulière aux droits des visuels"},
+    {"nom":"Tintin.com — Personnages", "url":"https://www.tintin.com/fr/characters", "genre":"anecdotes de personnages, apparitions et références", "utilisation":"Exemple de sujet à vérifier : apparition discrète d'Hergé dans ses albums"},
+    {"nom":"Dupuis — Journal Spirou et actualités", "url":"https://www.dupuis.com/", "genre":"entretiens et archives sur fabrication, artistes et presse BD", "utilisation":"Coulisses de création plutôt que dates de parution"},
+    {"nom":"Cité internationale de la BD", "url":"https://www.citebd.org/", "genre":"patrimoine, collections, expositions et histoire du 9e art", "utilisation":"Histoires d'objets, de planches rares et de conservation"},
+    {"nom":"BnF — Pour une histoire de la bande dessinée", "url":"https://www.bnf.fr/fr/pour-une-histoire-de-la-bande-dessinee", "genre":"perspectives historiques documentées", "utilisation":"Origines d'un format ou bouleversement éditorial, si preuve contextualisée"}
+  ],
+  "regles": [
+    "Un hook qui pose une question réelle, sans fausse promesse",
+    "Une révélation substantielle dès la page 2",
+    "Une source primaire ou deux sources indépendantes et leurs citations internes",
+    "Ne jamais publier une anecdote de trois métadonnées seulement s'il existe un récit plus riche",
+    "Choisir des visuels narratifs pertinents et juridiquement réutilisables",
+    "Ne pas reproduire les images ou le texte des articles sans autorisation"
+  ]
+}

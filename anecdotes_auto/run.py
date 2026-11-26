@@ -6,6 +6,7 @@ import argparse,datetime as dt,hashlib,os,re,traceback
 from pathlib import Path
 from zoneinfo import ZoneInfo
 from .catalogue import ROOT_REPO,STATE,CONFIG,bank,read,write,select,topic,ROOT
+from .qualite_editoriale import score as score_anecdote
 from .calendrier import PARIS,next_days,eligible,reserved_kind,target_date_time
 from .visuels import render,caption
 from .storytelling import editorial_eligible
@@ -65,6 +66,7 @@ def sujets_par_disponibilite(facts,registry,day,exclude_ids=()):
         reserve.get(f['id'],{}).get('statut')!='PRET',
         topic(f) in used_topics,
         f['id'] not in scenarios,
+        -score_anecdote(f),
         hashlib.sha256((day.isoformat()+f['id']).encode()).hexdigest()))
     return candidates
 
