@@ -205,7 +205,7 @@
   "2026-12-12": {
     "fact_id": "lucky-luke-goscinny",
     "sujet": "lucky",
-    "etat": "LIBERATION_EN_COURS",
+    "etat": "LIBERE_POUR_BD",
     "date": "2026-12-12",
     "due_at": "2026-12-12T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-12-12/lucky-luke-goscinny_5b592a72f0b285286e",
@@ -229,6 +229,9 @@
       "priorite": "BD",
       "cible": "2026-11-27",
       "date_utc": "2026-11-26T14:59:29.770056+00:00"
-    }
+    },
+    "date_liberation_utc": "2026-11-26T14:59:29.770056+00:00",
+    "raison_liberation": "Priorité BD pour 2026-11-27",
+    "ancien_id_buffer": "6b080d9bd91bf307683683a1"
   }
 }
