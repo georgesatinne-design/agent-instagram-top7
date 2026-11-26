@@ -53,5 +53,63 @@
       3,
       4
     ]
+  },
+  "lucky-luke-80": {
+    "statut": "PRET",
+    "date_controle": "2026-11-26T05:40:22.426111+00:00",
+    "photos": 5,
+    "pages_illustrees": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "lucky-luke-goscinny": {
+    "statut": "PRET",
+    "date_controle": "2026-11-26T05:40:22.426111+00:00",
+    "photos": 5,
+    "pages_illustrees": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "lucky-luke-morris": {
+    "statut": "PRET",
+    "date_controle": "2026-11-26T05:40:22.426111+00:00",
+    "photos": 5,
+    "pages_illustrees": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "topffer-geneve": {
+    "statut": "PRET",
+    "date_controle": "2026-11-26T05:40:22.426111+00:00",
+    "photos": 4,
+    "pages_illustrees": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "topffer-professeur": {
+    "statut": "PRET",
+    "date_controle": "2026-11-26T05:40:22.426111+00:00",
+    "photos": 4,
+    "pages_illustrees": [
+      1,
+      2,
+      3,
+      4
+    ]
   }
 }

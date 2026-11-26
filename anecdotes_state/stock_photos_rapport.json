@@ -1,31 +1,31 @@
 {
-  "date": "2026-11-25T05:40:30.476891+00:00",
+  "date": "2026-11-26T05:40:22.426111+00:00",
   "fichiers_cache_purges": 0,
   "nombre_en_banque": 27,
-  "prets_en_stock": 5,
+  "prets_en_stock": 10,
   "tentatives": [
     {
-      "fait": "bruxelles-1984",
+      "fait": "lucky-luke-80",
+      "statut": "PRET",
+      "photos": 5
+    },
+    {
+      "fait": "lucky-luke-goscinny",
+      "statut": "PRET",
+      "photos": 5
+    },
+    {
+      "fait": "lucky-luke-morris",
+      "statut": "PRET",
+      "photos": 5
+    },
+    {
+      "fait": "topffer-geneve",
       "statut": "PRET",
       "photos": 4
     },
     {
-      "fait": "bruxelles-1989",
-      "statut": "PRET",
-      "photos": 4
-    },
-    {
-      "fait": "bruxelles-centre-doc",
-      "statut": "PRET",
-      "photos": 4
-    },
-    {
-      "fait": "bruxelles-horta",
-      "statut": "PRET",
-      "photos": 4
-    },
-    {
-      "fait": "bruxelles-textile",
+      "fait": "topffer-professeur",
       "statut": "PRET",
       "photos": 4
     }
