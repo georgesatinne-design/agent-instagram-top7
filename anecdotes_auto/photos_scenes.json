@@ -555,6 +555,39 @@
         }
       ],
       "validation": "Photos réelles datées 1971: ne représentent pas la première apparition de Lucky Luke en 1946. Servent uniquement à présenter Morris et la collaboration historique."
+    },
+    "yellowkid-guerre-journaux": {
+      "intention": "Trois planches originales de Richard F. Outcault en 1896 : l'apparition du héros dans la presse, le contexte de Hogan's Alley, puis l'usage des bulles et des cases.",
+      "visuels": [
+        {
+          "titre": "1896-11-08 Yellow Kid.jpg",
+          "page": 1,
+          "role": "LE YELLOW KID — 1896",
+          "pertinence": "Planche d'Outcault publiée le 8 novembre 1896 dans le New York Journal.",
+          "epoque": "historique",
+          "famille_source": "1896-11-08 Yellow Kid.jpg",
+          "archive_outcault_1896": true
+        },
+        {
+          "titre": "Yellow Kid 1896-3-15.jpg",
+          "page": 3,
+          "role": "HOGAN’S ALLEY — 1896",
+          "pertinence": "Planche War Scare in Hogan's Alley, datée du 15 mars 1896, avant le transfert d'Outcault.",
+          "epoque": "historique",
+          "famille_source": "Yellow Kid 1896-3-15.jpg",
+          "archive_outcault_1896": true
+        },
+        {
+          "titre": "Yellowkid phonograph.jpg",
+          "page": 4,
+          "role": "LES BULLES — 1896",
+          "pertinence": "Planche du 25 octobre 1896 : succession de cases et bulles du Yellow Kid.",
+          "epoque": "historique",
+          "famille_source": "Yellowkid phonograph.jpg",
+          "archive_outcault_1896": true
+        }
+      ],
+      "validation": "Notices Commons et Library of Congress vérifiées : Outcault (1863-1928), œuvres publiées en 1896. Vérification API et téléchargement au rendu."
     }
   }
 }
