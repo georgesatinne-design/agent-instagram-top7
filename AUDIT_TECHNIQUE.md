@@ -58,3 +58,7 @@ CI précédente : 329/329. Fenêtres de collecte fondées sur les parutions cons
 ## Dixième intervention : autonomie éditoriale
 
 CI précédente : 333/333. Ajout d'une découverte structurée depuis un index public et des archives autorisées, contrôles explicites de relation et de créateur, modèles français sans génération externe, scènes photographiques ancrées dans les entités, limites de requêtes et réserve. Six nouvelles histoires sourcées, pas déclarées illustrées. Mise à l'écart des aperçus publics futurs ; cache de recherche réutilisé et temporisation progressive des recherches infructueuses. Le rendement réel de la découverte reste à mesurer, et l'agent peut refuser un sujet si les preuves ou images manquent. Aucun service facturable ajouté.
+
+## Clôture : correction des derniers blocages
+
+CI précédente : 338/338 tests réussis. Relecture du workflow Manga : correction de la sortie skip_history qui était écrite après fermeture du fichier et de la branche de traitement déjà finalisé. Test du bloc Python réel. Les anciennes intentions d'anecdotes arrivées à échéance sont écartées avant de consommer le budget d'envoi ; contrôle final et sauvegarde durable des corrections d'anecdotes. Aucun nouveau service, aucune extension fonctionnelle. Le déploiement doit être conditionné à la CI du commit final ; les performances des sources, les licences d'images et la publication réelle restent des contrôles d'exploitation, pas des garanties de la CI.

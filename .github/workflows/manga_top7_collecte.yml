@@ -63,7 +63,9 @@ jobs:
           receipt=Path('manga_buffer_receipts')/(edition+'.json')
           from datetime import datetime,timedelta,timezone
           from manga_buffer_auto import VERSION_PUBLIQUE
-          if receipt.exists():
+          if report.get('skip_history'):
+              correction=False
+          elif receipt.exists():
               old_receipt=json.loads(receipt.read_text(encoding='utf8'))
               if old_receipt.get('statut')!='POST_PROGRAMME':
                   raise SystemExit('Reçu Buffer existant inattendu')
@@ -85,7 +87,7 @@ jobs:
           with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf8') as out:
               out.write('edition='+edition+'\n')
               out.write('ready='+str(ready).lower()+'\n')
-          out.write('skip_history='+str(bool(report.get('skip_history'))).lower()+'\n')
+              out.write('skip_history='+str(bool(report.get('skip_history'))).lower()+'\n')
           print('Edition:',edition,'Certificat:',report['statut_ventes'],
                 'Couvertures:',report['couvertures'],'/7','Programme:',ready)
           PY

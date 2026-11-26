@@ -393,6 +393,8 @@ def send(*,now=None,buffer=None):
         rec=registry[key]
         if rec.get('etat') not in ('EN_ATTENTE','EN_ATTENTE_MAJ'):continue
         day=dt.date.fromisoformat(key)
+        if day<now.astimezone(PARIS).date():
+            rec['etat']='EXPIRE_INCERTAIN';continue
         if os.environ.get('ILLYADERA_DURABLE_JOURNAL')=='1':
             if day>(now.astimezone(PARIS).date()+dt.timedelta(days=CONFIG['horizon_jours'])):continue
             if attempted>=CONFIG['max_posts_par_execution']:break
@@ -410,6 +412,11 @@ def send(*,now=None,buffer=None):
                     results['ignores'].append(key+' : publication imminente');continue
                 folder=ROOT_REPO/rec['dossier']
                 assets=buffer.verify_images(rec['base_url'],rec['images'],folder)
+                if os.environ.get('ILLYADERA_DURABLE_JOURNAL')=='1':
+                    from controle_file import final_guard
+                    final_guard('ANECDOTE',existing[0]['dueAt'],api_key='',channel_id='',post=None,buffer=buffer,expected_id=rec['id_buffer'])
+                    live=buffer.list_scheduled()
+                    if existing[0] not in live:raise RuntimeError('Anecdote modifiée avant édition')
                 updated=buffer.edit_own(rec['id_buffer'],rec['texte_public'],existing[0]['dueAt'],assets)
                 rec.update({'etat':'PROGRAMME','date_confirmation':now.isoformat(),
                             'due_at':updated.get('dueAt') or existing[0]['dueAt'],
@@ -417,6 +424,9 @@ def send(*,now=None,buffer=None):
                 rec.pop('ancien_texte_public',None)
                 results['programmes'].append({'date':key,'id_buffer':updated['id'],
                                              'pages':len(rec['images']),'action':'MISE_A_JOUR_SANS_DOUBLON'})
+                from journal_publication import checkpoint
+                persist(registry)
+                checkpoint(REGISTRY)
                 continue
             if posts:
                 exact=[p for p in posts if _is_our_exact(p,rec)]
