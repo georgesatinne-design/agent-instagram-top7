@@ -1,0 +1,74 @@
+{
+  "version": "BD_ANECDOTE_V5_IMAGES_SCENARISEES",
+  "fact_id": "topffer-professeur",
+  "pages": [
+    {
+      "page": 1,
+      "image_source_sha256": "730289b7ee59bdd018e96f9664d0c9a54e146ebae8b735fe6f8de726b0e2ed55",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "L’homme",
+      "pertinence_editoriale": "Portrait de Rodolphe Töpffer, au cœur de l’anecdote.",
+      "epoque_reelle": "historique",
+      "titre_commons": "Rodolfe Toepffer.png",
+      "licence": "Domaine public historique : artiste décédé avant 1900",
+      "famille_source": "Rodolfe Toepffer.png"
+    },
+    {
+      "page": 2,
+      "image_source_sha256": "f546f3cde44cde5fdb0fa06b151e4d2278f5e4fc55c84a9b8ca828b988453a00",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Son dessin",
+      "pertinence_editoriale": "Caricatures authentiques de Töpffer illustrant son travail.",
+      "epoque_reelle": "historique",
+      "titre_commons": "Rodolphe Töpffer Karikaturen.jpg",
+      "licence": "Domaine public historique : artiste décédé avant 1900",
+      "famille_source": "Rodolphe Töpffer Karikaturen.jpg"
+    },
+    {
+      "page": 3,
+      "image_source_sha256": "5f73a1fabed43c1a1079b3a978c56195286c1fb389ddb87b40f21355e7ac8062",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Son ouvrage",
+      "pertinence_editoriale": "Page authentique d’un ouvrage de Töpffer : illustre sa pratique d’auteur.",
+      "epoque_reelle": "historique",
+      "titre_commons": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (06 of 56).jpg",
+      "licence": "Domaine public historique : artiste décédé avant 1900",
+      "famille_source": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (06 of 56).jpg"
+    },
+    {
+      "page": 4,
+      "image_source_sha256": "49d4dd8ae2dd705c57631a8c3aa904e6e2dfe648bd5e0d8a6a0eaccda532f3b9",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Une autre page authentique",
+      "pertinence_editoriale": "Autre page originale de son Essai de physiognomonie : document matériel différent de celui de la page 3.",
+      "epoque_reelle": "historique",
+      "titre_commons": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (10 of 56).jpg",
+      "licence": "Domaine public historique : artiste décédé avant 1900",
+      "famille_source": "Essai de physiognomonie - par R T. (Rodolphe Töpffer) - btv1b8529034f (10 of 56).jpg"
+    },
+    {
+      "page": 5,
+      "image_source_sha256": null,
+      "type_page": "composition_graphique_sans_photo",
+      "role_visuel": null,
+      "pertinence_editoriale": null,
+      "epoque_reelle": null,
+      "titre_commons": null,
+      "licence": null,
+      "famille_source": null
+    }
+  ],
+  "photos_recues": 4,
+  "photos_dedoublonnees": 4,
+  "photos_utilisees": 4,
+  "photos_repetees": 0,
+  "identification_couverture": "ANECDOTE BD grand bandeau jaune",
+  "narration_verifiee": true,
+  "etapes_avec_photographie": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "principe": "Aucune image generative, aucune meme photographie sur deux pages."
+}

@@ -1,0 +1,75 @@
+{
+  "version": "BD_ANECDOTE_V5_IMAGES_SCENARISEES",
+  "fact_id": "lucky-luke-morris",
+  "pages": [
+    {
+      "page": 1,
+      "image_source_sha256": "e7516acf51cb2985f2323f98edb508c979ad23156a4d89df1d454d01c5b5d6b0",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Le duo",
+      "pertinence_editoriale": "Photographie réelle de Morris, le dessinateur cité dans ce récit.",
+      "epoque_reelle": "1971",
+      "titre_commons": "Morris y Goscinny 1 - Amsterdam - 27051971.jpg",
+      "licence": "CC0 1.0",
+      "famille_source": "anefo-morris-goscinny-cliche-1"
+    },
+    {
+      "page": 2,
+      "image_source_sha256": "f6e14542f7901da842279af4937639338d85b39ac891f8b5907c151b0cccdbc3",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "La collaboration",
+      "pertinence_editoriale": "Autre cliché réel de Morris et de son entourage artistique en 1971.",
+      "epoque_reelle": "1971",
+      "titre_commons": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (l) en Morris (tekenaar, Bestanddeelnr 924-5894.jpg",
+      "licence": "CC0 1.0",
+      "famille_source": "anefo-morris-goscinny-cliche-2"
+    },
+    {
+      "page": 3,
+      "image_source_sha256": "9935ed36188e72f13f29fecbc3bc1c25cf65db786647603a7090b67437d78b20",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Une autre prise de vue de l’équipe créative",
+      "pertinence_editoriale": "Morris et René Goscinny sont photographiés ensemble en 1971 : cette image parle des créateurs et ne prétend pas illustrer 1946.",
+      "epoque_reelle": "archive 1971",
+      "titre_commons": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5892.jpg",
+      "licence": "CC0 1.0",
+      "famille_source": "anefo-negatif-924-5892"
+    },
+    {
+      "page": 4,
+      "image_source_sha256": "e7db3b067284cfd3954b2908473f10a4f838f2a7118eafa001fa9796d74813d9",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Le dessinateur",
+      "pertinence_editoriale": "Morris avec Uderzo en 1971 ; ce n’est pas une photographie de la première publication de 1946.",
+      "epoque_reelle": "1971",
+      "titre_commons": "Gehurkt Albert Uderzo (tekenaar Asterix) en staand Morris (tekenaar Lucky Luke), Bestanddeelnr 924-5896.jpg",
+      "licence": "CC0 1.0",
+      "famille_source": "anefo-morris-uderzo-cliche-3"
+    },
+    {
+      "page": 5,
+      "image_source_sha256": "b0dd5fb2663c51dc04485bb654037762214fd9cc0fecfd6ebcf1343ec2701079",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Les créateurs : une dernière archive photographique",
+      "pertinence_editoriale": "Une photographie d’archive montre les créateurs dans leur époque, sans faire croire que la photo date de la naissance de Lucky Luke.",
+      "epoque_reelle": "archive 1971",
+      "titre_commons": "Goscinny (scenarist van de strips Asterix en Lucky Luke) (lr en Morris (tekenaar, Bestanddeelnr 924-5893.jpg",
+      "licence": "CC0 1.0",
+      "famille_source": "anefo-negatif-924-5893"
+    }
+  ],
+  "photos_recues": 5,
+  "photos_dedoublonnees": 5,
+  "photos_utilisees": 5,
+  "photos_repetees": 0,
+  "identification_couverture": "ANECDOTE BD grand bandeau jaune",
+  "narration_verifiee": true,
+  "etapes_avec_photographie": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "principe": "Aucune image generative, aucune meme photographie sur deux pages."
+}

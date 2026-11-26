@@ -1,0 +1,74 @@
+{
+  "version": "BD_ANECDOTE_V5_IMAGES_SCENARISEES",
+  "fact_id": "bruxelles-textile",
+  "pages": [
+    {
+      "page": 1,
+      "image_source_sha256": "94051837e400ba22d2b19cf6297c6a1a0188945a665c5c86dae43f750f739953",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Le commerce textile",
+      "pertinence_editoriale": "Hall des anciens magasins Waucquez, cadre de leur ancienne activité.",
+      "epoque_reelle": "actuelle",
+      "titre_commons": "Hall of the Magasins Waucquez (20, rue des Sables, 1000, Brussels).jpg",
+      "licence": "CC0 1.0",
+      "famille_source": "Hall of the Magasins Waucquez (20, rue des Sables, 1000, Brussels).jpg"
+    },
+    {
+      "page": 2,
+      "image_source_sha256": "4b6d58330ab0441facfdeabdc09322b9924d6314ae053481a378df0229ec7258",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Le cadre de l’ancienne boutique",
+      "pertinence_editoriale": "Architecture intérieure des magasins reconvertis.",
+      "epoque_reelle": "actuelle",
+      "titre_commons": "Interior of the Waucquez Building photo 17.jpg",
+      "licence": "CC0 1.0",
+      "famille_source": "Interior of the Waucquez Building photo 17.jpg"
+    },
+    {
+      "page": 3,
+      "image_source_sha256": "61a8cc1ce228c76d432bdc8b882d52694af112f36b60e58a4a514741bfacb967",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "L’architecte",
+      "pertinence_editoriale": "Portrait authentique de l’architecte qui a conçu cet édifice.",
+      "epoque_reelle": "historique",
+      "titre_commons": "Victor Horta seated at own house (veranda).jpg",
+      "licence": "CC0 1.0",
+      "famille_source": "Victor Horta seated at own house (veranda).jpg"
+    },
+    {
+      "page": 4,
+      "image_source_sha256": "2619ed8dc1adab68ae13a82e8d98fe2a6f077684f56d11010e0df7dd1b4cab99",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "Le contraste actuel",
+      "pertinence_editoriale": "Bibliothèque de BD actuelle dans cet ensemble patrimonial.",
+      "epoque_reelle": "actuelle",
+      "titre_commons": "La bibliothèque du centre belge de la BD (1).jpg",
+      "licence": "CC0 1.0",
+      "famille_source": "La bibliothèque du centre belge de la BD (1).jpg"
+    },
+    {
+      "page": 5,
+      "image_source_sha256": null,
+      "type_page": "composition_graphique_sans_photo",
+      "role_visuel": null,
+      "pertinence_editoriale": null,
+      "epoque_reelle": null,
+      "titre_commons": null,
+      "licence": null,
+      "famille_source": null
+    }
+  ],
+  "photos_recues": 4,
+  "photos_dedoublonnees": 4,
+  "photos_utilisees": 4,
+  "photos_repetees": 0,
+  "identification_couverture": "ANECDOTE BD grand bandeau jaune",
+  "narration_verifiee": true,
+  "etapes_avec_photographie": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "principe": "Aucune image generative, aucune meme photographie sur deux pages."
+}
