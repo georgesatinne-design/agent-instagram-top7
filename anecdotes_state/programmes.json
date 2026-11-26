@@ -183,11 +183,11 @@
   "2026-12-09": {
     "fact_id": "yellowkid-guerre-journaux",
     "sujet": "yellowkid",
-    "etat": "PROGRAMME",
+    "etat": "EN_ATTENTE_MAJ",
     "date": "2026-12-09",
     "due_at": "2026-12-09T17:00:00.000Z",
-    "dossier": "public_media/anecdotes_bd/2026-12-09/yellowkid-guerre-journaux_c83bf31e47d7bff9a3",
-    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-09/yellowkid-guerre-journaux_c83bf31e47d7bff9a3/",
+    "dossier": "public_media/anecdotes_bd/2026-12-09/yellowkid-guerre-journaux_297ae6c22ad20481ce",
+    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-09/yellowkid-guerre-journaux_297ae6c22ad20481ce/",
     "images": [
       "01_anecdote.png",
       "02_anecdote.png",
@@ -195,14 +195,39 @@
       "04_anecdote.png",
       "05_anecdote.png"
     ],
-    "revision": "c83bf31e47d7bff9a3",
+    "revision": "297ae6c22ad20481ce",
     "date_preparation": "2026-11-26T16:28:09.167237+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nQuand un héros de bd faisait vendre des journaux\n\nLe Yellow Kid est devenu un enjeu de la rivalité entre deux grands journaux américains.\n\nAurais-tu acheté un journal uniquement pour lire une BD ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nQuand un héros de bd faisait vendre des journaux\n\nLe Yellow Kid est devenu un enjeu de la rivalité entre deux grands journaux américains.\n\nAurais-tu acheté un journal uniquement pour lire une BD ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "empreinte_fait": "28a7cde1c0b0d25099",
     "id_buffer": "6b080d9ab56cc066e5bdbba3",
     "ancien_fact_id": "bruxelles-textile",
-    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11",
-    "date_confirmation": "2026-11-26T16:28:15.980257+00:00"
+    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART",
+    "date_confirmation": "2026-11-26T16:28:15.980257+00:00",
+    "ancien_texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nQuand un héros de bd faisait vendre des journaux\n\nLe Yellow Kid est devenu un enjeu de la rivalité entre deux grands journaux américains.\n\nAurais-tu acheté un journal uniquement pour lire une BD ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "migration_9e_art": {
+      "fact_id": "yellowkid-guerre-journaux",
+      "sujet": "yellowkid",
+      "etat": "PROGRAMME",
+      "date": "2026-12-09",
+      "due_at": "2026-12-09T17:00:00.000Z",
+      "dossier": "public_media/anecdotes_bd/2026-12-09/yellowkid-guerre-journaux_c83bf31e47d7bff9a3",
+      "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-09/yellowkid-guerre-journaux_c83bf31e47d7bff9a3/",
+      "images": [
+        "01_anecdote.png",
+        "02_anecdote.png",
+        "03_anecdote.png",
+        "04_anecdote.png",
+        "05_anecdote.png"
+      ],
+      "revision": "c83bf31e47d7bff9a3",
+      "date_preparation": "2026-11-26T16:28:09.167237+00:00",
+      "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nQuand un héros de bd faisait vendre des journaux\n\nLe Yellow Kid est devenu un enjeu de la rivalité entre deux grands journaux américains.\n\nAurais-tu acheté un journal uniquement pour lire une BD ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+      "empreinte_fait": "28a7cde1c0b0d25099",
+      "id_buffer": "6b080d9ab56cc066e5bdbba3",
+      "ancien_fact_id": "bruxelles-textile",
+      "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11",
+      "date_confirmation": "2026-11-26T16:28:15.980257+00:00"
+    }
   },
   "2026-12-12": {
     "fact_id": "lucky-luke-goscinny",
