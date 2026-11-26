@@ -3,8 +3,8 @@
   "fuseau": "Europe/Paris",
   "heure_normale": "18:00",
   "heure_vendredi": "17:00",
-  "horizon_jours": 45,
-  "max_posts_par_execution": 10,
+  "horizon_jours": 14,
+  "max_posts_par_execution": 4,
   "max_posts_programmes_canal": 10,
   "repli_top_minutes_avant": 75,
   "marge_programmation_minutes": 30,
@@ -22,5 +22,7 @@
     "max_liens_par_source": 8,
     "max_nouveaux_faits": 15,
     "timeout_secondes": 12
-  }
+  },
+  "stock_cible": 10,
+  "stock_validite_jours": 21
 }

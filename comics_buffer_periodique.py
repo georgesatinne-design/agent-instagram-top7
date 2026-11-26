@@ -12,6 +12,7 @@ from buffer_client import _graphql,_mutation_result,_parse_due,MUTATION,EDIT_MUT
 from comics_score_periodique import calculer,SEUIL
 from comics_visual_periodique import ordered_names
 from comics_pipeline_periodique import VERSION
+from calendrier_editorial import next_weekly,monthly_slot,frozen_slot,assert_arbitrated,validate_slot
 
 HEADER=re.compile(r'^\s*(?:📚\s*)?TOP\s*(?:5|7)\s*COMICS\b',re.I)
 PUBLIC_SOURCE=re.compile(r'(?i)(?:edistat|actualitt[ée]|nielseniq|\bbnf\b|b[ée]d[ée]\.fr|fnac|bdfugue|mdcu|reconstitu[ée]|reconstitution)')
@@ -19,25 +20,11 @@ PUBLIC_SOURCE=re.compile(r'(?i)(?:edistat|actualitt[ée]|nielseniq|\bbnf\b|b[ée
 def utc(t):return t.astimezone(dt.timezone.utc).isoformat(timespec='milliseconds').replace('+00:00','Z')
 
 def next_slot(data,*,now=None):
-    now=now or dt.datetime.now(dt.timezone.utc)
-    local=now.astimezone(ZoneInfo('Europe/Paris'))
     if data['cadence']=='HEBDO':
-        for i in range(16):
-            target=local.date()+dt.timedelta(days=i)
-            if target.weekday()!=3:continue
-            slot=dt.datetime.combine(target,dt.time(18),tzinfo=ZoneInfo('Europe/Paris'))
-            if slot>=local+dt.timedelta(minutes=45):return utc(slot)
-        raise RuntimeError('Aucun jeudi futur')
-    # Pour un bilan mensuel de novembre: deuxième dimanche de décembre.
-    y,m=data['annee'],data['mois'];y+=m//12;m=m%12+1
-    first=dt.date(y,m,1)
-    second_sunday=first+dt.timedelta(days=(6-first.weekday())%7+7)
-    slot=dt.datetime.combine(second_sunday,dt.time(18),tzinfo=ZoneInfo('Europe/Paris'))
-    if slot>=local+dt.timedelta(minutes=45):return utc(slot)
-    # Si le bilan arrive exceptionnellement tard, troisième dimanche, jamais avant l'envoi.
-    late=slot+dt.timedelta(days=7)
-    if late>=local+dt.timedelta(minutes=45):return utc(late)
-    raise RuntimeError('Mensuel arrivé après le créneau du mois; ne pas publier un vieux classement')
+        return next_weekly('COMICS_HEBDO',now)
+    if data['cadence']=='MENSUEL':
+        return monthly_slot(data['annee'],data['mois'],now)
+    raise ValueError('Cadence Comics inconnue')
 
 def construire(folder,base_url,channel_id,*,now=None):
     folder=Path(folder);now=now or dt.datetime.now(dt.timezone.utc)
@@ -68,7 +55,7 @@ def construire(folder,base_url,channel_id,*,now=None):
         raise ValueError('Légende publique interdite ou incomplète')
     if not channel_id:raise ValueError('Identifiant canal Buffer manquant')
     return {'text':text,'channelId':channel_id,'schedulingType':'automatic',
-            'mode':'customScheduled','dueAt':next_slot(data,now=now),'needsApproval':False,
+            'mode':'customScheduled','dueAt':frozen_slot('COMICS_HEBDO' if n==5 else 'COMICS_MENSUEL',next_slot(data,now=now),now=now),'needsApproval':False,
             'assets':assets,'metadata':{'instagram':{'type':'post','shouldShareToFeed':True}}}
 
 def _listed(api_key,channel_id,due,*,post=requests.post,now=None):
@@ -131,23 +118,58 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
             if valid:break
             if attempt<4:time.sleep(5)
         if not valid:raise RuntimeError('Image inaccessible depuis Buffer: '+url)
-    current=_listed(api_key,channel_id,payload['dueAt'],post=post,now=now)
-    due=_parse_due(payload['dueAt'])
+    from intentions_tops import enabled,lookup
+    intent=lookup(edition) if enabled() and not prior else None
+    if intent and _parse_due(intent['due_at'])<=now:
+        raise RuntimeError('Création Comics ancienne sans reçu : contrôle humain, aucun renvoi')
+    current=_listed(api_key,channel_id,intent['due_at'] if intent else payload['dueAt'],post=post,now=now)
+    due=_parse_due(intent['due_at'] if intent else payload['dueAt'])
     matches=[p for p in current if abs((_parse_due(p['dueAt'])-due).total_seconds())<90]
     if prior:matches=[p for p in current if p['id']==prior['id_buffer']]
+    else:
+        exact=[p for p in current if (p.get('text') or '').strip()==payload['text'].strip()]
+        if any(p not in matches for p in exact):raise RuntimeError('Même édition Comics déjà présente à un autre créneau : aucun doublon')
     if len(matches)>1 or (prior and not matches):raise RuntimeError('Post comics ambigu dans Buffer')
+    if matches and not prior:
+        from intentions_tops import enabled,lookup,recoverable,confirm
+        if enabled() and (not lookup(edition) or not recoverable(edition,matches[0],payload)):
+            raise RuntimeError('Post Comics sans intention correspondante : vérification nécessaire')
+        if (matches[0].get('text') or '').strip()!=payload['text'].strip():
+            raise RuntimeError('Post Comics sans reçu correspondant : modification interdite')
+        # Récupération en lecture seule après une confirmation perdue.
+        old=matches[0]
+        result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':'RECU_RECONSTRUIT',
+                'id_buffer':old['id'],'status_buffer':old['status'],'edition':edition,'cadence':cadence,
+                'date_programmee_utc':old['dueAt'],'pages':len(payload['assets']),
+                'version_contenu':VERSION,'texte_public':payload['text']}
+        receipt.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+        if enabled():confirm(edition,old['id'],old['dueAt'])
+        return result
     action='CREATION';effective=payload['dueAt']
     if matches:
         old=matches[0]
         if _parse_due(old['dueAt'])<=now+dt.timedelta(minutes=10):raise RuntimeError('Post imminent; non modifiable')
         effective=old['dueAt']
+        if os.environ.get('ILLYADERA_SLOT_PLAN'):
+            validate_slot('COMICS_HEBDO' if cadence=='HEBDO' else 'COMICS_MENSUEL',effective,now=now,check_margin=False)
+            if _parse_due(effective)!=_parse_due(prior['date_programmee_utc']):raise RuntimeError('Créneau modifié depuis le reçu : édition non autorisée')
         fields={'id':old['id'],'text':payload['text'],'assets':payload['assets'],
                 'metadata':payload['metadata'],'schedulingType':'automatic',
                 'mode':'customScheduled','dueAt':effective}
+        if os.environ.get('ILLYADERA_SLOT_PLAN'):
+            from controle_file import final_guard
+            final_guard('COMICS_HEBDO' if cadence=='HEBDO' else 'COMICS_MENSUEL',effective,api_key=api_key,channel_id=channel_id,post=post,expected_id=old['id'])
         ans=_graphql(post,api_key,EDIT_MUTATION,{'input':fields})
         ident,status=_mutation_result(api_key,ans,'editPost',effective,expected_id=old['id'])
         action='MISE_A_JOUR'
     else:
+        if os.environ.get('ILLYADERA_SLOT_PLAN'):
+            from controle_file import final_guard
+            kind='COMICS_HEBDO' if cadence=='HEBDO' else 'COMICS_MENSUEL'
+            assert_arbitrated(kind,payload['dueAt'])
+            final_guard(kind,payload['dueAt'],api_key=api_key,channel_id=channel_id,post=post)
+        from intentions_tops import enabled,reserve
+        if enabled():reserve(edition,payload,receipt_fields={'version_contenu':VERSION,'cadence':cadence})
         ans=_graphql(post,api_key,MUTATION,{'input':payload})
         ident,status=_mutation_result(api_key,ans,'createPost',effective)
     result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':action,
@@ -155,6 +177,8 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,now=None,
             'date_programmee_utc':effective,'pages':len(payload['assets']),
             'version_contenu':VERSION,'texte_public':payload['text']}
     receipt.write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n',encoding='utf8')
+    from intentions_tops import enabled,confirm
+    if enabled() and action=='CREATION':confirm(edition,ident,effective)
     return result
 
 def main():

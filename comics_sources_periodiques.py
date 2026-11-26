@@ -213,7 +213,9 @@ def collect_one(cadence,*,now=None,fetcher=fetch):
     if cadence not in ('HEBDO','MENSUEL'):raise ValueError('cadence inconnue')
     now=now or dt.datetime.now(ZoneInfo('Europe/Paris'))
     today=now.astimezone(ZoneInfo('Europe/Paris')).date();errors=[]
-    if cadence=='MENSUEL' and today.day>10:raise SourceError('Mensuel: vérification seulement les 10 premiers jours du mois')
+    if cadence=='MENSUEL':
+        from cadence_collecte import monthly_open
+        if not monthly_open(now):raise SourceError('Mensuel: fenêtre du deuxième dimanche terminée')
     urls=[]
     for listing in (MDCU_INDEX,MDCU_NEWS):
         try:

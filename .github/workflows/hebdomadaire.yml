@@ -2,9 +2,12 @@ name: Agent Top 7 BD - surveillance et Queue automatiques
 
 on:
   schedule:
-    # Contrôle toutes les heures, à :23, en heure de Paris.
-    # Seule une nouvelle période de ventes déclenche la fabrication et l'envoi.
-    - cron: '23 7,12,16,20 * * *'
+    # BDZoom publie habituellement le mercredi ; secours jeudi/vendredi.
+    - cron: '23 13,19 * * 3'
+      timezone: 'Europe/Paris'
+    - cron: '23 10 * * 4,6'
+      timezone: 'Europe/Paris'
+    - cron: '23 10,14 * * 5'
       timezone: 'Europe/Paris'
   workflow_dispatch:
 
@@ -17,6 +20,7 @@ permissions:
 
 jobs:
   surveiller_et_programmer:
+    if: github.ref == 'refs/heads/main' && vars.ILLYADERA_PAUSE_PUBLICATION != '1'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -152,13 +156,14 @@ jobs:
       - name: Protéger le Top BD face à la capacité de Buffer
         if: steps.source.outputs.new == 'true' && steps.dossier.outputs.ready == 'true'
         env:
+          ILLYADERA_DURABLE_JOURNAL: '1'
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
           ILLYADERA_TOP_VERIFIED: 'true'
         run: |
-          python -m unittest discover -s tests -p 'test_illyadera_queue.py' -q
-          python -m illiyadera_queue before-top --kind BD
+          ILLYADERA_DURABLE_JOURNAL=0 python -m unittest discover -s tests -p 'test_illyadera_queue.py' -q
+          python -m illyadera_queue before-top --kind BD
           if [ -d anecdotes_state ] && [ -n "$(git status --porcelain anecdotes_state)" ]; then
             git add anecdotes_state
             git config user.name 'github-actions[bot]'
@@ -168,37 +173,11 @@ jobs:
             git push origin HEAD:main
           fi
 
-      - name: Réserver cette édition AVANT l'appel à Buffer (anti-doublon)
-        if: steps.source.outputs.new == 'true' && steps.dossier.outputs.ready == 'true'
-        env:
-          EDITION: ${{ steps.source.outputs.edition }}
-          SIGNATURE: ${{ steps.source.outputs.signature }}
-          RUN_ID: ${{ github.run_id }}
-        run: |
-          python - <<'PY'
-          import json,os
-          from pathlib import Path
-          receipt=Path('buffer_receipts')/(os.environ['EDITION']+'.json')
-          if receipt.exists():
-              raise SystemExit('Édition déjà enregistrée. Appel à Buffer refusé pour éviter un doublon.')
-          receipt.parent.mkdir(parents=True,exist_ok=True)
-          receipt.write_text(json.dumps({
-              'statut':'RESERVATION_AVANT_ENVOI',
-              'edition':os.environ['EDITION'],
-              'empreinte_classement':os.environ['SIGNATURE'],
-              'run_id':os.environ['RUN_ID'],
-              'note':'Si le run échoue à cette étape, vérifier la Queue avant de supprimer la réservation.'
-          },ensure_ascii=False,indent=2),encoding='utf-8')
-          PY
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add buffer_receipts
-          git commit -m "Top 7 BD - réservation anti-doublon avant programmation"
-          git push origin HEAD:main
-
       - name: Envoyer automatiquement le carrousel dans la Queue Buffer
         if: steps.source.outputs.new == 'true' && steps.dossier.outputs.ready == 'true'
         env:
+          ILLYADERA_DURABLE_JOURNAL: '1'
+          ILLYADERA_SLOT_PLAN: sorties/queue_illyadera/ARBITRAGE_TOP.json
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -232,4 +211,4 @@ jobs:
           name: dossier-bd-automatique
           path: sorties/hebdomadaire/
           if-no-files-found: ignore
-          retention-days: 30
+          retention-days: 1

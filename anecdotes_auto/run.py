@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse,datetime as dt,hashlib,os,re,traceback
 from pathlib import Path
 from zoneinfo import ZoneInfo
-from .catalogue import ROOT_REPO,STATE,CONFIG,bank,read,write,select,topic,ROOT
+from .catalogue import ROOT_REPO,STATE,CONFIG,bank,read,write,select,topic,fingerprint,ROOT
 from .qualite_editoriale import score as score_anecdote
 from .calendrier import PARIS,next_days,eligible,reserved_kind,target_date_time
 from .visuels import render,caption
@@ -30,7 +30,7 @@ def persist(registry):write(REGISTRY,registry)
 
 def proof(fact,now):
     output={k:fact.get(k) for k in ('id','url_source','preuve_courte','type_preuve',
-        'controle_editorial','empreinte_page_sha256','controle_date_utc') if fact.get(k)}
+        'controle_editorial','empreinte_page_sha256','controle_date_utc','preuve_structuree') if fact.get(k)}
     output.update({'consultation_interne':now.isoformat(),'note':'Les sources ne sont jamais envoyées dans les images ou légendes.'})
     write(STATE/'preuves'/f'{fact["id"]}.json',output)
 
@@ -61,7 +61,10 @@ def sujets_par_disponibilite(facts,registry,day,exclude_ids=()):
             continue
         if record.get('sujet') and abs((dt.date.fromisoformat(date_s)-day).days)<CONFIG.get('intervalle_sujet_jours',5):
             used_topics.append(record['sujet'])
-    candidates=[f for f in facts if f['id'] not in excluded]
+    known_fingerprints={fingerprint(f) for f in facts if f['id'] in excluded}
+    known_fingerprints.update(r['empreinte_fait'] for r in registry.values()
+        if isinstance(r,dict) and r.get('etat') in ('PROGRAMME','EN_ATTENTE','EN_ATTENTE_MAJ','EXPIRE_INCERTAIN') and r.get('empreinte_fait'))
+    candidates=[f for f in facts if f['id'] not in excluded and fingerprint(f) not in known_fingerprints]
     candidates.sort(key=lambda f:(
         reserve.get(f['id'],{}).get('statut')!='PRET',
         topic(f) in used_topics,
@@ -92,16 +95,18 @@ def stage_fact(fact,day,repo,now):
         import shutil
         for img in images:shutil.copyfile(folder/img,version_folder/img)
         shutil.copyfile(folder/'legende_instagram.txt',version_folder/'legende_instagram.txt')
-        shutil.copyfile(folder/'apercu.png',version_folder/'apercu.png')
+        preview=REPORT/'apercus'/day.isoformat()/(fact['id']+'.png')
+        preview.parent.mkdir(parents=True,exist_ok=True)
+        shutil.copyfile(folder/'apercu.png',preview)
         shutil.rmtree(folder)
     proof(fact,now)
-    # L'audit photo reste privé dans anecdotes_state, pas dans le texte public.
+    # L'audit photo est documentaire, hors texte Instagram ; le dépôt reste public.
     write(STATE/'preuves_photos'/f'{fact["id"]}.json',{'photos':media_proofs})
     base=f'https://raw.githubusercontent.com/{repo}/main/{version_folder.relative_to(ROOT_REPO).as_posix()}/'
     return {'fact_id':fact['id'],'sujet':topic(fact),'etat':'EN_ATTENTE','date':day.isoformat(),
             'due_at':utc(target_date_time(day)),'dossier':str(version_folder.relative_to(ROOT_REPO)),
             'base_url':base,'images':images,'revision':digest,'date_preparation':now.isoformat(),
-            'texte_public':text}
+            'texte_public':text,'empreinte_fait':fingerprint(fact)}
 
 def _day_snapshot(buffer, now):
     """Une seule lecture paginée de la file ; les tests anciens restent compatibles."""
@@ -132,6 +137,10 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
     results['candidats']=len(all_facts)
     results['creatifs_eligibles']=len(facts)
     registry=get_registry()
+    # Les plans dont le créneau est passé ne sont jamais reprogrammés à un autre jour.
+    for key,rec in registry.items():
+        if isinstance(rec,dict) and rec.get('etat')=='EN_ATTENTE' and rec.get('due_at') and parse(rec['due_at'])<=now:
+            rec['etat']='EXPIRE_INCERTAIN'
     facts_by_id={fact['id']:fact for fact in all_facts}
     dayposts={}
     try:
@@ -139,6 +148,8 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
         if byday is not None:
             dayposts={d.isoformat():list(byday.get(d.isoformat(),[])) for d in next_days(now)}
             scheduled_count=len(all_scheduled)  # y compris au-delà de l'horizon éditorial
+            from journal_publication import reconcile_intents
+            if reconcile_intents(registry,all_scheduled,now):persist(registry)
         else:
             for day in next_days(now):
                 dayposts[day.isoformat()]=buffer.day(day)
@@ -157,6 +168,15 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
         results['jours'].append({'date':'FILE_BUFFER','resultat':'CAPACITE_ATTEINTE',
                                  'en_queue':scheduled_count,'plafond':max_count})
     photos_indisponibles=set()
+    # Les publications déjà en file et à restaurer passent avant les créations.
+    # Réserver leur budget, même si leur date est postérieure au premier créneau libre.
+    repair_days = {key for key, posts in dayposts.items()
+        if (registry.get(key) or {}).get('etat') == 'PROGRAMME'
+        and (registry.get(key) or {}).get('version_visuelle') not in VERSIONS_DEJA_VALIDES
+        and any(p.get('id') == registry[key].get('id_buffer')
+                and _is_our_exact(p, registry[key])
+                and p.get('dueAt') and parse(p['dueAt']) > now + dt.timedelta(minutes=35)
+                for p in posts)}
     for day in next_days(now):
         key=day.isoformat();posts=dayposts[key]
         item=registry.get(key) or {}
@@ -250,23 +270,39 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
                 results['jours'].append({'date':key,'resultat':'POST_ANCIEN_NON_MODIFIABLE',
                      'raison':failure['raison']})
             continue
-        if item.get('etat') in ('PROGRAMME','SUPPLANTE_PAR_TOP','EN_ATTENTE_MAJ'):
+        if item.get('etat') in ('PROGRAMME','SUPPLANTE_PAR_TOP','EN_ATTENTE_MAJ','LIBERATION_EN_COURS','LIBERATION_A_VERIFIER'):
             results['jours'].append({'date':key,'resultat':'DEJA_TRAITE'});continue
         ok,reason=eligible(day,now,posts)
         results['jours'].append({'date':key,'resultat':reason,'reservation':reserved_kind(day)})
         if not ok:continue
         creations_pretes=sum(registry[d].get('etat')=='EN_ATTENTE' for d in results['plans'])
-        if scheduled_count+creations_pretes>=max_count and reserved_kind(day) is None:
-            continue
-        # Si le TOP ne sort pas et que le délai de repli est atteint, on peut
-        # préparer son anecdote malgré la Queue pleine : la place sera libérée
-        # UNIQUEMENT juste avant l'envoi, après vérification des cinq médias.
-        if len(results['plans'])>=CONFIG['max_posts_par_execution']:continue
-        if item.get('etat')=='EN_ATTENTE':
-            # Retry only if the files are still present and the slot still free.
-            if (ROOT_REPO/item.get('dossier','')).is_dir():
+        if scheduled_count+creations_pretes>=max_count:
+            # Ne préparer un nouveau carrousel que si une anecdote plus lointaine
+            # appartenant à cet agent semble pouvoir être déplacée.
+            can_move = any(
+                isinstance(rec, dict) and rec.get('etat') == 'PROGRAMME' and other > key
+                and any(p.get('id') == rec.get('id_buffer') and p.get('status') == 'scheduled'
+                        and _is_our_exact(p, rec) for p in (all_scheduled or []))
+                for other, rec in registry.items())
+            if not can_move:
+                continue
+        # La place éventuelle sera libérée seulement après vérification des cinq médias.
+        reserved_repairs = sum(other > key for other in repair_days)
+        if len(results['plans'])+reserved_repairs>=CONFIG['max_posts_par_execution']:continue
+        if item.get('etat')=='EN_ATTENTE' or str(item.get('etat','')).startswith('LIBERE_POUR_'):
+            # Réutiliser le carrousel déjà préparé, sans acheter ni chercher de nouveaux médias.
+            dossier=item.get('dossier');names=item.get('images') or []
+            same_fact=not any(d!=key and isinstance(r,dict) and r.get('fact_id')==item.get('fact_id')
+                and r.get('etat') in ('PROGRAMME','EN_ATTENTE','EN_ATTENTE_MAJ') for d,r in registry.items())
+            if (dossier and len(names)==5 and same_fact and item.get('due_at') and
+                    parse(item['due_at'])==parse(utc(target_date_time(day))) and
+                    all((ROOT_REPO/dossier/name).is_file() for name in names) and
+                    editorial_eligible(facts_by_id.get(item.get('fact_id'),{})) and
+                    item.get('fact_id') in facts_by_id):
+                item['etat']='EN_ATTENTE';item.pop('id_buffer',None)
+                registry[key]=item
                 results['plans'].append(key);continue
-        exclude=[rec.get('fact_id') for rec in registry.values() if isinstance(rec,dict) and rec.get('etat') in ('EN_ATTENTE','PROGRAMME','EN_ATTENTE_MAJ')]
+        exclude=[rec.get('fact_id') for rec in registry.values() if isinstance(rec,dict) and rec.get('etat') in ('EN_ATTENTE','PROGRAMME','EN_ATTENTE_MAJ','EXPIRE_INCERTAIN')]
         # Regarder d'abord les anecdotes ayant déjà une preuve et trois photos
         # distinctes en stock. Aucune répétition du même fait, même sous un autre nom.
         accepted=False
@@ -310,13 +346,30 @@ def reconcile(buffer,registry,now,results,dayposts=None):
         if parse(ours[0]['dueAt'])<=now+dt.timedelta(minutes=10):
             results['erreurs'].append(f'Top arrive tardivement {key}: anecdote imminente, suppression automatique refusée')
             continue
+        # Journaliser également les réconciliations tardives. Les tests anciens
+        # utilisent des registres incomplets ; la production exige le créneau exact.
+        from journal_publication import checkpoint
+        if os.environ.get('ILLYADERA_DURABLE_JOURNAL')=='1':
+            if not rec.get('due_at') or parse(rec['due_at'])!=parse(ours[0]['dueAt']):
+                raise RuntimeError('Horaire de l’anecdote non confirmé')
+            live=buffer.list_scheduled()
+            if not any(p==ours[0] for p in live) or not any(p in live for p in tops):
+                raise RuntimeError('File modifiée avant réconciliation')
+        rec['etat']='LIBERATION_EN_COURS'
+        rec['intention_liberation']={'id_buffer':rec['id_buffer'],'due_at':ours[0]['dueAt'],
+            'priorite':'TOP','cible':key,'date_utc':now.isoformat()}
+        persist(registry)
+        checkpoint(REGISTRY)
         buffer.delete_own(rec['id_buffer'])
         rec['etat']='SUPPLANTE_PAR_TOP'
         rec['top_detecte_le']=now.isoformat()
+        persist(registry)
+        checkpoint(REGISTRY)
         results['supprimes_pour_top'].append({'jour':key,'id':rec['id_buffer']})
 
 def send(*,now=None,buffer=None):
     now=now or dt.datetime.now(dt.timezone.utc)
+    from calendrier_editorial import validate_slot
     buffer=buffer or Buffer()
     registry=get_registry();results={'date_utc':now.isoformat(),'programmes':[],
                                    'deja_programmes':[],'ignores':[],'supprimes_pour_top':[],'erreurs':[],
@@ -324,16 +377,28 @@ def send(*,now=None,buffer=None):
     # Une lecture complète au début pour limiter la consommation du quota API.
     try:
         snapshot,dayposts=_day_snapshot(buffer,now)
+        if snapshot is not None:
+            from journal_publication import reconcile_intents
+            if reconcile_intents(registry,snapshot,now):persist(registry)
     except Exception as exc:
         results['erreurs'].append('QUEUE_BUFFER: '+str(exc)[:260])
-        snapshot,dayposts=None,None
+        persist(registry)
+        write(REPORT/'RESULTATS_BUFFER.json',results)
+        raise RuntimeError('File Buffer non vérifiable : aucun envoi') from exc
     # Priority: if a Top arrives after a fallback, remove only our own scheduled anecdote.
     try:reconcile(buffer,registry,now,results,dayposts)
     except Exception as exc:results['erreurs'].append('RECONCILIATION: '+str(exc)[:300])
+    attempted=0
     for key in sorted(registry):
         rec=registry[key]
         if rec.get('etat') not in ('EN_ATTENTE','EN_ATTENTE_MAJ'):continue
         day=dt.date.fromisoformat(key)
+        if day<now.astimezone(PARIS).date():
+            rec['etat']='EXPIRE_INCERTAIN';continue
+        if os.environ.get('ILLYADERA_DURABLE_JOURNAL')=='1':
+            if day>(now.astimezone(PARIS).date()+dt.timedelta(days=CONFIG['horizon_jours'])):continue
+            if attempted>=CONFIG['max_posts_par_execution']:break
+            attempted+=1
         try:
             posts=(dayposts.get(key,[]) if dayposts is not None else buffer.day(day))
             if rec.get('etat')=='EN_ATTENTE_MAJ':
@@ -347,6 +412,11 @@ def send(*,now=None,buffer=None):
                     results['ignores'].append(key+' : publication imminente');continue
                 folder=ROOT_REPO/rec['dossier']
                 assets=buffer.verify_images(rec['base_url'],rec['images'],folder)
+                if os.environ.get('ILLYADERA_DURABLE_JOURNAL')=='1':
+                    from controle_file import final_guard
+                    final_guard('ANECDOTE',existing[0]['dueAt'],api_key='',channel_id='',post=None,buffer=buffer,expected_id=rec['id_buffer'])
+                    live=buffer.list_scheduled()
+                    if existing[0] not in live:raise RuntimeError('Anecdote modifiée avant édition')
                 updated=buffer.edit_own(rec['id_buffer'],rec['texte_public'],existing[0]['dueAt'],assets)
                 rec.update({'etat':'PROGRAMME','date_confirmation':now.isoformat(),
                             'due_at':updated.get('dueAt') or existing[0]['dueAt'],
@@ -354,6 +424,9 @@ def send(*,now=None,buffer=None):
                 rec.pop('ancien_texte_public',None)
                 results['programmes'].append({'date':key,'id_buffer':updated['id'],
                                              'pages':len(rec['images']),'action':'MISE_A_JOUR_SANS_DOUBLON'})
+                from journal_publication import checkpoint
+                persist(registry)
+                checkpoint(REGISTRY)
                 continue
             if posts:
                 exact=[p for p in posts if _is_our_exact(p,rec)]
@@ -368,6 +441,10 @@ def send(*,now=None,buffer=None):
             if not ok:
                 if why=='CRENEAU_TROP_PROCHE':rec['etat']='EXPIRE'
                 results['ignores'].append(key+' : '+why);continue
+            # Un plan ancien ou incohérent ne peut jamais déplacer la publication.
+            if parse(rec['due_at'])!=parse(utc(target_date_time(day))):
+                raise ValueError('Date du registre différente du calendrier éditorial')
+            validate_slot('ANECDOTE',rec['due_at'],now=now)
             folder=ROOT_REPO/rec['dossier']
             for file in rec['images']:
                 if not (folder/file).is_file():raise RuntimeError('Media absent: '+file)
@@ -380,13 +457,16 @@ def send(*,now=None,buffer=None):
                     results['ignores'].append(key+' : UN_POST_A_PRIS_LE_CRENEAU')
                     continue
                 if len(live)>=CONFIG['max_posts_programmes_canal']:
-                    if reserved_kind(day):
-                        from illyadera_queue import free_capacity_for_priority
-                        free_capacity_for_priority(rec['due_at'],buffer=buffer,registry=registry,
-                            max_posts=CONFIG['max_posts_programmes_canal'],priority='REPLI_TOP')
-                    else:
-                        results['ignores'].append(key+' : QUEUE_PLEINE (attente prochaine place)')
+                    from illyadera_queue import free_capacity_for_priority
+                    freed = free_capacity_for_priority(rec['due_at'], buffer=buffer, registry=registry,
+                        registry_path=REGISTRY, max_posts=CONFIG['max_posts_programmes_canal'],
+                        now=now, priority='REMPLISSAGE')
+                    if freed.get('action') not in ('ANECDOTE_LIBEREE','PLACE_DISPONIBLE'):
+                        results['ignores'].append(key+' : QUEUE_PLEINE_SANS_POST_PLUS_LOINTAIN')
                         continue
+            if os.environ.get('ILLYADERA_DURABLE_JOURNAL')=='1':
+                from controle_file import final_guard
+                final_guard('ANECDOTE',rec['due_at'],api_key='',channel_id='',post=None,buffer=buffer)
             post=buffer.create(rec['texte_public'],rec['due_at'],assets)
             if dayposts is not None:
                 dayposts.setdefault(key,[]).append({'id':post['id'],'status':'scheduled',
@@ -395,8 +475,14 @@ def send(*,now=None,buffer=None):
             rec.update({'etat':'PROGRAMME','id_buffer':post['id'],'date_confirmation':now.isoformat(),
                         'due_at':post.get('dueAt') or rec['due_at'],'version_visuelle':VERSION_VISUELLE})
             results['programmes'].append({'date':key,'id_buffer':post['id'],'pages':len(rec['images'])})
+            from journal_publication import checkpoint
+            persist(registry)
+            checkpoint(REGISTRY)
         except Exception as exc:
             results['erreurs'].append(key+': '+type(exc).__name__+' '+str(exc)[:260])
+            if os.environ.get('ILLYADERA_DURABLE_JOURNAL')=='1':
+                # Nouvelle lecture au prochain run automatique, jamais d'enchaînement aveugle.
+                break
     # Vérification post-envoi : ne pas annoncer une exécution saine si un post
     # en ancienne DA est resté dans Buffer sans remplacement effectif.
     backlog=read(REPORT/'REPRISES_A_FAIRE.json',[]) or []

@@ -82,7 +82,7 @@ def dates_semaine(s):
     raise SourceError('Plusieurs périodes de ventes BD différentes détectées : vérification humaine nécessaire')
 
 def mouvement(s):
-    s=norm(s).strip(' ()')
+    s=norm(s).strip(' ()').replace('−','-').replace('–','-').replace('—','-')
     if 'nouveau' in s or 'new'==s: return 'NOUVEAU'
     if 'retour' in s: return 'RETOUR'
     if s in ('=', 'stable', 'idem'):return 'STABLE'
@@ -130,7 +130,7 @@ def parse_bdzoom(html,url):
             # La variation peut être dans une cellule séparée OU avec le rang.
             if len(vals)>=5:
                 m=norm(vals[1]).strip(' ()')
-                has_variation=bool(re.fullmatch(r'[+\-−]\s*\d+|=|nouveau|retour|stable|idem',m))
+                has_variation=bool(re.fullmatch(r'[+\-−–—]\s*\d+|=|nouveau|retour|stable|idem',m))
                 offset=2 if has_variation else 1
                 change=vals[1] if has_variation else ''
             else:

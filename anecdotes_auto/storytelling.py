@@ -32,7 +32,9 @@ EXCLUS_EDITORIAUX={
 }
 
 def editorial_eligible(fact):
-    return fact.get('id') not in EXCLUS_EDITORIAUX
+    return (fact.get('id') not in EXCLUS_EDITORIAUX
+            and fact.get('type_preuve') != 'METADONNEES_EDITEUR_OFFICIEL'
+            and fact.get('theme') != 'EDITION')
 
 SCRIPTS.update({
  'topffer-professeur':{'hook':'AVANT LES BD, TÖPFFER ENSEIGNAIT', 'question':'Tu imaginais un professeur parmi les pionniers de la BD ?'},
@@ -65,7 +67,7 @@ def story(fact):
     return {
        'hook':hook,
        'revelation':tidy(fact['fait'],270),
-       'transition':tidy(curated.get('transition') or 'Mais il y a un autre détail…',95),
+       'transition':tidy(curated.get('transition') or fact.get('transition') or 'Remettons cette histoire dans son contexte…',95),
        'contexte':tidy(fact['contexte'],270),
        'detail':tidy(fact['detail'],270),
        'question':tidy(curated.get('question') or fact.get('question') or 'Tu le savais, toi ?',100),

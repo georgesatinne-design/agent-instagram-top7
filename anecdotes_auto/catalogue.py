@@ -38,21 +38,26 @@ def valid_fact(a):
     if not valid_url(a['url_source']):return False
     if any(len(a[k])>270 for k in ('fait','contexte','detail')):return False
     if len(a['hook'])>95 or len(a['preuve_courte'])>400:return False
-    if a.get('type_preuve') not in ('SOURCE_PRIMAIRE_OFFICIELLE','METADONNEES_EDITEUR_OFFICIEL'):return False
+    if a.get('type_preuve') not in ('SOURCE_PRIMAIRE_OFFICIELLE','METADONNEES_EDITEUR_OFFICIEL','SOURCE_INSTITUTIONNELLE_CORROBOREE'):return False
+    if a.get('type_preuve')=='SOURCE_INSTITUTIONNELLE_CORROBOREE':
+        meta=a.get('preuve_structuree') or {}
+        if not isinstance(meta,dict) or meta.get('propriete') not in ('P138','P144'):return False
+        if not all(re.fullmatch(r'Q[1-9]\d*',str(meta.get(k,''))) for k in ('item','target','creator')):return False
+        if not re.fullmatch(r'[0-9a-f]{64}',str(meta.get('empreinte_assertions',''))):return False
     return True
 
 def bank():
     data=(read(ROOT/'banque_initiale.json',{}) or {}).get('faits',[])
     discovered=(read(STATE/'decouvertes.json',{}) or {}).get('faits',[])
     out={}
-    for a in [*data,*discovered]:
+    for a in [*discovered,*data]:
         if valid_fact(a):out[a['id']]=a
     return sorted(out.values(),key=lambda x:x['id'])
 
 def topic(a):
     # Aucune source ne devient publique; groupe éditorial pour la diversité.
     s=a['id']
-    return s.split('-')[0]
+    return a.get('topic') or s.split('-')[0]
 
 def fingerprint(a):
     raw=normalized(a['fait'])+'|'+normalized(a['contexte'])

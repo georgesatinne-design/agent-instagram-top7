@@ -1,18 +1,105 @@
 {
   "sources_primaires": [
-    {"nom":"BnF / catalogue","domaine":"catalogue.bnf.fr","usage":"notices officielles", "decouverte":false},
-    {"nom":"Cité de la BD","domaine":"www.citebd.org","usage":"histoire et patrimoine", "decouverte":false},
-    {"nom":"Musée BD Bruxelles","domaine":"www.cbbd.be","usage":"musée et histoire", "decouverte":false},
-    {"nom":"Festival Angoulême","domaine":"www.bdangouleme.com","usage":"histoire du festival", "decouverte":false},
-    {"nom":"Dargaud","domaine":"www.dargaud.com","usage":"œuvres et auteurs", "decouverte":true},
-    {"nom":"Dupuis","domaine":"www.dupuis.com","usage":"œuvres et auteurs", "decouverte":true},
-    {"nom":"Urban Comics","domaine":"www.urban-comics.com","usage":"éditions, auteurs et albums", "decouverte":true},
-    {"nom":"Delcourt","domaine":"www.editions-delcourt.fr","usage":"albums", "decouverte":true}
+    {
+      "nom": "BnF / catalogue",
+      "domaine": "catalogue.bnf.fr",
+      "usage": "notices officielles",
+      "decouverte": false
+    },
+    {
+      "nom": "Cité de la BD",
+      "domaine": "www.citebd.org",
+      "usage": "histoire et patrimoine",
+      "decouverte": false
+    },
+    {
+      "nom": "Musée BD Bruxelles",
+      "domaine": "www.cbbd.be",
+      "usage": "musée et histoire",
+      "decouverte": false
+    },
+    {
+      "nom": "Festival Angoulême",
+      "domaine": "www.bdangouleme.com",
+      "usage": "histoire du festival",
+      "decouverte": false
+    },
+    {
+      "nom": "Dargaud",
+      "domaine": "www.dargaud.com",
+      "usage": "œuvres et auteurs",
+      "decouverte": true
+    },
+    {
+      "nom": "Dupuis",
+      "domaine": "www.dupuis.com",
+      "usage": "œuvres et auteurs",
+      "decouverte": true
+    },
+    {
+      "nom": "Urban Comics",
+      "domaine": "www.urban-comics.com",
+      "usage": "éditions, auteurs et albums",
+      "decouverte": true
+    },
+    {
+      "nom": "Delcourt",
+      "domaine": "www.editions-delcourt.fr",
+      "usage": "albums",
+      "decouverte": true
+    },
+    {
+      "nom": "Institut René Goscinny",
+      "domaine": "www.institut-goscinny.org",
+      "usage": "archives et histoire documentée",
+      "decouverte": true
+    },
+    {
+      "nom": "Archives Tintin",
+      "domaine": "www.tintin.com",
+      "usage": "archives et histoire documentée",
+      "decouverte": true
+    },
+    {
+      "nom": "Musée Charles M. Schulz",
+      "domaine": "schulzmuseum.org",
+      "usage": "archives et histoire documentée",
+      "decouverte": true
+    },
+    {
+      "nom": "Archives Tezuka Osamu",
+      "domaine": "tezukaosamu.net",
+      "usage": "archives et histoire documentée",
+      "decouverte": true
+    },
+    {
+      "nom": "Library of Congress",
+      "domaine": "www.loc.gov",
+      "usage": "archives et histoire documentée",
+      "decouverte": true
+    },
+    {
+      "nom": "Bibliothèque nationale de France",
+      "domaine": "www.bnf.fr",
+      "usage": "archives et histoire documentée",
+      "decouverte": true
+    }
   ],
   "points_entree_decouverte": [
     "https://www.dargaud.com/bd/lucky-luke",
     "https://www.dupuis.com/univers/FR/spirou.html",
     "https://www.urban-comics.com/a-paraitre/",
     "https://www.editions-delcourt.fr/comics"
+  ],
+  "points_entree_editoriaux": [
+    "https://www.institut-goscinny.org/bibliographie/asterix-dans-pilote/",
+    "https://www.tintin.com/fr/herge",
+    "https://schulzmuseum.org/timeline/",
+    "https://tezukaosamu.net/en/",
+    "https://www.loc.gov/exhibitions/comic-art/about-this-exhibition/",
+    "https://www.bnf.fr/fr/pour-une-histoire-de-la-bande-dessinee",
+    "https://www.citebd.org/",
+    "https://www.cbbd.be/fr/",
+    "https://www.dupuis.com/"
   ]
 }

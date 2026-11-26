@@ -3,11 +3,14 @@ name: Manga - agent complet Top 7 ventes France vers Buffer
 on:
   workflow_dispatch:
   schedule:
-    # Le dépôt Buffer est tenté dès que les données sont disponibles.
-    # Tous les jours à 08h17, 14h17 et 20h17 (Paris),
-    # pour capter une parution anticipée sans attendre le mardi.
-    # L'heure du post Instagram reste mardi 18h Paris.
-    - cron: '17 8,14,20 * * *'
+    # ActuaLitté/Edistat publie le vendredi ; secours samedi/lundi/mardi.
+    - cron: '17 13,19 * * 5'
+      timezone: 'Europe/Paris'
+    - cron: '17 10 * * 1,6'
+      timezone: 'Europe/Paris'
+    - cron: '17 10,15 * * 2'
+      timezone: 'Europe/Paris'
+    - cron: '17 10 * * 3'
       timezone: 'Europe/Paris'
 
 permissions:
@@ -19,6 +22,7 @@ concurrency:
 
 jobs:
   manga:
+    if: github.ref == 'refs/heads/main' && vars.ILLYADERA_PAUSE_PUBLICATION != '1'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -43,7 +47,7 @@ jobs:
         run: |
           python manga_pipeline_auto.py --sortie sorties/manga_production \
             --precedent manga_history/dernier_classement.json \
-            --cache manga_history/genres_ebooks.json
+            --cache manga_history/genres_ebooks.json --skip-finalized
       - name: Lire l'état de l'édition et interdire les données incomplètes
         id: publication
         run: |
@@ -59,7 +63,9 @@ jobs:
           receipt=Path('manga_buffer_receipts')/(edition+'.json')
           from datetime import datetime,timedelta,timezone
           from manga_buffer_auto import VERSION_PUBLIQUE
-          if receipt.exists():
+          if report.get('skip_history'):
+              correction=False
+          elif receipt.exists():
               old_receipt=json.loads(receipt.read_text(encoding='utf8'))
               if old_receipt.get('statut')!='POST_PROGRAMME':
                   raise SystemExit('Reçu Buffer existant inattendu')
@@ -71,14 +77,22 @@ jobs:
               correction=encore_modifiable and old_receipt.get('version_contenu')!=VERSION_PUBLIQUE
           else:
               correction=True
-          ready=bool(report['pret_buffer']) and correction
+          from historique_editions import newer_receipt
+          from intentions_tops import lookup
+          newer=newer_receipt(Path('manga_buffer_receipts'),edition)
+          waiting=not receipt.exists() and bool(lookup(edition))
+          ready=bool(report['pret_buffer']) and correction and not newer and not waiting
+          if waiting:print('Édition réservée : réconciliation automatique, aucun nouvel envoi')
+          if newer:print('Edition dépassée par',newer,': aucun envoi')
           with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf8') as out:
               out.write('edition='+edition+'\n')
               out.write('ready='+str(ready).lower()+'\n')
+              out.write('skip_history='+str(bool(report.get('skip_history'))).lower()+'\n')
           print('Edition:',edition,'Certificat:',report['statut_ventes'],
                 'Couvertures:',report['couvertures'],'/7','Programme:',ready)
           PY
       - name: Sauvegarder l'historique des genres et les observations pour la prochaine semaine
+        if: steps.publication.outputs.skip_history != 'true'
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -138,13 +152,15 @@ jobs:
       - name: Préparer la capacité Buffer pour le Top manga validé
         if: steps.publication.outputs.ready == 'true'
         env:
+          ILLYADERA_DURABLE_JOURNAL: '1'
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
           ILLYADERA_TOP_VERIFIED: 'true'
+          EDITION: ${{ steps.publication.outputs.edition }}
         run: |
-          python -m unittest discover -s tests -p 'test_illyadera_queue.py' -q
-          python -m illiyadera_queue before-top --kind MANGA
+          ILLYADERA_DURABLE_JOURNAL=0 python -m unittest discover -s tests -p 'test_illyadera_queue.py' -q
+          python -m illyadera_queue before-top --kind MANGA
           if [ -d anecdotes_state ] && [ -n "$(git status --porcelain anecdotes_state)" ]; then
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -157,6 +173,8 @@ jobs:
       - name: Déposer le Top 7 manga à la date programmée dans Buffer
         if: steps.publication.outputs.ready == 'true'
         env:
+          ILLYADERA_DURABLE_JOURNAL: '1'
+          ILLYADERA_SLOT_PLAN: sorties/queue_illyadera/ARBITRAGE_TOP.json
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
@@ -187,4 +205,4 @@ jobs:
           name: dossier-manga-complet
           path: sorties/manga_production/
           if-no-files-found: warn
-          retention-days: 30
+          retention-days: 1

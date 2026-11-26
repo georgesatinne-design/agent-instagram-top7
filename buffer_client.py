@@ -18,6 +18,7 @@ import requests
 from PIL import Image
 
 from calendrier import prochain_creneau
+from calendrier_editorial import next_weekly,frozen_slot,assert_arbitrated
 
 API_URL = 'https://api.buffer.com'
 
@@ -101,7 +102,7 @@ def construct_draft(folder, public_base_url):
     if not suggestion:
         raise ValueError('Aucune règle de programmation active pour cette catégorie : dépôt interdit')
     payload['mode'] = 'customScheduled'
-    payload['dueAt'] = suggestion['dueAt']
+    payload['dueAt'] = (frozen_slot('BD',next_weekly('BD')) if os.environ.get('ILLYADERA_SLOT_PLAN') else suggestion['dueAt'])
     return payload
 
 
@@ -244,7 +245,14 @@ def deposit_draft(folder, public_base_url, channel_id, api_key, *, send=False, c
         check_urls(payload)
     # Crucial: BEFORE creating anything, read Buffer to detect a post created
     # by an older version, even when it is absent from GitHub's receipts.
+    if os.environ.get('ILLYADERA_SLOT_PLAN'):assert_arbitrated('BD',request_data['dueAt'])
     existing = _find_scheduled_bd_slot(api_key, channel_id, request_data['dueAt'], post=post)
+    from intentions_tops import enabled,reserve,confirm,lookup,recoverable
+    edition='BD_'+_period_end(request_data['text']).isoformat() if enabled() else None
+    if edition and os.environ.get('EDITION')!=edition:raise RuntimeError('Édition BD incohérente')
+    signature=os.environ.get('SIGNATURE','')
+    if edition and not re.fullmatch(r'[0-9a-f]{64}',signature):raise RuntimeError('Empreinte BD absente')
+    if edition and lookup(edition):raise RuntimeError('Édition BD réservée : réconciliation automatique')
     action = 'CREATION'
     previous_period = None
     if existing:
@@ -253,6 +261,8 @@ def deposit_draft(folder, public_base_url, channel_id, api_key, *, send=False, c
         if old_date > new_date:
             raise RuntimeError('Buffer contient déjà un classement plus récent pour ce vendredi : publication ancienne refusée')
         if old_date == new_date:
+            if edition and (existing.get('text') or '').strip()!=request_data['text'].strip():
+                raise RuntimeError('Même période BD mais contenu différent : aucune modification')
             # Same edition, possibly a previous execution that timed out.
             identifier = existing['id']
             status = 'scheduled'
@@ -270,9 +280,24 @@ def deposit_draft(folder, public_base_url, channel_id, api_key, *, send=False, c
                 'dueAt': request_data['dueAt'],
                 'schedulingType': 'automatic',
             }
+            if os.environ.get('ILLYADERA_SLOT_PLAN'):
+                from controle_file import final_guard
+                final_guard('BD',request_data['dueAt'],api_key=api_key,channel_id=channel_id,post=post,expected_id=existing['id'])
+            if edition:
+                # Un ancien classement n'est modifiable que si le reçu l'identifie.
+                prior_path=Path('buffer_receipts')/('BD_'+old_date.isoformat()+'.json')
+                if not prior_path.is_file():raise RuntimeError('Ancien Top BD non identifié par reçu')
+                prior=json.loads(prior_path.read_text(encoding='utf8'))
+                if prior.get('statut')!='POST_PROGRAMME' or prior.get('id_buffer')!=existing['id'] or _parse_due(prior['date_programmee_utc'])!=_parse_due(existing['dueAt']):
+                    raise RuntimeError('Ancien Top BD différent du reçu')
+                reserve(edition,request_data,receipt_fields={'empreinte_classement':signature})
             result = _graphql(post, api_key, EDIT_MUTATION, {'input': edited})
             identifier, status = _mutation_result(api_key, result, 'editPost', request_data['dueAt'], expected_id=existing['id'])
     else:
+        if os.environ.get('ILLYADERA_SLOT_PLAN'):
+            from controle_file import final_guard
+            final_guard('BD',request_data['dueAt'],api_key=api_key,channel_id=channel_id,post=post)
+        if edition:reserve(edition,request_data,receipt_fields={'empreinte_classement':signature})
         result = _graphql(post, api_key, MUTATION, payload['variables'])
         identifier, status = _mutation_result(api_key, result, 'createPost', request_data['dueAt'])
     out = {
@@ -283,6 +308,7 @@ def deposit_draft(folder, public_base_url, channel_id, api_key, *, send=False, c
     if previous_period:
         out['ancienne_fin_ventes'] = previous_period
     receipt.write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding='utf-8')
+    if edition and action in ('CREATION','REMPLACEMENT'):confirm(edition,identifier,request_data['dueAt'])
     return out
 
 

@@ -16,6 +16,7 @@ from zoneinfo import ZoneInfo
 import requests
 from PIL import Image
 from manga_score_publication import evaluer, SEUIL
+from calendrier_editorial import next_weekly, frozen_slot, assert_arbitrated
 
 # Réutilisation des fonctions GraphQL testées du projet BD, sans modifier leur code.
 from buffer_client import (_graphql, _mutation_result, _parse_due,
@@ -40,6 +41,7 @@ def mardi_suivant(now=None,*,weekday=1,hour=18,minute=0) -> str:
     Ne dépend pas du calendrier BD. La valeur peut être personnalisée dans
     les variables du workflow sans modifier la production BD.
     """
+    if (weekday,hour,minute)==(1,18,0):return next_weekly('MANGA',now)
     now=now or dt.datetime.now(dt.timezone.utc)
     if now.tzinfo is None:raise ValueError('Date courante sans timezone')
     paris=ZoneInfo('Europe/Paris')
@@ -100,7 +102,7 @@ def construire(folder,base_url,channel_id,*,now=None):
         raise ValueError('Classement trop ancien ou futur : aucun dépôt Buffer')
     if not channel_id:raise ValueError('Identifiant canal Buffer absent')
     return {'text':caption,'channelId':channel_id,'schedulingType':'automatic',
-            'mode':'customScheduled','dueAt':mardi_suivant(now=now),
+            'mode':'customScheduled','dueAt':frozen_slot('MANGA',mardi_suivant(now=now),now=now),
             'needsApproval':False, 'assets':media,
             'metadata':{'instagram':{'type':'post','shouldShareToFeed':True}}}
 
@@ -184,7 +186,11 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
             if attempt<5:time.sleep(8)
         if not confirmed:
             raise RuntimeError('Image non encore accessible publiquement : '+url)
-    posts=_list_manga_programmes(api_key,channel_id,payload['dueAt'],post=post)
+    from intentions_tops import enabled,lookup
+    intent=lookup(edition) if enabled() and not prior else None
+    if intent and _parse_due(intent['due_at'])<=now:
+        raise RuntimeError('Création Manga ancienne sans reçu : contrôle humain, aucun renvoi')
+    posts=_list_manga_programmes(api_key,channel_id,intent['due_at'] if intent else payload['dueAt'],post=post)
     current=date_periode_captation(payload['text'])
     same=[p for p in posts if date_periode_captation(p['text'])==current]
     if len(same)>1:raise RuntimeError('Plusieurs posts manga pour la même période existent dans Buffer')
@@ -195,6 +201,18 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
         raise RuntimeError('Post Buffer déjà identifié par reçu mais non retrouvé : création interdite')
     if same:
         old=same[0]
+        if not prior:
+            from intentions_tops import enabled,lookup,recoverable,confirm
+            if enabled() and (not lookup(edition) or not recoverable(edition,old,payload)):
+                raise RuntimeError('Post Manga sans intention correspondante : vérification nécessaire')
+            if (old.get('text') or '').strip()!=payload['text'].strip():
+                raise RuntimeError('Post manga sans reçu correspondant : modification interdite')
+            result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':'RECU_RECONSTRUIT',
+                    'id_buffer':old['id'],'status_buffer':old['status'],'edition':edition,
+                    'date_programmee_utc':old['dueAt'],'pages':8,'version_contenu':VERSION_PUBLIQUE}
+            receipt.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+            if enabled():confirm(edition,old['id'],old['dueAt'])
+            return result
         if prior and old['id']!=prior['id_buffer']:
             raise RuntimeError('ID Buffer différent du reçu : création et modification interdites')
         # Préserver le créneau du post déjà programmé, même si le prochain
@@ -205,6 +223,10 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
         edited={'id':old['id'],'text':payload['text'],'assets':payload['assets'],
                 'metadata':payload['metadata'],'schedulingType':'automatic',
                 'mode':'customScheduled','dueAt':effective_due}
+        if os.environ.get('ILLYADERA_SLOT_PLAN'):
+            from controle_file import final_guard
+            final_guard('MANGA',effective_due,api_key=api_key,channel_id=channel_id,post=post,expected_id=old['id'])
+            if _parse_due(effective_due)!=_parse_due(prior['date_programmee_utc']):raise RuntimeError('Créneau du reçu modifié')
         response=_graphql(post,api_key,EDIT_MUTATION,{'input':edited})
         ident,status=_mutation_result(api_key,response,'editPost',effective_due,expected_id=old['id'])
         action='CORRECTION_PROGRAMMEE'
@@ -212,22 +234,22 @@ def transmettre(folder,base_url,*,api_key,channel_id,send=False,post=requests.po
         same_slot=[p for p in posts if abs((_parse_due(p['dueAt'])-_parse_due(payload['dueAt'])).total_seconds())<90]
         if len(same_slot)>1:raise RuntimeError('Plusieurs posts manga sur le même créneau')
         if same_slot:
-            old=same_slot[0]
-            if date_periode_captation(old['text'])>current:
-                raise RuntimeError('Une édition manga plus récente est déjà planifiée')
-            edited={'id':old['id'],'text':payload['text'],'assets':payload['assets'],
-                    'metadata':payload['metadata'],'schedulingType':'automatic',
-                    'mode':'customScheduled','dueAt':payload['dueAt']}
-            response=_graphql(post,api_key,EDIT_MUTATION,{'input':edited})
-            ident,status=_mutation_result(api_key,response,'editPost',payload['dueAt'],expected_id=old['id'])
-            action='REMPLACEMENT'
+            raise RuntimeError('Créneau manga occupé par une autre édition sans reçu correspondant')
         else:
+            if os.environ.get('ILLYADERA_SLOT_PLAN'):
+                from controle_file import final_guard
+                assert_arbitrated('MANGA',payload['dueAt'])
+                final_guard('MANGA',payload['dueAt'],api_key=api_key,channel_id=channel_id,post=post)
+            from intentions_tops import enabled,reserve
+            if enabled():reserve(edition,payload,receipt_fields={'version_contenu':VERSION_PUBLIQUE})
             response=_graphql(post,api_key,MUTATION,{'input':payload})
             ident,status=_mutation_result(api_key,response,'createPost',payload['dueAt'])
     result={'statut':'POST_PROGRAMME','publication':'QUEUE_BUFFER','action':action,
             'id_buffer':ident,'status_buffer':status,'edition':edition,
             'date_programmee_utc':effective_due,'pages':8,'version_contenu':VERSION_PUBLIQUE}
     receipt.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+    from intentions_tops import enabled,confirm
+    if enabled() and action=='CREATION':confirm(edition,ident,effective_due)
     return result
 
 

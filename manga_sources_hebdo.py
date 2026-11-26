@@ -209,7 +209,16 @@ def match_titles(a,b):
     stop={'tome','vol','volume','edition','les','la','le','de','des','du','the','et','d','l','t'}
     aw={x for x in aw if x not in stop and len(x)>1 and not x.isdigit()}
     bw={x for x in bw if x not in stop and len(x)>1 and not x.isdigit()}
-    return bool(aw) and len(aw & bw)>=min(2,len(aw)) and len(aw & bw)/len(aw)>=0.65
+    # Un sous-titre complet isolé par les séparateurs de la fiche libraire
+    # est une correspondance plus forte qu'un simple mot commun.
+    if len(aw)>=2 and any(norm(part)==norm(a) for part in re.split(r'\s+[-–—|:]\s+',str(b))):
+        return True
+    if len(bw)>=2 and any(norm(part)==norm(b) for part in re.split(r'\s+[-–—|:]\s+',str(a))):
+        return True
+    shared=len(aw & bw)
+    # La comparaison doit rester symétrique : un seul mot commun ne suffit
+    # pas à confondre une série avec une autre dont le titre est plus long.
+    return bool(aw and bw) and shared>=min(2,len(aw),len(bw)) and shared/len(aw)>=0.65 and shared/len(bw)>=0.5
 
 def _load_known_editions(root):
     fn=root/'editions_manga_v5.json'
@@ -334,7 +343,9 @@ def collect(root, dest, *, article_url=None, actualitte_html=None,bede_html=None
     dest=Path(dest);dest.mkdir(parents=True,exist_ok=True)
     if actualitte_html is not None and not article_url:
         article_url='https://actualitte.com/article/000000/meilleures-ventes/test-local'
+    if bede_html is None:bede_html=get_html(BEDE)
     if article_url is None:
+        expected_date=parse_bede_current(bede_html)['date_palmares']
         urls=latest_article_urls(get_html(ACTUALITTE_INDEX))
         if not urls:raise EvidenceError('Aucun nouvel article de classement identifié')
         errors=[]
@@ -343,11 +354,12 @@ def collect(root, dest, *, article_url=None, actualitte_html=None,bede_html=None
                 html=get_html(url)
                 dates=pub_date(html);_period_for_article(html,dates)
                 parse_top200(html,min_required=min_books)
+                if dates.strftime('%d/%m/%Y')!=expected_date:
+                    raise EvidenceError('Date différente du palmarès Bédé.fr')
                 article_url=url;actualitte_html=html;break
             except Exception as exc:errors.append(f'{url}: {type(exc).__name__}')
         if article_url is None:raise EvidenceError('Aucun article avec Top 200 complet: '+' | '.join(errors))
     if actualitte_html is None:actualitte_html=get_html(article_url)
-    if bede_html is None:bede_html=get_html(BEDE)
     if annual_html is None:
         # Année de publication réelle, afin de ne pas réutiliser le catalogue 2026
         # pour classifier automatiquement les titres en 2027 et au-delà.

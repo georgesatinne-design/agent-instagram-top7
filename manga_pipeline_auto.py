@@ -105,14 +105,35 @@ def produire(*,root=ROOT, sortie=Path('sorties/manga_production'),
              precedent=Path('manga_history/dernier_classement.json'),
              cache=Path('manga_history/genres_ebooks.json'),
              article_url=None, html_actualitte=None, html_bede=None, html_annuel=None,
-             resolver=None, covers=None) -> Path:
+             resolver=None, covers=None, skip_finalized=False) -> Path:
     root=Path(root);sortie=Path(sortie)
     previous=None
     if Path(precedent).exists():
         previous=json.loads(Path(precedent).read_text(encoding='utf8'))
+    from cadence_collecte import finalized
+    from manga_buffer_auto import VERSION_PUBLIQUE
+    def skipped(data,reason):
+        edition='MANGA_'+data['fin_ventes']
+        dest=sortie/edition;dest.mkdir(parents=True,exist_ok=True)
+        write_json(dest/'ETAT.json',{'edition':edition,'categorie':'MANGA','pret_buffer':False,
+            'skip_history':True,'statut_ventes':data.get('certification','NON_RECALCULE'),
+            'couvertures':0,'action':reason})
+        return dest
+    # Le recoupement Bédé.fr a une date de palmarès : une seule lecture légère
+    # suffit si la même observation a déjà un reçu, sinon collecte complète.
+    if skip_finalized and previous and article_url is None and html_actualitte is None:
+        from manga_sources_hebdo import get_html,parse_bede_current,BEDE
+        if html_bede is None:html_bede=get_html(BEDE)
+        date=dt.datetime.strptime(parse_bede_current(html_bede)['date_palmares'],'%d/%m/%Y').date().isoformat()
+        if previous.get('date_publication')==date:
+            reason=finalized('MANGA_'+previous['fin_ventes'],root=root,version=VERSION_PUBLIQUE)
+            if reason:return skipped(previous,reason)
     dest=collect(root,sortie,article_url=article_url,actualitte_html=html_actualitte,
                  bede_html=html_bede,annual_html=html_annuel,previous_file=None)
     data=json.loads((dest/'classement_manga.json').read_text(encoding='utf8'))
+    if skip_finalized:
+        reason=finalized('MANGA_'+data['fin_ventes'],root=root,version=VERSION_PUBLIQUE)
+        if reason:return skipped(data,reason)
     proofs=json.loads((dest/'preuves_manga.json').read_text(encoding='utf8'))
     kwargs={'cache':read_cache(cache)}
     if resolver is not None:kwargs['resolver']=resolver
@@ -193,9 +214,10 @@ def main():
     p.add_argument('--precedent',default='manga_history/dernier_classement.json')
     p.add_argument('--cache',default='manga_history/genres_ebooks.json')
     p.add_argument('--article-url')
+    p.add_argument('--skip-finalized',action='store_true')
     args=p.parse_args()
     dest=produire(root=ROOT,sortie=Path(args.sortie),precedent=Path(args.precedent),
-                 cache=Path(args.cache),article_url=args.article_url)
+                 cache=Path(args.cache),article_url=args.article_url,skip_finalized=args.skip_finalized)
     print((dest/'ETAT.json').read_text(encoding='utf8'))
 
 if __name__=='__main__':main()

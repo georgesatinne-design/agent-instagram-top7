@@ -39,11 +39,11 @@ class TestsAncd(unittest.TestCase):
         self.assertIsNone(reserved_kind(dt.date(2026,12,14)))
     def test_top_future_protected(self):
         now=dt.datetime(2026,11,24,8,tzinfo=PARIS)
-        self.assertEqual(eligible(dt.date(2026,11,24),now,[])[1],'RESERVE_AU_TOP')
+        self.assertEqual(eligible(dt.date(2026,11,24),now,[]),(True,'PROVISOIRE_TOP'))
         self.assertTrue(eligible(dt.date(2026,11,25),now,[])[0])
     def test_fallback_late(self):
         now=dt.datetime(2026,11,24,16,47,tzinfo=PARIS)
-        self.assertEqual(eligible(dt.date(2026,11,24),now,[]),(True,'REPLI_TOP'))
+        self.assertEqual(eligible(dt.date(2026,11,24),now,[]),(True,'PROVISOIRE_TOP'))
         now=dt.datetime(2026,11,27,15,47,tzinfo=PARIS)
         self.assertTrue(eligible(dt.date(2026,11,27),now,[])[0])
     def test_existing_post_protected(self):
@@ -138,12 +138,12 @@ class TestsAncd(unittest.TestCase):
                 patch.object(run,'resolve',return_value=([original,original],[{'licence':'CC0 1.0','titre_commons':'test'}, {'licence':'CC0 1.0','titre_commons':'test2'}])),\
                 patch.dict(run.CONFIG,{'horizon_jours':2,'max_posts_par_execution':1}):
                 result=run.prepare('owner/depot-public',now=when,buffer=fake,collect=False)
-                self.assertEqual(result['plans'],['2026-11-25'])
+                self.assertEqual(result['plans'],['2026-11-24'])
                 done=run.send(now=when,buffer=fake)
                 self.assertEqual(len(done['programmes']),1)
                 self.assertEqual(len(fake.created),1)
                 receipt=json.loads((root/'anecdotes_state'/'programmes.json').read_text())
-                self.assertEqual(receipt['2026-11-25']['etat'],'PROGRAMME')
+                self.assertEqual(receipt['2026-11-24']['etat'],'PROGRAMME')
                 # A second run must not create a second Buffer publication.
                 done2=run.send(now=when,buffer=fake)
                 self.assertFalse(done2['programmes'])
@@ -153,7 +153,7 @@ class TestsAncd(unittest.TestCase):
         from anecdotes_auto import catalogue
         class Occupied:
             def day(self,day):
-                if day==dt.date(2026,11,25):return [{'text':'Autre publication','id':'o1'}]
+                if day in (dt.date(2026,11,24),dt.date(2026,11,25)):return [{'text':'Autre publication','id':'o1'}]
                 return []
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)

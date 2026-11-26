@@ -106,7 +106,7 @@ def _enrich_monthly(data,fetcher=fetch):
         except (requests.RequestException,SourceError):pass
 
 def run_one(cadence,*,output=Path('sorties/comics_periodique'),history=Path('comics_history'),
-            now=None,prebuilt=None,fetcher=fetch,covers_fn=None):
+            now=None,prebuilt=None,fetcher=fetch,covers_fn=None,skip_finalized=False,root=Path('.')):
     now=now or dt.datetime.now(ZoneInfo('Europe/Paris'));today=now.astimezone(ZoneInfo('Europe/Paris')).date()
     n=5 if cadence=='HEBDO' else 7
     try:
@@ -119,6 +119,14 @@ def run_one(cadence,*,output=Path('sorties/comics_periodique'),history=Path('com
         save(target/'ETAT.json',state)
         (target/'RAPPORT.md').write_text('# Comics: aucune publication\n\n'+str(exc)+'\n',encoding='utf8')
         return target
+    if skip_finalized:
+        from cadence_collecte import finalized
+        reason=finalized(data['edition'],root=root,version=VERSION,now=now)
+        if reason:
+            out=Path(output)/data['edition']
+            save(out/'ETAT.json',{'categorie':'COMICS','cadence':cadence,'edition':data['edition'],
+                'pret_buffer':False,'action':reason})
+            return out
     _enrich_monthly(data,fetcher=fetcher)
     previous=load(Path(history)/cadence.lower()/'dernier_classement.json')
     update_evolution(data,previous)
@@ -152,9 +160,14 @@ def main():
     p.add_argument('--cadence',choices=('HEBDO','MENSUEL','TOUS'),default='TOUS')
     p.add_argument('--sortie',type=Path,default=Path('sorties/comics_periodique'))
     p.add_argument('--historique',type=Path,default=Path('comics_history'))
+    p.add_argument('--skip-finalized',action='store_true')
     a=p.parse_args()
     for cad in (('HEBDO','MENSUEL') if a.cadence=='TOUS' else (a.cadence,)):
-        out=run_one(cad,output=a.sortie,history=a.historique)
+        if a.skip_finalized and cad=='MENSUEL':
+            from cadence_collecte import monthly_open
+            if not monthly_open():
+                print('Mensuel hors fenêtre : aucun appel source');continue
+        out=run_one(cad,output=a.sortie,history=a.historique,skip_finalized=a.skip_finalized)
         print((out/'ETAT.json').read_text(encoding='utf8'))
 
 if __name__=='__main__':main()

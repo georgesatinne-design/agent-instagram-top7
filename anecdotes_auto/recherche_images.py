@@ -44,6 +44,81 @@ MIN_DISTINCTES = 3
 # Catégories très ciblées. Les images de contexte contemporain sont présentées comme
 # telles; elles ne sont jamais légendées comme témoignages photographiques d'époque.
 SCENES = {
+ 'peanuts-nom-refuse': [
+  (1,'LE CRÉATEUR','Charles Schulz portrait',('charles schulz','charles m schulz'),('schulz',)),
+  (3,'LA PRESSE - CONTEXTE','Peanuts Charles Schulz newspaper strip',('peanuts',),('schulz','newspaper')),
+  (4,'LE PERSONNAGE','Charlie Brown Peanuts statue',('charlie brown',),('peanuts','statue','sculpture')),
+ ],
+ 'mccay-pseudonyme-silas': [
+  (1,'LE CRÉATEUR','Winsor McCay portrait',('winsor mccay',),('mccay',)),
+  (3,'L’ŒUVRE','Dream of the Rarebit Fiend Winsor McCay',('rarebit fiend',),('mccay','silas')),
+  (4,'UN AUTRE RÊVE DESSINÉ','Little Nemo Winsor McCay comic',('little nemo',),('mccay',)),
+ ],
+ 'zigpuce-reprise-greg': [
+  (1,'LES PERSONNAGES','Zig et Puce bande dessinée',('zig et puce','zig and puce'),('saint-ogan','greg')),
+  (3,'LE CRÉATEUR ORIGINAL','Alain Saint Ogan portrait',('saint-ogan','saint ogan'),('alain',)),
+  (4,'LE REPRENEUR','Michel Greg dessinateur portrait',('michel greg','michel regnier'),('greg','regnier')),
+ ],
+ 'tezuka-premier-livre': [
+  (1,'LE CRÉATEUR','Osamu Tezuka portrait',('osamu tezuka','tezuka osamu'),('tezuka',)),
+  (3,'LE LIVRE','New Treasure Island Osamu Tezuka manga',('new treasure island','shin takarajima'),('tezuka','sakai')),
+  (4,'LE CONTEXTE','Osamu Tezuka manga museum exhibition',('osamu tezuka','tezuka osamu'),('museum','exhibition')),
+ ],
+ 'peanuts-woodstock-festival': [
+  (1,'LE PERSONNAGE','Woodstock Peanuts bird sculpture',('woodstock',),('peanuts','snoopy')),
+  (3,'LE FESTIVAL','Woodstock music festival 1969 photograph',('woodstock',),('1969','festival')),
+  (4,'LE CRÉATEUR','Charles Schulz portrait',('charles schulz','charles m schulz'),('schulz',)),
+ ],
+ 'franklin-lettres-glickman': [
+  (1,'LE PERSONNAGE','Franklin Peanuts Charles Schulz',('franklin',),('peanuts','schulz')),
+  (3,'LE CRÉATEUR','Charles Schulz portrait',('charles schulz','charles m schulz'),('schulz',)),
+  (4,'LE PERSONNAGE CHARLIE BROWN','Charlie Brown Peanuts sculpture',('charlie brown',),('peanuts','sculpture')),
+ ],
+ 'verbeek-bd-a-retourner': [
+  (1,'LA PLANCHE RÉVERSIBLE','Gustave Verbeek Upside Downs comic',('verbeek','verbeck'),('upside','lovekins','muffaroo')),
+  (3,'UN AUTRE EXEMPLE','The Upside Downs Gustave Verbeek newspaper 1904',('verbeek','verbeck'),('upside','lovekins','muffaroo')),
+  (4,'UN DOCUMENT D ÉPOQUE','Gustave Verbeek upside downs 1903 1905',('verbeek','verbeck'),('upside','lovekins','muffaroo')),
+ ],
+ 'saphir-theatre-takarazuka': [
+  (1,'LE THÉÂTRE','Takarazuka Revue theatre Japan',('takarazuka',),('theatre','theater','revue')),
+  (3,'LE CRÉATEUR','Osamu Tezuka portrait',('osamu tezuka','tezuka osamu'),('tezuka',)),
+  (4,'LE CONTEXTE THÉÂTRAL','Takarazuka Revue historical performers',('takarazuka',),('revue','theatre','theater')),
+ ],
+ 'krazykat-brique-amour': [
+  (1,'LE PERSONNAGE - ARCHIVE','Krazy Kat George Herriman comic strip',('krazy kat',),('herriman','ignatz')),
+  (3,'LE DUO - ARCHIVE','Krazy Kat Ignatz comic strip brick',('krazy kat',),('ignatz','brick')),
+  (4,'LE POLICIER - ARCHIVE','Krazy Kat Officer Pupp George Herriman',('krazy kat',),('pupp','herriman')),
+ ],
+ 'asterix-idefix-lecteurs': [
+  (1, 'LE CREATEUR', 'René Goscinny portrait', ('rene goscinny',), ('goscinny',)),
+  (3, 'LE JOURNAL', 'Pilote magazine bande dessinée', ('pilote',), ('goscinny','magazine','journal')),
+  (4, 'LE DESSINATEUR', 'Albert Uderzo portrait', ('albert uderzo',), ('uderzo',)),
+ ],
+ 'peanuts-spike-snoopy': [
+  (1, 'LE CREATEUR', 'Charles Schulz portrait', ('charles schulz','charles m schulz'), ('schulz',)),
+  (3, 'LE CHIEN SPIKE - ARCHIVE', 'Charles Schulz dog Spike', ('spike',), ('schulz',)),
+  (4, 'LE PERSONNAGE', 'Snoopy Peanuts sculpture', ('snoopy',), ('peanuts',)),
+ ],
+ 'peanuts-niche-incendie': [
+  (1, 'LE CREATEUR', 'Charles Schulz portrait', ('charles schulz','charles m schulz'), ('schulz',)),
+  (3, 'LE STUDIO - ARCHIVE', 'Charles Schulz studio 1966 fire', ('schulz',), ('fire','1966')),
+  (4, 'LE PERSONNAGE', 'Snoopy doghouse Peanuts', ('snoopy',), ('doghouse','peanuts')),
+ ],
+ 'astro-figurant-vedette': [
+  (1, 'LE CREATEUR', 'Osamu Tezuka portrait', ('osamu tezuka','tezuka osamu'), ('tezuka',)),
+  (3, 'LE PERSONNAGE', 'Astro Boy statue', ('astro boy','mighty atom','tetsuwan atom'), ('statue','sculpture')),
+  (4, 'LE CONTEXTE ANIMATION', 'Mushi Production studio Astro Boy', ('mushi production',), ('astro boy','tezuka')),
+ ],
+ 'tintin-chromos-savoirs': [
+  (1, 'LE CREATEUR', 'Hergé Georges Remi portrait', ('herge','georges remi'), ('herge','remi')),
+  (3, 'LES CHROMOS - DOCUMENT', 'Tintin chromos collection', ('tintin',), ('chromo','chromos')),
+  (4, 'LE PERSONNAGE', 'Tintin monument statue', ('tintin',), ('statue','sculpture')),
+ ],
+ 'yellowkid-guerre-journaux': [
+  (1, 'LE PERSONNAGE - ARCHIVE', 'Yellow Kid Richard Outcault', ('yellow kid',), ('outcault','1896','1895')),
+  (3, 'LA PRESSE - ARCHIVE', 'New York World Yellow Kid 1895', ('yellow kid',), ('world','1895')),
+  (4, 'UN AUTRE DOCUMENT D EPOQUE', 'Yellow Kid New York Journal 1896', ('yellow kid',), ('journal','1896')),
+ ],
  'bruxelles': [
   (1, 'LE LIEU', 'Magasins Waucquez', ('waucquez','comic strip center','comics art museum'), ('waucquez','bruxelles','brussels')),
   (3, 'LE CONTEXTE', 'Belgian Comic Strip Center', ('comic strip center','waucquez','centre belge'), ('bruxelles','brussels','waucquez')),
@@ -289,7 +364,7 @@ def _cached_search(provider,query,session,cache):
     if saved.get('when'):
         try:
             age=dt.datetime.now(dt.timezone.utc)-dt.datetime.fromisoformat(saved['when'])
-            if age.total_seconds()<24*3600:return saved.get('results',[])
+            if age.total_seconds()<(7 if saved.get('results') else 1)*24*3600:return saved.get('results',[])
         except ValueError:pass
     global _requetes_faites
     if _requetes_faites>=REQUETES_MAX_PAR_EXECUTION:
@@ -312,6 +387,9 @@ def discover(fact,*,session=None,cache=None,existing_proofs=(),min_required=3,bu
     cache.mkdir(parents=True,exist_ok=True)
     prefix=fact['id'].split('-')[0]
     scenes=SCENES.get(fact['id']) or SCENES.get(prefix)
+    if not scenes:
+        from .decouverte_structuree import scenes_for
+        scenes=scenes_for(fact)
     if not scenes:raise PhotosIndisponibles('Sujet sans plan de recherche photographique précis: '+prefix)
     selected=[];proofs=[];hashes=[];origins=set();logs=[]
     for page,role,query,must,secondary in scenes:

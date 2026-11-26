@@ -3,13 +3,10 @@ name: Anecdotes BD - remplissage automatique Buffer
 on:
   workflow_dispatch:
   schedule:
-    # Tous les jours : anticiper les jours libres. Vérifications tardives pour
-    # remplacer les TOP absents au dernier moment, sans préempter leur créneau.
+    # Un remplissage quotidien, puis une relance de secours les jours de Top.
     - cron: '37 8 * * *'
       timezone: 'Europe/Paris'
-    - cron: '47 15,16 * * *'
-    # Rechargement rapide apres la publication habituelle des tops (17h/18h)
-    - cron: '17 17,18 * * *'
+    - cron: '47 15 * * 0,2,4,5'
       timezone: 'Europe/Paris'
 
 permissions:
@@ -21,6 +18,7 @@ concurrency:
 
 jobs:
   anecdotes:
+    if: github.ref == 'refs/heads/main' && vars.ILLYADERA_PAUSE_PUBLICATION != '1'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -41,7 +39,7 @@ jobs:
           python-version: '3.12'
 
       - name: Installer les dépendances de ce module sans modifier les TOP
-        run: python -m pip install -r anecdotes_auto/requirements_anecdotes.txt
+        run: python -m pip install -r requirements.txt
 
       - name: Tester le moteur anecdotes sans aucune publication
         run: |
@@ -69,6 +67,7 @@ jobs:
 
       - name: Remplir Buffer et retirer nos anecdotes si un TOP a pris la place
         env:
+          ILLYADERA_DURABLE_JOURNAL: '1'
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
@@ -93,7 +92,7 @@ jobs:
         with:
           name: rapport-anecdotes-bd
           path: sorties/anecdotes_bd/
-          retention-days: 30
+          retention-days: 1
           if-no-files-found: warn
 
       - name: Contrôler les reprises et afficher les vrais incidents
