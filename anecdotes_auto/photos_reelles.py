@@ -43,6 +43,13 @@ def _license(meta,titre,option):
     if option.get('domaine_public_ancien') and option.get('artiste_mort_avant_1900'):
         if 'public domain' in short or 'domaine public' in short or 'pd-old' in short:
             return 'Domaine public historique : artiste décédé avant 1900'
+    # Archives Outcault vérifiées : publication 1896, décès 1928 (LOC).
+    # Liste fermée : ne généralise pas le statut des autres images Commons.
+    archives_outcault={'1896-11-08 Yellow Kid.jpg','Yellow Kid 1896-3-15.jpg','Yellowkid phonograph.jpg'}
+    if (titre in archives_outcault and option.get('archive_outcault_1896')
+            and 'outcault' in (_meta_value(meta,'Artist')+' '+_meta_value(meta,'ImageDescription')).lower()
+            and ('public domain' in short or 'domaine public' in short or 'pd-old' in short)):
+        return 'Domaine public : Richard F. Outcault (1863–1928), publication 1896'
     raise PhotosIndisponibles('Licence sans attribution publique non prouvée : '+short[:65])
 
 
