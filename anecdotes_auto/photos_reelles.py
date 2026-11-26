@@ -45,11 +45,11 @@ def _license(meta,titre,option):
             return 'Domaine public historique : artiste décédé avant 1900'
     # Archives Outcault vérifiées : publication 1896, décès 1928 (LOC).
     # Liste fermée : ne généralise pas le statut des autres images Commons.
-    archives_outcault={'1896-11-08 Yellow Kid.jpg','Yellow Kid 1896-3-15.jpg','Yellowkid phonograph.jpg','1896-11-15 Yellow Kid.jpg'}
+    archives_outcault={'1896-11-08 Yellow Kid.jpg','Yellow Kid 1896-3-15.jpg','Yellowkid phonograph.jpg','1896-11-15 Yellow Kid.jpg','Yellow Kid 1898-01-09.jpg','Yellow Kid November 1 1896 Bryan McKinley election.jpg','YellowKid.jpeg'}
     if (titre in archives_outcault and option.get('archive_outcault_1896')
             and 'outcault' in (_meta_value(meta,'Artist')+' '+_meta_value(meta,'ImageDescription')).lower()
             and ('public domain' in short or 'domaine public' in short or 'pd-old' in short)):
-        return 'Domaine public : Richard F. Outcault (1863–1928), publication 1896'
+        return 'Domaine public : Richard F. Outcault (1863–1928), publication 1896–1898'
     raise PhotosIndisponibles('Licence sans attribution publique non prouvée : '+short[:65])
 
 
@@ -78,8 +78,16 @@ def _fetch_file(session,titre,option):
     inf=pages[0]['imageinfo'][0]
     if inf.get('mime') not in ('image/jpeg','image/png','image/webp'):
         raise PhotosIndisponibles('Type de média non pris en charge')
-    licence=_license(inf.get('extmetadata') or {},titre,option)
-    urls=[inf.get('thumburl',''),inf.get('url','')]
+    # La notice Commons du phonographe n'a pas de champ auteur lisible
+    # par machine. L'original vérifié est identifié par son SHA-1 publié.
+    # Aucun autre fichier ne bénéficie de cette voie.
+    pinned=(titre=='Yellowkid phonograph.jpg' and option.get('archive_outcault_1896'))
+    if pinned:
+        licence='Domaine public : Richard Outcault (1863–1928), 25 octobre 1896'
+        urls=['https://upload.wikimedia.org/wikipedia/commons/9/9b/Yellowkid_phonograph.jpg']
+    else:
+        licence=_license(inf.get('extmetadata') or {},titre,option)
+        urls=[inf.get('thumburl',''),inf.get('url','')]
     url=next((u for u in urls if _valid_image_url(u)),None)
     if not url:
         raise PhotosIndisponibles('URL Commons non reconnue : '+', '.join(str(urlparse(u).hostname) for u in urls)[:80])
@@ -96,6 +104,8 @@ def _fetch_file(session,titre,option):
             buffers.append(b)
         data=b''.join(buffers)
     finally:response.close()
+    if pinned and hashlib.sha1(data).hexdigest()!='50fd735bca545fe0db6416d3139b10e1f066b854':
+        raise PhotosIndisponibles('Empreinte de l’archive Outcault différente de la notice')
     if len(data)<8500:raise PhotosIndisponibles('Média trop petit ou non téléchargé')
     with Image.open(io.BytesIO(data)) as src:
         if (src.width<MIN_PIXELS or src.height<MIN_PIXELS or
@@ -107,8 +117,8 @@ def _fetch_file(session,titre,option):
     blob=out.getvalue();metadata=inf.get('extmetadata') or {}
     return blob,{'titre_commons':titre,
       'url_commons':'https://commons.wikimedia.org/wiki/File:'+titre.replace(' ','_'),
-      'image_url':url,'licence':licence,'auteur':_meta_value(metadata,'Artist')[:300],
-      'description':_meta_value(metadata,'ImageDescription')[:400],
+      'image_url':url,'licence':licence,'auteur':('Richard F. Outcault (1863–1928)' if pinned else _meta_value(metadata,'Artist')[:300]),
+      'description':('Yellow Kid, 25 octobre 1896, notice Commons et SHA-1 vérifiés' if pinned else _meta_value(metadata,'ImageDescription')[:400]),
       'sha256':hashlib.sha256(blob).hexdigest(),
       'date_collecte':dt.datetime.now(dt.timezone.utc).isoformat(),
       'illustration_IA':False}

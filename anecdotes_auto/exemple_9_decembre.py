@@ -44,7 +44,7 @@ def prepare(repo,*,buffer=None,now=None):
     fact=facts[TARGET]
     if not editorial_eligible(fact) or any(r.get('fact_id')==TARGET for d,r in registry.items() if d!=DATE and isinstance(r,dict)):
         raise RuntimeError('Sujet déjà utilisé ou non admissible')
-    # Le scénario comporte maintenant une planche alternative vérifiée.
+    # Archive originale authentifiée par empreinte, alternatives documentées.
     new=run.stage_fact(fact,dt.date.fromisoformat(DATE),repo,now)
     new.update(etat='EN_ATTENTE_MAJ',id_buffer=POST_ID,due_at=DUE,ancien_texte_public=old['texte_public'],
                ancien_fact_id=ORIGINAL,version_visuelle=run.VERSION_VISUELLE)

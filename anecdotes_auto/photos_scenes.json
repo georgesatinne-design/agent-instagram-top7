@@ -578,27 +578,39 @@
           "archive_outcault_1896": true
         },
         {
-          "titre": "1896-11-15 Yellow Kid.jpg",
+          "titre": "Yellowkid phonograph.jpg",
           "page": 4,
-          "role": "LA PLANCHE — 1896",
-          "pertinence": "Planche du New York Journal du 15 novembre 1896, par Outcault, montrant les procédés narratifs et le lettrage de la série.",
+          "role": "LES BULLES — 1896",
+          "pertinence": "Planche du 25 octobre 1896, originale authentifiée par SHA-1, illustrant les bulles et la succession des scènes.",
           "epoque": "historique",
-          "famille_source": "1896-11-15 Yellow Kid.jpg",
+          "famille_source": "Yellowkid phonograph.jpg",
           "archive_outcault_1896": true,
           "alternatives": [
             {
-              "titre": "Yellowkid phonograph.jpg",
-              "page": 4,
-              "role": "LES BULLES — 1896",
-              "pertinence": "Planche du 25 octobre 1896 : succession de cases et bulles du Yellow Kid.",
-              "epoque": "historique",
-              "famille_source": "Yellowkid phonograph.jpg",
+              "titre": "Yellow Kid 1898-01-09.jpg",
+              "famille_source": "Yellow Kid 1898-01-09.jpg",
+              "role": "LES BULLES — 1898",
+              "pertinence": "Planche d'Outcault du 9 janvier 1898, avec bulles de dialogue, conservée par Ohio State University.",
+              "archive_outcault_1896": true
+            },
+            {
+              "titre": "Yellow Kid November 1 1896 Bryan McKinley election.jpg",
+              "famille_source": "Yellow Kid November 1 1896 Bryan McKinley election.jpg",
+              "role": "LE JOURNAL — 1896",
+              "pertinence": "Planche du New York Journal du 1er novembre 1896, exemple de l'actualité traitée par la bande dessinée.",
+              "archive_outcault_1896": true
+            },
+            {
+              "titre": "YellowKid.jpeg",
+              "famille_source": "YellowKid.jpeg",
+              "role": "LE PERSONNAGE — 1897",
+              "pertinence": "Planche d'Outcault de 1897, illustration historique de la série.",
               "archive_outcault_1896": true
             }
           ]
         }
       ],
-      "validation": "Notices Commons et Library of Congress vérifiées : Outcault (1863-1928), œuvres publiées en 1896. Vérification API et téléchargement au rendu. Repli vérifié : https://commons.wikimedia.org/wiki/File:1896-11-15_Yellow_Kid.jpg (PDM, auteur et date attestés)."
+      "validation": "Archives Outcault : https://commons.wikimedia.org/wiki/File:Yellowkid_phonograph.jpg (notice sans auteur lisible par machine, original SHA-1 50fd735bca545fe0db6416d3139b10e1f066b854), https://commons.wikimedia.org/wiki/File:Yellow_Kid_1898-01-09.jpg, https://commons.wikimedia.org/wiki/File:Yellow_Kid_November_1_1896_Bryan_McKinley_election.jpg, https://commons.wikimedia.org/wiki/File:YellowKid.jpeg. Toutes soumises aux contrôles de fichier et de non-duplication."
     }
   }
 }
