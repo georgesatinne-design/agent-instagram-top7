@@ -117,7 +117,7 @@
   "2026-12-05": {
     "fact_id": "bruxelles-horta",
     "sujet": "bruxelles",
-    "etat": "EN_ATTENTE",
+    "etat": "PROGRAMME",
     "date": "2026-12-05",
     "due_at": "2026-12-05T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-12-05/bruxelles-horta_b7d548305da1aba851",
@@ -131,12 +131,15 @@
     ],
     "revision": "b7d548305da1aba851",
     "date_preparation": "2026-11-26T10:44:17.283453+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nCe musée cache une surprise\n\nLe bâtiment du Musée de la BD de Bruxelles a été conçu par Victor Horta.\n\nTu aurais deviné qui a dessiné ce bâtiment ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD"
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nCe musée cache une surprise\n\nLe bâtiment du Musée de la BD de Bruxelles a été conçu par Victor Horta.\n\nTu aurais deviné qui a dessiné ce bâtiment ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "id_buffer": "6b080d97d91bf307683682cc",
+    "date_confirmation": "2026-11-26T10:44:38.366734+00:00",
+    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11"
   },
   "2026-12-06": {
     "fact_id": "topffer-professeur",
     "sujet": "topffer",
-    "etat": "EN_ATTENTE",
+    "etat": "PROGRAMME",
     "date": "2026-12-06",
     "due_at": "2026-12-06T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-12-06/topffer-professeur_ff8f653aeb838af23e",
@@ -150,12 +153,15 @@
     ],
     "revision": "ff8f653aeb838af23e",
     "date_preparation": "2026-11-26T10:44:17.283453+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nAvant les bd, töpffer enseignait\n\nRodolphe Töpffer enseignait aussi la rhétorique et les belles-lettres.\n\nTu imaginais un professeur parmi les pionniers de la BD ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD"
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nAvant les bd, töpffer enseignait\n\nRodolphe Töpffer enseignait aussi la rhétorique et les belles-lettres.\n\nTu imaginais un professeur parmi les pionniers de la BD ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "id_buffer": "6b080d98ed9dce3bdaff58a3",
+    "date_confirmation": "2026-11-26T10:44:38.366734+00:00",
+    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11"
   },
   "2026-12-07": {
     "fact_id": "lucky-luke-morris",
     "sujet": "lucky",
-    "etat": "EN_ATTENTE",
+    "etat": "PROGRAMME",
     "date": "2026-12-07",
     "due_at": "2026-12-07T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-12-07/lucky-luke-morris_b2d46bb42205e52063",
@@ -169,12 +175,15 @@
     ],
     "revision": "b2d46bb42205e52063",
     "date_preparation": "2026-11-26T10:44:17.283453+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nMorris… ce n’était pas son vrai nom\n\nLe dessinateur de Lucky Luke s’appelait Maurice de Bevere.\n\nTu le savais, toi ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD"
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nMorris… ce n’était pas son vrai nom\n\nLe dessinateur de Lucky Luke s’appelait Maurice de Bevere.\n\nTu le savais, toi ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "id_buffer": "6b080d99d91bf30768368336",
+    "date_confirmation": "2026-11-26T10:44:38.366734+00:00",
+    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11"
   },
   "2026-12-09": {
     "fact_id": "bruxelles-textile",
     "sujet": "bruxelles",
-    "etat": "EN_ATTENTE",
+    "etat": "PROGRAMME",
     "date": "2026-12-09",
     "due_at": "2026-12-09T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-12-09/bruxelles-textile_8ccbc1b1880cdcb7e5",
@@ -188,12 +197,15 @@
     ],
     "revision": "8ccbc1b1880cdcb7e5",
     "date_preparation": "2026-11-26T10:44:17.283453+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nAvant la bd, il y avait… du tissu !\n\nLe bâtiment du Musée de la BD de Bruxelles abritait un grossiste en textile.\n\nTu connaissais l’ancienne vie de ce musée ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD"
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nAvant la bd, il y avait… du tissu !\n\nLe bâtiment du Musée de la BD de Bruxelles abritait un grossiste en textile.\n\nTu connaissais l’ancienne vie de ce musée ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "id_buffer": "6b080d9ab56cc066e5bdbba3",
+    "date_confirmation": "2026-11-26T10:44:38.366734+00:00",
+    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11"
   },
   "2026-12-12": {
     "fact_id": "lucky-luke-goscinny",
     "sujet": "lucky",
-    "etat": "EN_ATTENTE",
+    "etat": "PROGRAMME",
     "date": "2026-12-12",
     "due_at": "2026-12-12T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-12-12/lucky-luke-goscinny_5b592a72f0b285286e",
@@ -207,6 +219,9 @@
     ],
     "revision": "5b592a72f0b285286e",
     "date_preparation": "2026-11-26T10:44:17.283453+00:00",
-    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nDeux géants sur un même cow-boy\n\nRené Goscinny a scénarisé des aventures de Lucky Luke entre 1955 et 1977.\n\nQuel est ton Lucky Luke préféré ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD"
+    "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nDeux géants sur un même cow-boy\n\nRené Goscinny a scénarisé des aventures de Lucky Luke entre 1955 et 1977.\n\nQuel est ton Lucky Luke préféré ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "id_buffer": "6b080d9bd91bf307683683a1",
+    "date_confirmation": "2026-11-26T10:44:38.366734+00:00",
+    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11"
   }
 }
