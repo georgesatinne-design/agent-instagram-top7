@@ -52,7 +52,7 @@ def validate_slot(kind,value,*,now=None,check_margin=True):
 
 def next_weekly(kind,now=None):
     local=aware(now)
-    if kind not in ('BD','MANGA','COMICS_HEBDO'):raise ValueError('Catégorie hebdomadaire inconnue')
+    if kind not in ('BD','MANGA','COMICS_HEBDO','ACTUS'):raise ValueError('Catégorie hebdomadaire inconnue')
     for i in range(15):
         day=local.date()+dt.timedelta(days=i)
         if reserved_kind(day)==kind and slot_on(day)>local+dt.timedelta(minutes=TOP_MARGIN):

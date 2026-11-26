@@ -1,0 +1,76 @@
+name: Les 5 actus du 9e art - lundi
+on:
+  push:
+    branches: [main]
+    paths: ['actus_9e_art/**', 'anecdotes_auto/migration_9e_art.py', '.github/workflows/actus_9e_art.yml']
+  workflow_dispatch:
+  schedule:
+    - cron: '23 9 * * 1'
+      timezone: 'Europe/Paris'
+    - cron: '23 14 * * 1'
+      timezone: 'Europe/Paris'
+permissions:
+  contents: write
+concurrency:
+  group: illyadera-buffer-operations
+  cancel-in-progress: false
+jobs:
+  actus:
+    if: github.ref == 'refs/heads/main' && vars.ILLYADERA_PAUSE_PUBLICATION != '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python -m actus_9e_art.run prepare
+          if [ -d public_media/actus_9e_art ]; then git add public_media/actus_9e_art; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'Actus du 9e art - médias vérifiés'
+            git push origin HEAD:main
+          fi
+      - name: Programmer le lundi et confirmer dans Buffer
+        env:
+          ILLYADERA_DURABLE_JOURNAL: '1'
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
+        run: python -m actus_9e_art.run send
+      - name: Enregistrer les reçus
+        if: always()
+        run: |
+          if [ -d actus_state ]; then git add actus_state; fi
+          git add anecdotes_state/programmes.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Actus - confirmation et registre'
+            git push origin HEAD:main
+          fi
+      - name: Mettre à jour toutes les anecdotes déjà programmées
+        if: always()
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
+        run: |
+          python -m anecdotes_auto.migration_9e_art prepare
+          if [ -d public_media/anecdotes_bd ]; then git add public_media/anecdotes_bd; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'Nouveau bandeau Anecdote du 9e art'
+            git push origin HEAD:main
+          fi
+      - name: Confirmer chaque nouvelle version des anecdotes dans Buffer
+        if: always()
+        env:
+          ILLYADERA_DURABLE_JOURNAL: '1'
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
+        run: python -m anecdotes_auto.migration_9e_art send

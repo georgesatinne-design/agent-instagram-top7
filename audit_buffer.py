@@ -11,7 +11,8 @@ def category(text):
         n,k=m.groups();k=k.upper()
         if k=='COMICS':return 'COMICS_HEBDO' if n=='5' else 'COMICS_MENSUEL'
         return k if n=='7' else 'AUTRE'
-    if text.startswith('📚 ANECDOTE BD'):return 'ANECDOTE'
+    if text.startswith(('📚 ANECDOTE BD','📚 ANECDOTE DU 9e ART')):return 'ANECDOTE'
+    if text.startswith('📰 LES 5 ACTUS DU 9e ART'):return 'ACTUS'
     return 'AUTRE'
 
 def report(posts):

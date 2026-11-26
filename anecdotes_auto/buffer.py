@@ -134,7 +134,7 @@ class Buffer:
             assets.append({'image':{'url':url}})
         return assets
     def create(self,caption,due_at,assets):
-        if not caption.startswith('📚 ANECDOTE BD') or len(caption)>2200:raise BufferError('Légende illisible')
+        if not is_anecdote({'text':caption}) or len(caption)>2200:raise BufferError('Légende illisible')
         inp={'text':caption,'channelId':self.channel_id,'schedulingType':'automatic',
              'mode':'customScheduled','needsApproval':False,'dueAt':due_at,
              'assets':assets,'metadata':{'instagram':{'type':'post','shouldShareToFeed':True}}}
@@ -146,7 +146,7 @@ class Buffer:
         return post
     def edit_own(self,post_id,caption,due_at,assets):
         """Corrige exactement notre post programmé, sans toucher au créneau ni en créer un autre."""
-        if not post_id or not caption.startswith('📚 ANECDOTE BD') or len(assets)!=5:
+        if not post_id or not is_anecdote({'text':caption}) or len(assets)!=5:
             raise BufferError('Modification d’anecdote non autorisée')
         payload={'id':post_id,'text':caption,'assets':assets,
                  'metadata':{'instagram':{'type':'post','shouldShareToFeed':True}},
@@ -169,4 +169,4 @@ def is_top(post):
     t=post.get('text','').strip()
     return bool(re.match(r'^(?:📚\s*)?TOP\s*(?:5|7)\s*(?:BD|MANGA|COMICS)\b',t,re.I))
 
-def is_anecdote(post):return str(post.get('text','')).startswith('📚 ANECDOTE BD')
+def is_anecdote(post):return str(post.get('text','')).startswith(('📚 ANECDOTE BD','📚 ANECDOTE DU 9e ART'))

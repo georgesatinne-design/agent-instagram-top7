@@ -61,6 +61,11 @@
         "heure": "18:00",
         "frequence": "mensuelle",
         "occurrence": 2
+      },
+      "ACTUS": {
+        "jour": 0,
+        "heure": "18:00",
+        "frequence": "hebdomadaire"
       }
     }
   }

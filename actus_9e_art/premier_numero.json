@@ -1,0 +1,66 @@
+{
+  "edition": "2026-11-30",
+  "items": [
+    {
+      "title": "Laura Pozzi récompensée pour La Dernière Forêt",
+      "body": "Le prix BD de la Porte Dorée a distingué le 25 novembre le roman graphique de Laura Pozzi, consacré à la biologiste Simona Kossak et à la forêt de Białowieża.",
+      "theme": "PRIX",
+      "source": "Palais de la Porte Dorée",
+      "url": "https://www.palais-portedoree.fr/actualites/mariana-alves-et-laura-pozzi-laureates-2026-des-prix-litteraire-et-bd-de-la-porte-doree",
+      "date": "2026-11-25",
+      "anchors": [
+        "Laura Pozzi",
+        "Dernière Forêt"
+      ]
+    },
+    {
+      "title": "Le Lézard Noir entre au musée",
+      "body": "À Angoulême, une exposition ouvre le 3 décembre autour de cette maison d'édition indépendante et de sa contribution à la diffusion du manga d'auteur en France.",
+      "theme": "EXPOSITION",
+      "source": "Cité internationale de la BD",
+      "url": "https://www.citebd.org/agenda/le-lezard-noir-le-manga-dans-les-marges",
+      "date": "2026-11-26",
+      "anchors": [
+        "Lézard Noir",
+        "manga"
+      ],
+      "event": "2026-12-03"
+    },
+    {
+      "title": "Cinq albums encore en lice pour le Grand Prix ACBD",
+      "body": "Les critiques et journalistes de BD ont arrêté leur sélection finale au festival bdBOUM. Le titre gagnant sera annoncé le 1er décembre.",
+      "theme": "PRIX",
+      "source": "ACBD",
+      "url": "https://www.acbd.fr/12097/actualites/selection-finale-du-grand-prix-de-la-critique-acbd-2027/",
+      "date": "2026-11-21",
+      "anchors": [
+        "finalistes",
+        "1er décembre"
+      ]
+    },
+    {
+      "title": "Une librairie manga trouve un repreneur à Morlaix",
+      "body": "À 23 ans, Fabio Scalora reprend Manga No Tengoku, une librairie du Finistère spécialisée dans les mangas. Une nouvelle étape pour ce commerce indépendant.",
+      "theme": "LIBRAIRIES",
+      "source": "ActuaLitté",
+      "url": "https://actualitte.com/article/135345/librairie/morlaix-a-23-ans-fabio-scalora-reprend-manga-no-tengoku-et-prepare-la-suite",
+      "date": "2026-11-20",
+      "anchors": [
+        "Fabio Scalora",
+        "Manga No Tengoku"
+      ]
+    },
+    {
+      "title": "Luminous reçoit le prix jeunesse de l'ACBD",
+      "body": "Le prix a été annoncé le 21 novembre à Blois. La remise est prévue le 28 novembre au Salon du livre et de la presse jeunesse de Montreuil.",
+      "theme": "JEUNESSE",
+      "source": "ACBD",
+      "url": "https://www.acbd.fr/12100/actualites/luminous-prix-jeunesse-de-la-critique-acbd-2026/",
+      "date": "2026-11-21",
+      "anchors": [
+        "Luminous",
+        "Montreuil"
+      ]
+    }
+  ]
+}
