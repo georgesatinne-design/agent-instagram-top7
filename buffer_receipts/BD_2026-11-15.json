@@ -1,0 +1,11 @@
+{
+  "statut": "POST_PROGRAMME",
+  "action": "CREATION",
+  "id_buffer": "6b08495702d874faa50589d4",
+  "publication": "QUEUE_BUFFER",
+  "status_buffer": "scheduled",
+  "pages": 8,
+  "date_programmee_utc": "2026-11-27T16:00:00.000Z",
+  "edition": "BD_2026-11-15",
+  "empreinte_classement": "398ecda881aa46bcb1bf0bc8f1312c96b52755d0a367b87bf7ac0274697fc79a"
+}
