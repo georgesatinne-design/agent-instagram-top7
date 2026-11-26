@@ -168,7 +168,7 @@
   "2026-12-07": {
     "fact_id": "dore-cinq-cents-gravures",
     "sujet": "dore",
-    "etat": "EN_ATTENTE_MAJ",
+    "etat": "PROGRAMME",
     "date": "2026-12-07",
     "due_at": "2026-12-07T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-12-07/dore-cinq-cents-gravures_1228abe87b524025d7",
@@ -185,31 +185,9 @@
     "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nUne bd de 500 gravures en 1854 ?\n\nEn 1854, Gustave Doré illustre une histoire satirique de la Russie avec environ 500 gravures.\n\nTu connaissais Gustave Doré comme précurseur de la BD ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "empreinte_fait": "7297cff2e8adcd500d",
     "id_buffer": "6b080d99d91bf30768368336",
-    "ancien_texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nMorris… ce n’était pas son vrai nom\n\nLe dessinateur de Lucky Luke s’appelait Maurice de Bevere.\n\nTu le savais, toi ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "ancien_fact_id": "lucky-luke-morris",
     "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART",
-    "renouvellement_original": {
-      "fact_id": "lucky-luke-morris",
-      "sujet": "lucky",
-      "etat": "PROGRAMME",
-      "date": "2026-12-07",
-      "due_at": "2026-12-07T17:00:00.000Z",
-      "dossier": "public_media/anecdotes_bd/2026-12-07/lucky-luke-morris_9cb66fdf67fa11fa5f",
-      "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-07/lucky-luke-morris_9cb66fdf67fa11fa5f/",
-      "images": [
-        "01_anecdote.png",
-        "02_anecdote.png",
-        "03_anecdote.png",
-        "04_anecdote.png",
-        "05_anecdote.png"
-      ],
-      "revision": "9cb66fdf67fa11fa5f",
-      "date_preparation": "2026-11-26T10:44:17.283453+00:00",
-      "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nMorris… ce n’était pas son vrai nom\n\nLe dessinateur de Lucky Luke s’appelait Maurice de Bevere.\n\nTu le savais, toi ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
-      "id_buffer": "6b080d99d91bf30768368336",
-      "date_confirmation": "2026-11-26T17:06:17.908575+00:00",
-      "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART"
-    }
+    "date_confirmation": "2026-11-26T17:33:23.941112+00:00"
   },
   "2026-12-09": {
     "fact_id": "yellowkid-guerre-journaux",
