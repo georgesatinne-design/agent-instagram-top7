@@ -3,13 +3,10 @@ name: Anecdotes BD - remplissage automatique Buffer
 on:
   workflow_dispatch:
   schedule:
-    # Tous les jours : anticiper les jours libres. Vérifications tardives pour
-    # remplacer les TOP absents au dernier moment, sans préempter leur créneau.
+    # Un remplissage quotidien, puis une relance de secours les jours de Top.
     - cron: '37 8 * * *'
       timezone: 'Europe/Paris'
-    - cron: '47 15,16 * * *'
-    # Rechargement rapide apres la publication habituelle des tops (17h/18h)
-    - cron: '17 17,18 * * *'
+    - cron: '47 15 * * 0,2,4,5'
       timezone: 'Europe/Paris'
 
 permissions:

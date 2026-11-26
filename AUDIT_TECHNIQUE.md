@@ -50,3 +50,7 @@ CI précédente : 320/320. Correction d'un défaut propre aux jobs de production
 ## Huitième intervention : autonomie sans contrôles manuels récurrents
 
 CI précédente : 325/325. Rétablissement de l'observation Manga quatre fois par jour, diagnostic complet V1-V7 automatique hebdomadaire. Audit Buffer et réconciliation des reçus trois fois par jour, également après déploiement de son code. Journal BD harmonisé avec Manga/Comics ; refus d'écraser un Top BD sans reçu correspondant. Une édition incertaine n'est jamais renvoyée aveuglément et expire sans bloquer les suivantes. Les contrôles de production restent automatiques ; pause facultative seulement. Les secrets expirés ou une source durablement indisponible ne peuvent pas être réparés par magie. Les tests du dernier commit et l'exécution live restent à vérifier.
+
+## Neuvième intervention : cadence et stock utiles
+
+CI précédente : 329/329. Fenêtres de collecte fondées sur les parutions constatées (BD mercredi, Manga vendredi, Comics dimanche) ; relances automatiques, arrêt du rendu des éditions finalisées, mensuel distinct et limité au deuxième dimanche, audit Manga automatique allégé. Horizon anecdotes 14 jours, maximum 4 plans/run, stock cible de 10 faits inutilisés et cache de recherche borné. Les médias publics restent préservés. La CI et les sources en production restent à confirmer. Voir STRATEGIE_COLLECTE.md.

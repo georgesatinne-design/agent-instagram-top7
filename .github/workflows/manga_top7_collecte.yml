@@ -3,11 +3,14 @@ name: Manga - agent complet Top 7 ventes France vers Buffer
 on:
   workflow_dispatch:
   schedule:
-    # Le dépôt Buffer est tenté dès que les données sont disponibles.
-    # Tous les jours à 08h17, 14h17 et 20h17 (Paris),
-    # pour capter une parution anticipée sans attendre le mardi.
-    # L'heure du post Instagram reste mardi 18h Paris.
-    - cron: '17 8,14,20 * * *'
+    # ActuaLitté/Edistat publie le vendredi ; secours samedi/lundi/mardi.
+    - cron: '17 13,19 * * 5'
+      timezone: 'Europe/Paris'
+    - cron: '17 10 * * 1,6'
+      timezone: 'Europe/Paris'
+    - cron: '17 10,15 * * 2'
+      timezone: 'Europe/Paris'
+    - cron: '17 10 * * 3'
       timezone: 'Europe/Paris'
 
 permissions:
@@ -44,7 +47,7 @@ jobs:
         run: |
           python manga_pipeline_auto.py --sortie sorties/manga_production \
             --precedent manga_history/dernier_classement.json \
-            --cache manga_history/genres_ebooks.json
+            --cache manga_history/genres_ebooks.json --skip-finalized
       - name: Lire l'état de l'édition et interdire les données incomplètes
         id: publication
         run: |
@@ -82,10 +85,12 @@ jobs:
           with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf8') as out:
               out.write('edition='+edition+'\n')
               out.write('ready='+str(ready).lower()+'\n')
+          out.write('skip_history='+str(bool(report.get('skip_history'))).lower()+'\n')
           print('Edition:',edition,'Certificat:',report['statut_ventes'],
                 'Couvertures:',report['couvertures'],'/7','Programme:',ready)
           PY
       - name: Sauvegarder l'historique des genres et les observations pour la prochaine semaine
+        if: steps.publication.outputs.skip_history != 'true'
         run: |
           python - <<'PY'
           from pathlib import Path

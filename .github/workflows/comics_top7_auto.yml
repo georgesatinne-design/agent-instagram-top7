@@ -3,8 +3,15 @@ name: Comics - TOP 5 hebdomadaire + TOP 7 mensuel vers Buffer
 on:
   workflow_dispatch:
   schedule:
-    # Vérifie les classements dès leur disponibilité, sans attendre le jour Instagram.
-    - cron: '27 8,14,20 * * *'
+    # MDCU/BDFugue : hebdo généralement le dimanche ; secours jusqu'au jeudi.
+    - cron: '27 11,17 * * 0'
+      timezone: 'Europe/Paris'
+    - cron: '27 10 * * 1,3'
+      timezone: 'Europe/Paris'
+    - cron: '27 10,15 * * 4'
+      timezone: 'Europe/Paris'
+    # Le mensuel a sa propre fenêtre, jusqu'au deuxième dimanche seulement.
+    - cron: '47 10 1-14 * *'
       timezone: 'Europe/Paris'
 
 permissions:
@@ -41,7 +48,10 @@ jobs:
         env:
           ILLYADERA_MULTI_COVER_ON: '1'
         run: |
-          python comics_pipeline_periodique.py --cadence TOUS \
+          CADENCE=HEBDO
+          if [ "${{ github.event_name }}" = workflow_dispatch ]; then CADENCE=TOUS; fi
+          if [ "${{ github.event.schedule }}" = '47 10 1-14 * *' ]; then CADENCE=MENSUEL; fi
+          python comics_pipeline_periodique.py --cadence "$CADENCE" --skip-finalized \
             --sortie sorties/comics_periodique --historique comics_history
       - name: Préparer les médias HTTPS avant de contacter Buffer
         env:

@@ -63,7 +63,7 @@ def sujets_par_disponibilite(facts,registry,day,exclude_ids=()):
             used_topics.append(record['sujet'])
     known_fingerprints={fingerprint(f) for f in facts if f['id'] in excluded}
     known_fingerprints.update(r['empreinte_fait'] for r in registry.values()
-        if isinstance(r,dict) and r.get('etat') in ('PROGRAMME','EN_ATTENTE','EN_ATTENTE_MAJ') and r.get('empreinte_fait'))
+        if isinstance(r,dict) and r.get('etat') in ('PROGRAMME','EN_ATTENTE','EN_ATTENTE_MAJ','EXPIRE_INCERTAIN') and r.get('empreinte_fait'))
     candidates=[f for f in facts if f['id'] not in excluded and fingerprint(f) not in known_fingerprints]
     candidates.sort(key=lambda f:(
         reserve.get(f['id'],{}).get('statut')!='PRET',
@@ -135,6 +135,10 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
     results['candidats']=len(all_facts)
     results['creatifs_eligibles']=len(facts)
     registry=get_registry()
+    # Les plans dont le créneau est passé ne sont jamais reprogrammés à un autre jour.
+    for key,rec in registry.items():
+        if isinstance(rec,dict) and rec.get('etat')=='EN_ATTENTE' and rec.get('due_at') and parse(rec['due_at'])<=now:
+            rec['etat']='EXPIRE_INCERTAIN'
     facts_by_id={fact['id']:fact for fact in all_facts}
     dayposts={}
     try:
@@ -296,7 +300,7 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
                 item['etat']='EN_ATTENTE';item.pop('id_buffer',None)
                 registry[key]=item
                 results['plans'].append(key);continue
-        exclude=[rec.get('fact_id') for rec in registry.values() if isinstance(rec,dict) and rec.get('etat') in ('EN_ATTENTE','PROGRAMME','EN_ATTENTE_MAJ')]
+        exclude=[rec.get('fact_id') for rec in registry.values() if isinstance(rec,dict) and rec.get('etat') in ('EN_ATTENTE','PROGRAMME','EN_ATTENTE_MAJ','EXPIRE_INCERTAIN')]
         # Regarder d'abord les anecdotes ayant déjà une preuve et trois photos
         # distinctes en stock. Aucune répétition du même fait, même sous un autre nom.
         accepted=False
@@ -382,10 +386,15 @@ def send(*,now=None,buffer=None):
     # Priority: if a Top arrives after a fallback, remove only our own scheduled anecdote.
     try:reconcile(buffer,registry,now,results,dayposts)
     except Exception as exc:results['erreurs'].append('RECONCILIATION: '+str(exc)[:300])
+    attempted=0
     for key in sorted(registry):
         rec=registry[key]
         if rec.get('etat') not in ('EN_ATTENTE','EN_ATTENTE_MAJ'):continue
         day=dt.date.fromisoformat(key)
+        if os.environ.get('ILLYADERA_DURABLE_JOURNAL')=='1':
+            if day>(now.astimezone(PARIS).date()+dt.timedelta(days=CONFIG['horizon_jours'])):continue
+            if attempted>=CONFIG['max_posts_par_execution']:break
+            attempted+=1
         try:
             posts=(dayposts.get(key,[]) if dayposts is not None else buffer.day(day))
             if rec.get('etat')=='EN_ATTENTE_MAJ':

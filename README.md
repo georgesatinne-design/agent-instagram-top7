@@ -64,3 +64,7 @@ Voir [MISE_EN_SERVICE.md](MISE_EN_SERVICE.md) pour la procédure de déploiement
 ## Autonomie des contrôles
 
 Les audits Manga et Buffer sont planifiés automatiquement. La réconciliation Buffer ne crée, ne modifie et ne supprime aucun post ; elle reconstruit les reçus sur preuve exacte, ou classe une édition incertaine arrivée à échéance sans la renvoyer. Les producteurs continuent pour les éditions suivantes. L'arrêt d'urgence est facultatif. Aucun contrôle quotidien manuel n'est nécessaire.
+
+## Cadence de collecte et réserve utile
+
+Voir [STRATEGIE_COLLECTE.md](STRATEGIE_COLLECTE.md). Les collectes sont calées sur les fenêtres habituelles des sources, avec relances automatiques et contrôle anticipé des reçus. Le mensuel Comics est séparé de l'hebdomadaire. La préparation des anecdotes est limitée à 14 jours, 4 plans par exécution, 10 posts Buffer et une réserve photographique cible de 10 faits non utilisés. Aucun horaire de publication Instagram n'est modifié.
