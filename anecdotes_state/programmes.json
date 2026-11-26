@@ -94,13 +94,13 @@
     "date_confirmation": "2026-11-24T13:45:57.869667+00:00"
   },
   "2026-12-02": {
-    "fact_id": "lucky-luke-80",
-    "sujet": "lucky",
-    "etat": "PROGRAMME",
+    "fact_id": "krazykat-brique-amour",
+    "sujet": "krazykat",
+    "etat": "EN_ATTENTE_MAJ",
     "date": "2026-12-02",
     "due_at": "2026-12-02T17:00:00.000Z",
-    "dossier": "public_media/anecdotes_bd/2026-12-02/lucky-luke-80_61911d2b8d54560fd9",
-    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-02/lucky-luke-80_61911d2b8d54560fd9/",
+    "dossier": "public_media/anecdotes_bd/2026-12-02/krazykat-brique-amour_b6b2b4297c01c99abe",
+    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-02/krazykat-brique-amour_b6b2b4297c01c99abe/",
     "images": [
       "01_anecdote.png",
       "02_anecdote.png",
@@ -108,13 +108,37 @@
       "04_anecdote.png",
       "05_anecdote.png"
     ],
-    "revision": "61911d2b8d54560fd9",
-    "date_preparation": "2026-11-24T14:04:43.341146+00:00",
-    "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\n80 ans de chevauchées pour lucky luke\n\nLucky Luke a fêté ses 80 ans en 2026.\n\nQuel est ton souvenir préféré de Lucky Luke ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "revision": "b6b2b4297c01c99abe",
+    "date_preparation": "2026-11-26T17:21:34.982231+00:00",
+    "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nUne brique comme déclaration d'amour ?\n\nDans Krazy Kat, la souris Ignatz lance des briques au personnage principal, qui y voit une marque d'affection.\n\nQuel duo improbable de bande dessinée te fait rire ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "empreinte_fait": "29c0d85c97ef8c2a89",
     "id_buffer": "6b0560fbe860c84f09c8889e",
-    "ancien_fact_id": "lucky-luke-1946",
+    "ancien_texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\n80 ans de chevauchées pour lucky luke\n\nLucky Luke a fêté ses 80 ans en 2026.\n\nQuel est ton souvenir préféré de Lucky Luke ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "ancien_fact_id": "lucky-luke-80",
     "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART",
-    "date_confirmation": "2026-11-26T17:05:57.996507+00:00"
+    "renouvellement_original": {
+      "fact_id": "lucky-luke-80",
+      "sujet": "lucky",
+      "etat": "PROGRAMME",
+      "date": "2026-12-02",
+      "due_at": "2026-12-02T17:00:00.000Z",
+      "dossier": "public_media/anecdotes_bd/2026-12-02/lucky-luke-80_61911d2b8d54560fd9",
+      "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-02/lucky-luke-80_61911d2b8d54560fd9/",
+      "images": [
+        "01_anecdote.png",
+        "02_anecdote.png",
+        "03_anecdote.png",
+        "04_anecdote.png",
+        "05_anecdote.png"
+      ],
+      "revision": "61911d2b8d54560fd9",
+      "date_preparation": "2026-11-24T14:04:43.341146+00:00",
+      "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\n80 ans de chevauchées pour lucky luke\n\nLucky Luke a fêté ses 80 ans en 2026.\n\nQuel est ton souvenir préféré de Lucky Luke ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+      "id_buffer": "6b0560fbe860c84f09c8889e",
+      "ancien_fact_id": "lucky-luke-1946",
+      "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART",
+      "date_confirmation": "2026-11-26T17:05:57.996507+00:00"
+    }
   },
   "2026-12-05": {
     "fact_id": "bruxelles-horta",
