@@ -96,10 +96,10 @@ class TestVisuelsUniques(unittest.TestCase):
     def test_identification_serie_garantie_par_code(self):
         import inspect
         src=inspect.getsource(visuels.page)
-        self.assertIn("'ANECDOTE BD'",src)
-        self.assertIn('font(93)',src)
+        self.assertIn("'ANECDOTE DU 9e ART'",src)
+        self.assertIn('font(68)',src)
         self.assertTrue(visuels.VERSION.startswith('BD_ANECDOTE_V5_'))
-        self.assertIn('ANECDOTE BD',visuels.caption(self.fact))
+        self.assertIn('ANECDOTE DU 9e ART',visuels.caption(self.fact))
 
     def test_la_v4_est_identifiee_comme_nouvelle_revision(self):
         self.assertIn('V7_MULTI_SOURCES',run.VERSION_VISUELLE)

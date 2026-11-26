@@ -2,7 +2,7 @@ name: Les 5 actus du 9e art - lundi
 on:
   push:
     branches: [main]
-    paths: ['actus_9e_art/**', '.github/workflows/actus_9e_art.yml']
+    paths: ['actus_9e_art/**', 'anecdotes_auto/migration_9e_art.py', '.github/workflows/actus_9e_art.yml']
   workflow_dispatch:
   schedule:
     - cron: '23 9 * * 1'
@@ -53,3 +53,24 @@ jobs:
             git commit -m 'Actus - confirmation et registre'
             git push origin HEAD:main
           fi
+      - name: Mettre à jour toutes les anecdotes déjà programmées
+        if: always()
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
+        run: |
+          python -m anecdotes_auto.migration_9e_art prepare
+          if [ -d public_media/anecdotes_bd ]; then git add public_media/anecdotes_bd; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'Nouveau bandeau Anecdote du 9e art'
+            git push origin HEAD:main
+          fi
+      - name: Confirmer chaque nouvelle version des anecdotes dans Buffer
+        if: always()
+        env:
+          ILLYADERA_DURABLE_JOURNAL: '1'
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
+        run: python -m anecdotes_auto.migration_9e_art send

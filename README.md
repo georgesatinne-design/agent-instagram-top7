@@ -80,3 +80,5 @@ Le test `test_workflow_scripts.py` exécute également le bloc Python de décisi
 ## Les 5 actus du 9e art
 
 Lundi 18 h : revue de presse de cinq sujets (une couverture et cinq fiches, 1080×1350). Sources institutionnelles et médias spécialisés gratuits ; date, attribution, lien, diversité et exclusion des rumeurs. Les numéros automatiques relaient des titres attribués, pas des résumés inventés. Les graphiques sont originaux et sans photos tierces. Une anecdote provisoire peut être remplacée en place. Moins de cinq sujets fiables : pas de remplissage fictif. Les nouvelles anecdotes portent le nom « ANECDOTE DU 9e ART » ; les publications antérieures restent compatibles et ne sont pas recréées en masse.
+
+La migration du bandeau des anecdotes déjà programmées réutilise uniquement les carrousels validés et change le titre de série sans altérer leurs illustrations ni leur histoire. Les médias sont hébergés avant édition et chaque post est relu dans Buffer. Le lundi est remplacé par les actualités seulement quand les six pages sont prêtes.

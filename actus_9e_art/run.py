@@ -86,7 +86,11 @@ def send(*,buffer=None,now=None):
     same=[p for p in posts if parse_due(p['dueAt']).date().isoformat()==date]
     exact=[p for p in same if p['text'].strip()==plan['text'].strip() and parse(p['dueAt'])==parse(due)]
     if len(exact)==1 and len(same)==1:
-        plan.update(etat='PROGRAMME',id_buffer=exact[0]['id']);write(path,plan);print('POST_PROGRAMME ACTUS',date);return
+        plan.update(etat='PROGRAMME',id_buffer=exact[0]['id']);write(path,plan)
+        registry=read_registry();target=registry.get(date,{})
+        if target.get('id_buffer')==exact[0]['id'] and target.get('etat')=='PROGRAMME':
+            target['etat']='SUPPLANTE_PAR_ACTUS';save_registry(registry)
+        print('POST_PROGRAMME ACTUS',date);return
     if prior.get('etat')=='EN_COURS':raise RuntimeError('Mutation incertaine, aucune répétition')
     assets=[{'image':{'url':plan['base_url']+n}} for n in plan['names']]
     if len(assets)!=6:raise ValueError('Six pages requises')
@@ -125,7 +129,7 @@ def send(*,buffer=None,now=None):
     if result.get('message') or not post.get('id') or post.get('status')!='scheduled' or parse(post['dueAt'])!=parse(due):raise RuntimeError('Buffer sans confirmation')
     live=[p for p in buffer.list_scheduled() if parse_due(p['dueAt']).date().isoformat()==date]
     if len(live)!=1 or live[0]['id']!=post['id'] or live[0]['text'].strip()!=plan['text'].strip():raise RuntimeError('Relecture Buffer non confirmée')
-    plan.update(etat='PROGRAMME',id_buffer=post['id']);write(path,plan)
+    plan.update(etat='PROGRAMME',id_buffer=post['id'],confirmation_utc=dt.datetime.now(dt.timezone.utc).isoformat());write(path,plan)
     if owned:
         target['etat']='SUPPLANTE_PAR_ACTUS';save_registry(registry)
     print('POST_PROGRAMME ACTUS',date,'6 pages, relecture Buffer confirmée')
