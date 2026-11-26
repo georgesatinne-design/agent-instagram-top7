@@ -1,0 +1,58 @@
+{
+  "photos": [
+    {
+      "titre_commons": "1896-11-08 Yellow Kid.jpg",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:1896-11-08_Yellow_Kid.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/4/40/1896-11-08_Yellow_Kid.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "licence": "Domaine public : Richard F. Outcault (1863–1928), publication 1896–1898",
+      "auteur": "Richard F. Outcault",
+      "description": "\"Yellow Kid\" cartoon, Sunday, November 8, 1896, by  Richard Felton Outcault. Note reference to the Barrison Sisters.",
+      "sha256": "8ba60bcf3706ca90fc100417de30fc92aac70e6467e0c1fc66a5317f632afffe",
+      "date_collecte": "2026-11-26T16:28:10.350011+00:00",
+      "illustration_IA": false,
+      "page": 1,
+      "role": "LE YELLOW KID — 1896",
+      "pertinence": "Planche d'Outcault publiée le 8 novembre 1896 dans le New York Journal.",
+      "epoque": "historique",
+      "famille_source": "1896-11-08 Yellow Kid.jpg",
+      "fact_id": "yellowkid-guerre-journaux",
+      "intention_editoriale": "Trois planches originales de Richard F. Outcault en 1896 : l'apparition du héros dans la presse, le contexte de Hogan's Alley, puis l'usage des bulles et des cases."
+    },
+    {
+      "titre_commons": "Yellow Kid 1896-3-15.jpg",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Yellow_Kid_1896-3-15.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/28/Yellow_Kid_1896-3-15.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "licence": "Domaine public : Richard F. Outcault (1863–1928), publication 1896–1898",
+      "auteur": "Richard F. Outcault",
+      "description": "\"War Scare in Hogan's Alley\".\n\nChildren drilling under anti-British placards.",
+      "sha256": "0e4dbdf6dd51e5cfa190ed3f81169e182a68809e9cbec622676de84901c1e1de",
+      "date_collecte": "2026-11-26T16:28:10.714168+00:00",
+      "illustration_IA": false,
+      "page": 3,
+      "role": "HOGAN’S ALLEY — 1896",
+      "pertinence": "Planche War Scare in Hogan's Alley, datée du 15 mars 1896, avant le transfert d'Outcault.",
+      "epoque": "historique",
+      "famille_source": "Yellow Kid 1896-3-15.jpg",
+      "fact_id": "yellowkid-guerre-journaux",
+      "intention_editoriale": "Trois planches originales de Richard F. Outcault en 1896 : l'apparition du héros dans la presse, le contexte de Hogan's Alley, puis l'usage des bulles et des cases."
+    },
+    {
+      "titre_commons": "Yellowkid phonograph.jpg",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Yellowkid_phonograph.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/9/9b/Yellowkid_phonograph.jpg",
+      "licence": "Domaine public : Richard Outcault (1863–1928), 25 octobre 1896",
+      "auteur": "Richard F. Outcault (1863–1928)",
+      "description": "Yellow Kid, 25 octobre 1896, notice Commons et SHA-1 vérifiés",
+      "sha256": "14478181832a522e1581986b75dc4fc1253590d85707396ab15200364d6f7430",
+      "date_collecte": "2026-11-26T16:28:10.994819+00:00",
+      "illustration_IA": false,
+      "page": 4,
+      "role": "LES BULLES — 1896",
+      "pertinence": "Planche du 25 octobre 1896, originale authentifiée par SHA-1, illustrant les bulles et la succession des scènes.",
+      "epoque": "historique",
+      "famille_source": "Yellowkid phonograph.jpg",
+      "fact_id": "yellowkid-guerre-journaux",
+      "intention_editoriale": "Trois planches originales de Richard F. Outcault en 1896 : l'apparition du héros dans la presse, le contexte de Hogan's Alley, puis l'usage des bulles et des cases."
+    }
+  ]
+}
