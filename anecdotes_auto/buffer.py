@@ -35,6 +35,9 @@ def graphql(query,variables=None,*,post=requests.post,api_key=None):
     if not api_key:raise BufferError('BUFFER_API_KEY absent')
     response=post(ENDPOINT,json={'query':query,'variables':variables or {}},
                   headers={'Content-Type':'application/json','Authorization':'Bearer '+api_key},timeout=35)
+    if getattr(response,'status_code',200)==429:
+        delay=response.headers.get('Retry-After','inconnu')
+        raise BufferError('Limite API Buffer atteinte (429), réessayer après '+str(delay)+' secondes; aucune création tentée')
     response.raise_for_status();data=response.json()
     if not isinstance(data,dict) or data.get('errors'):
         raise BufferError('GraphQL erreur: '+str(data.get('errors','réponse illisible'))[:400].replace(api_key,'[CLE]'))
@@ -55,6 +58,42 @@ class Buffer:
         ids=[str(x['id']) for x in orgs if isinstance(x,dict) and x.get('id')]
         if len(ids)!=1:raise BufferError('Choisir BUFFER_ORGANIZATION_ID (organisation ambiguë)')
         self.organization_id=ids[0];return ids[0]
+    def list_scheduled(self):
+        """Lit toute la file du canal en une ou plusieurs pages GraphQL.
+
+        À utiliser UNE FOIS par exécution plutôt qu'une requête par jour.
+        Échoue si la pagination n'est pas complètement parcourue.
+        """
+        query="""query ScheduledQueue($organizationId: OrganizationId!, $channelId: ChannelId!, $cursor: String) {
+          posts(first: 80, after: $cursor, input: {
+            organizationId: $organizationId,
+            filter: {status: [scheduled], channelIds: [$channelId]}
+          }) {
+            pageInfo {hasNextPage endCursor}
+            edges {node {id text dueAt status channelId}}
+          }
+        }"""
+        items=[];cursor=None;seen=set()
+        for _ in range(15):
+            result=self.call(query,{'organizationId':self.organization(),
+                                    'channelId':self.channel_id,'cursor':cursor}).get('posts')
+            if not isinstance(result,dict) or not isinstance(result.get('edges'),list):
+                raise BufferError('Liste Buffer illisible : aucune publication autorisée')
+            for edge in result['edges']:
+                node=(edge or {}).get('node') or {}
+                if not all(node.get(k) for k in ('id','text','dueAt','status','channelId')):
+                    raise BufferError('Publication Buffer incomplète : aucune création autorisée')
+                if node['status']!='scheduled' or node['channelId']!=self.channel_id:continue
+                if node['id'] not in seen:
+                    items.append(node);seen.add(node['id'])
+            page=result.get('pageInfo') or {}
+            if page.get('hasNextPage') is False:
+                return sorted(items,key=lambda p:parse(p['dueAt']))
+            if page.get('hasNextPage') is not True or not page.get('endCursor') or page['endCursor']==cursor:
+                raise BufferError('Pagination Buffer incohérente : aucune création autorisée')
+            cursor=page['endCursor']
+        raise BufferError('La pagination Buffer dépasse la limite de sécurité')
+
     def day(self,day):
         """Un jour entier Europe/Paris, pas une proximité de 90 secondes."""
         from zoneinfo import ZoneInfo

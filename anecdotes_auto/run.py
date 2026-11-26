@@ -101,6 +101,19 @@ def stage_fact(fact,day,repo,now):
             'base_url':base,'images':images,'revision':digest,'date_preparation':now.isoformat(),
             'texte_public':text}
 
+def _day_snapshot(buffer, now):
+    """Une seule lecture paginée de la file ; les tests anciens restent compatibles."""
+    if not hasattr(buffer, 'list_scheduled'):
+        return None, None
+    posts=buffer.list_scheduled()
+    if not isinstance(posts, list):
+        raise RuntimeError('Queue Buffer illisible')
+    byday={}
+    for p in posts:
+        day=parse(p['dueAt']).astimezone(PARIS).date().isoformat()
+        byday.setdefault(day, []).append(p)
+    return posts, byday
+
 def prepare(repo,*,now=None,buffer=None,collect=True):
     now=now or dt.datetime.now(dt.timezone.utc)
     buffer=buffer or Buffer()
@@ -119,18 +132,28 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
     registry=get_registry()
     facts_by_id={fact['id']:fact for fact in all_facts}
     dayposts={}
-    for day in next_days(now):
-        try:dayposts[day.isoformat()]=buffer.day(day)
-        except Exception as exc:
-            # Fail closed. A blind Buffer create could double a scheduled Top.
-            results['erreurs'].append('BUFFER_JOUR '+str(day)+' : '+str(exc)[:200])
-            write(REPORT/'ETAT.json',{'statut':'ERREUR_CONTROLE_BUFFER','erreurs':results['erreurs']})
-            write(REPORT/'PLAN_BUFFER.json',[])
-            raise
-    scheduled_count=sum(len(posts) for posts in dayposts.values())
+    try:
+        all_scheduled, byday = _day_snapshot(buffer,now)
+        if byday is not None:
+            dayposts={d.isoformat():list(byday.get(d.isoformat(),[])) for d in next_days(now)}
+            scheduled_count=len(all_scheduled)  # y compris au-delà de l'horizon éditorial
+        else:
+            for day in next_days(now):
+                dayposts[day.isoformat()]=buffer.day(day)
+            scheduled_count=sum(len(posts) for posts in dayposts.values())
+    except Exception as exc:
+        results['erreurs'].append('BUFFER_QUEUE: '+str(exc)[:230])
+        write(REPORT/'ETAT.json',{'statut':'ERREUR_CONTROLE_BUFFER','erreurs':results['erreurs']})
+        write(REPORT/'PLAN_BUFFER.json',[])
+        write(REPORT/'REPRISES_A_FAIRE.json',[])
+        raise
     max_count=CONFIG['max_posts_programmes_canal']
+    results['queue_avant']=scheduled_count
+    results['capacite_buffer']=max_count
+    results['places_initiales']=max(0,max_count-scheduled_count)
     if scheduled_count>=max_count:
-        results['erreurs'].append(f'Queue Buffer déjà remplie: {scheduled_count} posts sur fenêtre (plafond prudent {max_count})')
+        results['jours'].append({'date':'FILE_BUFFER','resultat':'CAPACITE_ATTEINTE',
+                                 'en_queue':scheduled_count,'plafond':max_count})
     photos_indisponibles=set()
     for day in next_days(now):
         key=day.isoformat();posts=dayposts[key]
@@ -230,7 +253,12 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
         ok,reason=eligible(day,now,posts)
         results['jours'].append({'date':key,'resultat':reason,'reservation':reserved_kind(day)})
         if not ok:continue
-        if scheduled_count+len(results['plans'])>=max_count:continue
+        creations_pretes=sum(registry[d].get('etat')=='EN_ATTENTE' for d in results['plans'])
+        if scheduled_count+creations_pretes>=max_count and reserved_kind(day) is None:
+            continue
+        # Si le TOP ne sort pas et que le délai de repli est atteint, on peut
+        # préparer son anecdote malgré la Queue pleine : la place sera libérée
+        # UNIQUEMENT juste avant l'envoi, après vérification des cinq médias.
         if len(results['plans'])>=CONFIG['max_posts_par_execution']:continue
         if item.get('etat')=='EN_ATTENTE':
             # Retry only if the files are still present and the slot still free.
@@ -254,6 +282,8 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
             results['erreurs'].append(f'PAS_DE_PHOTO_VERIFIEE pour {key}: aucune publication inventée')
     persist(registry)
     write(REPORT/'PLAN_BUFFER.json',[registry[d] for d in results['plans']])
+    results['places_potentiellement_remplies']=sum(registry[d].get('etat')=='EN_ATTENTE' for d in results['plans'])
+    results['places_restantes_prevues']=max(0,max_count-scheduled_count-results['places_potentiellement_remplies'])
     write(REPORT/'PREPARATION.json',results)
     write(REPORT/'REPRISES_A_FAIRE.json',results['remplacements_non_effectues'])
     write(REPORT/'ETAT.json',{'statut':'MEDIA_PREPARES','date':now.isoformat(),
@@ -265,12 +295,12 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
 def _is_our_exact(post,rec):
     return is_anecdote(post) and (post.get('text') or '').strip()==(rec.get('texte_public') or '').strip()
 
-def reconcile(buffer,registry,now,results):
+def reconcile(buffer,registry,now,results,dayposts=None):
     for key,rec in registry.items():
         if rec.get('etat') not in ('PROGRAMME','EN_ATTENTE_MAJ'):continue
         day=dt.date.fromisoformat(key)
         if dt.datetime.combine(day,dt.time(23,59),tzinfo=PARIS)<now.astimezone(PARIS):continue
-        posts=buffer.day(day)
+        posts=(dayposts.get(key,[]) if dayposts is not None else buffer.day(day))
         tops=[p for p in posts if is_top(p)]
         ours=[p for p in posts if p.get('id')==rec.get('id_buffer') and is_anecdote(p) and
               (p.get('text','').strip() in ((rec.get('texte_public') or '').strip(), (rec.get('ancien_texte_public') or '').strip()))]
@@ -289,15 +319,21 @@ def send(*,now=None,buffer=None):
     registry=get_registry();results={'date_utc':now.isoformat(),'programmes':[],
                                    'deja_programmes':[],'ignores':[],'supprimes_pour_top':[],'erreurs':[],
                                    'remplacements_non_effectues':[]}
+    # Une lecture complète au début pour limiter la consommation du quota API.
+    try:
+        snapshot,dayposts=_day_snapshot(buffer,now)
+    except Exception as exc:
+        results['erreurs'].append('QUEUE_BUFFER: '+str(exc)[:260])
+        snapshot,dayposts=None,None
     # Priority: if a Top arrives after a fallback, remove only our own scheduled anecdote.
-    try:reconcile(buffer,registry,now,results)
+    try:reconcile(buffer,registry,now,results,dayposts)
     except Exception as exc:results['erreurs'].append('RECONCILIATION: '+str(exc)[:300])
     for key in sorted(registry):
         rec=registry[key]
         if rec.get('etat') not in ('EN_ATTENTE','EN_ATTENTE_MAJ'):continue
         day=dt.date.fromisoformat(key)
         try:
-            posts=buffer.day(day)
+            posts=(dayposts.get(key,[]) if dayposts is not None else buffer.day(day))
             if rec.get('etat')=='EN_ATTENTE_MAJ':
                 existing=[p for p in posts if p.get('id')==rec.get('id_buffer') and
                     is_anecdote(p) and p.get('text','').strip()==rec.get('ancien_texte_public','').strip()]
@@ -334,7 +370,26 @@ def send(*,now=None,buffer=None):
             for file in rec['images']:
                 if not (folder/file).is_file():raise RuntimeError('Media absent: '+file)
             assets=buffer.verify_images(rec['base_url'],rec['images'],folder)
+            # Les images sont vérifiées AVANT toute éventuelle libération de place.
+            if hasattr(buffer,'list_scheduled'):
+                live=buffer.list_scheduled()
+                if any(parse(p['dueAt']).astimezone(PARIS).date()==day for p in live):
+                    rec['etat']='ANNULE_OCCUPE'
+                    results['ignores'].append(key+' : UN_POST_A_PRIS_LE_CRENEAU')
+                    continue
+                if len(live)>=CONFIG['max_posts_programmes_canal']:
+                    if reserved_kind(day):
+                        from illyadera_queue import free_capacity_for_priority
+                        free_capacity_for_priority(rec['due_at'],buffer=buffer,registry=registry,
+                            max_posts=CONFIG['max_posts_programmes_canal'],priority='REPLI_TOP')
+                    else:
+                        results['ignores'].append(key+' : QUEUE_PLEINE (attente prochaine place)')
+                        continue
             post=buffer.create(rec['texte_public'],rec['due_at'],assets)
+            if dayposts is not None:
+                dayposts.setdefault(key,[]).append({'id':post['id'],'status':'scheduled',
+                    'channelId':getattr(buffer,'channel_id',''), 'dueAt':post.get('dueAt') or rec['due_at'],
+                    'text':rec['texte_public']})
             rec.update({'etat':'PROGRAMME','id_buffer':post['id'],'date_confirmation':now.isoformat(),
                         'due_at':post.get('dueAt') or rec['due_at'],'version_visuelle':VERSION_VISUELLE})
             results['programmes'].append({'date':key,'id_buffer':post['id'],'pages':len(rec['images'])})
@@ -351,6 +406,16 @@ def send(*,now=None,buffer=None):
                 actuel.get('etat')=='PROGRAMME'):
             unresolved.append(rec)
     results['remplacements_non_effectues']=unresolved
+    try:
+        if hasattr(buffer,'list_scheduled'):
+            remaining_posts=buffer.list_scheduled()
+            results['queue_apres']=len(remaining_posts)
+            results['capacite_buffer']=CONFIG['max_posts_programmes_canal']
+            results['places_libres']=max(0,results['capacite_buffer']-len(remaining_posts))
+        else:
+            results['queue_apres']=None
+    except Exception as exc:
+        results['erreurs'].append('QUEUE_APRES: '+str(exc)[:240])
     persist(registry)
     write(REPORT/'REPRISES_A_FAIRE.json',unresolved)
     write(REPORT/'RESULTATS_BUFFER.json',results)
@@ -359,8 +424,14 @@ def send(*,now=None,buffer=None):
           'deja_programmes':len(results['deja_programmes']),
           'supprimes_pour_top':len(results['supprimes_pour_top']),
           'remplacements_non_effectues':len(unresolved),
-          'erreurs':results['erreurs']})
+          'erreurs':results['erreurs'],'queue_apres':results.get('queue_apres'),
+          'capacite_buffer':results.get('capacite_buffer'),
+          'places_libres':results.get('places_libres')})
     summary='# Anecdotes BD — audit interne\n\n'+f'Programmés: {len(results["programmes"])}\n\n'
+    if results.get('queue_apres') is not None:
+        summary+=f'File Buffer: {results["queue_apres"]}/{results["capacite_buffer"]} ; places disponibles: {results["places_libres"]}\n\n'
+        if results['places_libres']>0:
+            summary+='Les places restantes ne sont pas remplies sans contenu sourcé, images réelles et créneau admissible.\n\n'
     summary+=f'Réconciliés avec des TOP: {len(results["supprimes_pour_top"])}\n\n'
     summary+=f'Remplacements encore nécessaires: {len(unresolved)}\n\n'
     for warning in unresolved:
