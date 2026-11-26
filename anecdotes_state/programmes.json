@@ -205,7 +205,7 @@
   "2026-12-12": {
     "fact_id": "lucky-luke-goscinny",
     "sujet": "lucky",
-    "etat": "PROGRAMME",
+    "etat": "LIBERATION_EN_COURS",
     "date": "2026-12-12",
     "due_at": "2026-12-12T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-12-12/lucky-luke-goscinny_5b592a72f0b285286e",
@@ -222,6 +222,13 @@
     "texte_public": "📚 ANECDOTE BD — LE SAVAIS-TU ?\n\nDeux géants sur un même cow-boy\n\nRené Goscinny a scénarisé des aventures de Lucky Luke entre 1955 et 1977.\n\nQuel est ton Lucky Luke préféré ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
     "id_buffer": "6b080d9bd91bf307683683a1",
     "date_confirmation": "2026-11-26T10:44:38.366734+00:00",
-    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11"
+    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11",
+    "intention_liberation": {
+      "id_buffer": "6b080d9bd91bf307683683a1",
+      "due_at": "2026-12-12T17:00:00.000Z",
+      "priorite": "BD",
+      "cible": "2026-11-27",
+      "date_utc": "2026-11-26T14:59:29.770056+00:00"
+    }
   }
 }
