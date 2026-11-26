@@ -1,9 +1,9 @@
-"""Studio ANECDOTE BD / V5 : chaque photographie représente une étape de l'anecdote.
+"""Studio ANECDOTE DU 9e ART / V5 : chaque photographie représente une étape de l'anecdote.
 
 Aucune génération IA, aucun clonage de photo d'une page à l'autre :
 - les visuels figuratifs viennent exclusivement de photos_reelles.resolve() ;
 - les pages sans photo sont des compositions typographiques vectorielles par Pillow ;
-- une grande signature jaune ANECDOTE BD identifie immédiatement le format ;
+- une grande signature jaune ANECDOTE DU 9e ART identifie immédiatement le format ;
 - les 5 pages suivent accroche -> révélation -> contexte -> détail -> question ;
 - un audit machine lisible permet de contrôler la non-réutilisation.
 """
@@ -149,7 +149,7 @@ def _photo_panel(img,photo,box,*,rounded=0,outline=None,centering=(.5,.5)):
 def _footer(img,n):
     d=ImageDraw.Draw(img)
     d.rectangle((0,1270,W,H),fill=NIGHT)
-    d.text((40,1309),'ANECDOTE BD',font=font(27),fill=YELLOW,anchor='lm')
+    d.text((40,1309),'ANECDOTE DU 9e ART',font=font(22),fill=YELLOW,anchor='lm')
     d.text((1034,1309),f'{n}/5',font=font(30),fill=CREAM,anchor='rm')
     # Indicateur de progression du récit : 5 segments courts et immédiatement lisibles.
     for i in range(5):
@@ -161,7 +161,7 @@ def _mini_brand(img,n,title):
     d=ImageDraw.Draw(img)
     d.rectangle((0,0,W,101),fill=NIGHT)
     d.rectangle((0,0,14,101),fill=YELLOW)
-    d.text((40,49),'ANECDOTE BD',font=font(43),fill=YELLOW,anchor='lm')
+    d.text((40,49),'ANECDOTE DU 9e ART',font=font(32),fill=YELLOW,anchor='lm')
     d.text((1033,49),title,font=font(25),fill=CREAM,anchor='rm')
     _footer(img,n)
 
@@ -200,7 +200,7 @@ def page(fact,number,photos=None,*,allocation=None,scene_labels=None):
     if number==1:
         # IDENTITÉ VISUELLE IMMEDIATE : 16 % d'écran en jaune, grand nom de format.
         d.rectangle((0,0,W,197),fill=YELLOW)
-        d.text((35,83),'ANECDOTE BD',font=font(93),fill=NIGHT,anchor='lm')
+        d.text((35,83),'ANECDOTE DU 9e ART',font=font(68),fill=NIGHT,anchor='lm')
         d.rectangle((0,190,W,220),fill=NIGHT)
         # Photo unique d'ouverture : jamais visible ailleurs dans ce carrousel.
         _photo_panel(im,ph,(0,220,1080,690))
@@ -345,7 +345,7 @@ def render(fact,folder,photos=None,*,audit_path=None,scenes=None):
         report={'version':VERSION,'fact_id':fact['id'],'pages':audit,
                 'photos_recues':len(photos or []),'photos_dedoublonnees':len(photos_unique),
                 'photos_utilisees':len(used),'photos_repetees':0,
-                'identification_couverture':'ANECDOTE BD grand bandeau jaune',
+                'identification_couverture':'ANECDOTE DU 9e ART grand bandeau jaune',
                 'narration_verifiee':scenes is not None,
                 'etapes_avec_photographie':[p['page'] for p in audit if p['image_source_sha256']],
                 'principe':'Aucune image generative, aucune meme photographie sur deux pages.'}
@@ -355,7 +355,7 @@ def render(fact,folder,photos=None,*,audit_path=None,scenes=None):
 
 def caption(fact):
     s=story(fact)
-    return ('📚 ANECDOTE BD — LE SAVAIS-TU ?\n\n'+
+    return ('📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\n'+
             s['hook'].capitalize().rstrip(' .')+'\n\n'+
             s['revelation']+'\n\n'+
             s['question']+' 👇\n\n#BandeDessinee #BD #9eArt #PassionBD')

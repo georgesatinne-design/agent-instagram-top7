@@ -36,7 +36,7 @@ class TestsAncd(unittest.TestCase):
         self.assertEqual(reserved_kind(dt.date(2026,11,26)),'COMICS_HEBDO')
         self.assertEqual(reserved_kind(dt.date(2026,11,27)),'BD')
         self.assertEqual(reserved_kind(dt.date(2026,12,13)),'COMICS_MENSUEL')
-        self.assertIsNone(reserved_kind(dt.date(2026,12,14)))
+        self.assertEqual(reserved_kind(dt.date(2026,12,14)),'ACTUS')
     def test_top_future_protected(self):
         now=dt.datetime(2026,11,24,8,tzinfo=PARIS)
         self.assertEqual(eligible(dt.date(2026,11,24),now,[]),(True,'PROVISOIRE_TOP'))

@@ -47,13 +47,14 @@ def _dt(value):
 
 def _eligible_owned(posts,registry,now):
     """Aucune publication étrangère ou déjà publiée n'est jamais modifiée."""
+    from anecdotes_auto.buffer import is_anecdote
     by_id={p['id']:p for p in posts if p.get('id')}
     candidates=[]
     for key,rec in registry.items():
         if not isinstance(rec,dict) or rec.get('etat')!='PROGRAMME':continue
         post=by_id.get(rec.get('id_buffer'))
         if not post:continue
-        if post.get('status')!='scheduled' or not str(post.get('text','')).startswith('📚 ANECDOTE BD'):
+        if post.get('status')!='scheduled' or not is_anecdote(post):
             continue
         if (post.get('text') or '').strip()!=(rec.get('texte_public') or '').strip():continue
         if not post.get('dueAt') or _dt(post['dueAt'])<=now+dt.timedelta(minutes=40):continue

@@ -33,7 +33,7 @@ class TestStoryV3(unittest.TestCase):
     def test_sources_visibles_exclues(self):
         sample=next(x for x in catalogue.bank() if x['id']=='bruxelles-horta')
         t=visuels.caption(sample)
-        self.assertTrue(t.startswith('📚 ANECDOTE BD'))
+        self.assertTrue(t.startswith('📚 ANECDOTE DU 9e ART'))
         for forbidden in ('http://','https://','Edistat','Source :','Wikimedia Commons'):
             self.assertNotIn(forbidden,t)
     def test_remplacement_different_sujet_meme_post(self):

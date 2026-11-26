@@ -76,3 +76,7 @@ Un index structuré public Wikidata propose des pistes (nom de personnage et ada
 ## Validation de clôture
 
 Le test `test_workflow_scripts.py` exécute également le bloc Python de décision du workflow Manga en environnement temporaire, sans réseau, avec une édition nouvelle et une édition déjà traitée. Les validations unitaires ne remplacent pas le contrôle automatique en production des sources, des médias et de Buffer.
+
+## Les 5 actus du 9e art
+
+Lundi 18 h : revue de presse de cinq sujets (une couverture et cinq fiches, 1080×1350). Sources institutionnelles et médias spécialisés gratuits ; date, attribution, lien, diversité et exclusion des rumeurs. Les numéros automatiques relaient des titres attribués, pas des résumés inventés. Les graphiques sont originaux et sans photos tierces. Une anecdote provisoire peut être remplacée en place. Moins de cinq sujets fiables : pas de remplissage fictif. Les nouvelles anecdotes portent le nom « ANECDOTE DU 9e ART » ; les publications antérieures restent compatibles et ne sont pas recréées en masse.

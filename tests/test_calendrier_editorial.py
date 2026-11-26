@@ -16,7 +16,7 @@ class CalendrierEditorialTests(unittest.TestCase):
     def test_semaine_complete(self):
         first=dt.date(2026,12,7)
         self.assertEqual([reserved_kind(first+dt.timedelta(days=i)) for i in range(7)],
-                         [None,'MANGA',None,'COMICS_HEBDO','BD',None,'COMICS_MENSUEL'])
+                         ['ACTUS','MANGA',None,'COMICS_HEBDO','BD',None,'COMICS_MENSUEL'])
         self.assertEqual([slot_on(first+dt.timedelta(days=i)).hour for i in range(7)],
                          [18,18,18,18,17,18,18])
         self.assertIsNone(reserved_kind(dt.date(2026,12,20)))
