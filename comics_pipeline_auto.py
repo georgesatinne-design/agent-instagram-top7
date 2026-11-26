@@ -3,6 +3,7 @@
 Tout est additionnel: aucun script de production BD ni manga n'est modifié.
 """
 from __future__ import annotations
+import os
 import argparse
 import io
 import datetime as dt
@@ -16,6 +17,7 @@ from bs4 import BeautifulSoup
 from PIL import Image,ImageDraw
 from manga_sources_hebdo import match_titles
 from sources.couvertures import cover_path,download_cover,search_google_books,meme_livre
+from illyadera_covers import resolve_cover
 from visual_top7 import render_top7,font,pill
 from comics_sources_hebdo import collect_live,build_candidate,validate_cover_url,fetch,CollectError
 from comics_score_publication import calculer
@@ -169,6 +171,10 @@ def covers_get(data,folder,*,downloader=download_cover,google=search_google_book
             try:alternative=google(b)
             except Exception:alternative=None
             if alternative:ok,why=(_download_cover_comics(b,{b['rang']:alternative},folder) if downloader is download_cover else downloader(b,{b['rang']:alternative},folder))
+        if not ok and os.environ.get('ILLYADERA_MULTI_COVER_ON') == '1':
+            multi=resolve_cover(b,folder)
+            if multi['ok']:ok,why=True,multi['source']
+            else:why='; '.join(str(a.get('source'))+': '+str(a.get('raison')) for a in multi['essais'])[:450]
         res.append({'rang':b['rang'],'ok':bool(ok),'origine':why})
     return res
 

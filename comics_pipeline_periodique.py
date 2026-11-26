@@ -2,6 +2,7 @@
 Les fichiers BD/MANGA et le moteur graphique partagé ne sont jamais modifiés.
 """
 from __future__ import annotations
+import os
 import argparse, datetime as dt, io, json
 from pathlib import Path
 from urllib.parse import urlparse
@@ -12,6 +13,7 @@ from comics_sources_periodiques import collect_one,fetch,image_url,SourceError,H
 from comics_score_periodique import calculer
 from comics_visual_periodique import render
 from sources.couvertures import cover_path,search_google_books,meme_livre
+from illyadera_covers import resolve_cover
 
 VERSION='comics_top5_top7_2026_v1'
 
@@ -89,6 +91,11 @@ def _download_one(book,folder,*,getter=requests.get,searcher=search_google_books
                         im.convert('RGB').save(path,optimize=True)
                         return {'rang':book['rang'],'ok':True,'origine':url}
             except (requests.RequestException,OSError,ValueError):pass
+    if os.environ.get('ILLYADERA_MULTI_COVER_ON')=='1':
+        extra=resolve_cover(book,folder)
+        if extra['ok']:
+            return {'rang':book['rang'],'ok':True,'origine':extra['source']}
+        return {'rang':book['rang'],'ok':False,'origine':extra['raison'],'tentatives':extra['essais']}
     return {'rang':book['rang'],'ok':False,'origine':'Couverture exacte indisponible ou trop petite'}
 
 def _enrich_monthly(data,fetcher=fetch):
