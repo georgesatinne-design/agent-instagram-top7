@@ -131,18 +131,22 @@ def parse_bdzoom(html,url):
             if len(vals)>=5:
                 m=norm(vals[1]).strip(' ()')
                 has_variation=bool(re.fullmatch(r'[+\-−–—]\s*\d+|=|nouveau|retour|stable|idem',m))
-                offset=2 if has_variation else 1
-                change=vals[1] if has_variation else ''
+                # Une colonne variation vide reste une colonne : elle ne doit
+                # jamais décaler le titre et le nom de l'auteur.
+                separate=has_variation or not m or bool(re.fullmatch(r'[+\-−–—=()\s\d]+',m))
+                offset=2 if separate else 1
+                change=vals[1] if separate else ''
             else:
                 offset=1;change=''
             if len(vals)<offset+3:continue
             title=vals[offset]
-            if not 3<len(title)<220:continue
+            if not 3<len(title)<220 or not any(c.isalpha() for c in title):continue
             possible.append({'rang':rank,'titre':title,'auteurs':vals[offset+1],
                              'editeur':vals[offset+2],'mouvement':mouvement(change)})
         ranked=sorted(possible,key=lambda x:x['rang'])
         # Validation stricte : 7 premiers obligatoires, sans doublon de rang.
         if len(ranked)>=7 and [v['rang'] for v in ranked[:7]]==list(range(1,8)):
+            if len({norm(v['titre']).strip() for v in ranked[:7]})!=7:continue
             best=ranked[:10] if len(ranked)>=10 and [v['rang'] for v in ranked[:10]]==list(range(1,11)) else ranked[:7]
             break
     if not best:raise SourceError('Tableau national Top 7 BD absent ou HTML modifié')

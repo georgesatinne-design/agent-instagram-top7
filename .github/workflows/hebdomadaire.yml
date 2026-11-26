@@ -10,6 +10,13 @@ on:
     - cron: '23 10,14 * * 5'
       timezone: 'Europe/Paris'
   workflow_dispatch:
+  # Retester immédiatement un correctif du collecteur BD sur main ;
+  # les commits de médias et reçus ne déclenchent pas de boucle.
+  push:
+    branches: [main]
+    paths:
+      - 'sources/collecte.py'
+      - '.github/workflows/hebdomadaire.yml'
 
 concurrency:
   group: illyadera-buffer-operations
