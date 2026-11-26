@@ -1,0 +1,58 @@
+{
+  "photos": [
+    {
+      "titre_commons": "Krazy Kat 1920-09-05 original.jpg",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Krazy_Kat_1920-09-05_original.jpg",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/Krazy_Kat_1920-09-05_original.jpg/1920px-Krazy_Kat_1920-09-05_original.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "licence": "Domaine public : George Herriman (1880–1944), planches publiées avant 1931",
+      "auteur": "George Herriman",
+      "description": "Scan of original art from Krazy Kat strip by George Herriman for 1920-09-05",
+      "sha256": "589de12952804d8d5819dc109c5adc5972f5d9b03e4f52e1e76739ac99013b82",
+      "date_collecte": "2026-11-26T17:23:12.703931+00:00",
+      "illustration_IA": false,
+      "page": 1,
+      "role": "KRAZY KAT, 1920",
+      "pertinence": "Planche originale du 5 septembre 1920.",
+      "epoque": "historique",
+      "famille_source": "Krazy Kat 1920-09-05 original.jpg",
+      "fact_id": "krazykat-brique-amour",
+      "intention_editoriale": "Archives authentiques directement liées au récit : krazykat-brique-amour"
+    },
+    {
+      "titre_commons": "Krazy Kat 1921-11-20 original.jpg",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Krazy_Kat_1921-11-20_original.jpg",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9e/Krazy_Kat_1921-11-20_original.jpg/1920px-Krazy_Kat_1921-11-20_original.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "licence": "Domaine public : George Herriman (1880–1944), planches publiées avant 1931",
+      "auteur": "George Herriman",
+      "description": "Scan of original art from Krazy Kat strip by George Herriman for 1921-11-20",
+      "sha256": "8dcb5f05b50d5ea0fe8b4b58254759a3dd31396d872e751b10e1d8e02604eb26",
+      "date_collecte": "2026-11-26T17:23:13.363861+00:00",
+      "illustration_IA": false,
+      "page": 3,
+      "role": "KRAZY KAT, 1921",
+      "pertinence": "Planche originale du 20 novembre 1921.",
+      "epoque": "historique",
+      "famille_source": "Krazy Kat 1921-11-20 original.jpg",
+      "fact_id": "krazykat-brique-amour",
+      "intention_editoriale": "Archives authentiques directement liées au récit : krazykat-brique-amour"
+    },
+    {
+      "titre_commons": "Krazy Kat 1920-10-15 original.jpg",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Krazy_Kat_1920-10-15_original.jpg",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Krazy_Kat_1920-10-15_original.jpg/1920px-Krazy_Kat_1920-10-15_original.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "licence": "Domaine public : George Herriman (1880–1944), planches publiées avant 1931",
+      "auteur": "George Herriman",
+      "description": "Scan of original art from Krazy Kat strip by George Herriman for 1920-10-15",
+      "sha256": "e1dcdadba4bd7ed1e22952d3efa73633eccdc3b7d2eb455b529ca1f3bdcea04d",
+      "date_collecte": "2026-11-26T17:23:14.069727+00:00",
+      "illustration_IA": false,
+      "page": 4,
+      "role": "KRAZY KAT, 1920",
+      "pertinence": "Planche originale du 15 octobre 1920.",
+      "epoque": "historique",
+      "famille_source": "Krazy Kat 1920-10-15 original.jpg",
+      "fact_id": "krazykat-brique-amour",
+      "intention_editoriale": "Archives authentiques directement liées au récit : krazykat-brique-amour"
+    }
+  ]
+}

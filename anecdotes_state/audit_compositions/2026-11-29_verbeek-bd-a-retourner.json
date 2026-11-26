@@ -1,0 +1,73 @@
+{
+  "version": "BD_ANECDOTE_V5_IMAGES_SCENARISEES",
+  "fact_id": "verbeek-bd-a-retourner",
+  "pages": [
+    {
+      "page": 1,
+      "image_source_sha256": "f756e3a49f722bb0dd2e7104823eb0bf64725424f283ee5121c960918231c16c",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "PLANCHE RÉVERSIBLE, 1904",
+      "pertinence_editoriale": "Exemple complet de la planche à retourner.",
+      "epoque_reelle": "historique",
+      "titre_commons": "Upside-Downs of Little Lady Lovekins and Old Man Muffaroo (1904-12-18).gif",
+      "licence": "Domaine public : Gustave Verbeek (1867–1937), planches parues en 1904",
+      "famille_source": "Upside-Downs of Little Lady Lovekins and Old Man Muffaroo (1904-12-18).gif"
+    },
+    {
+      "page": 2,
+      "image_source_sha256": null,
+      "type_page": "composition_graphique_sans_photo",
+      "role_visuel": null,
+      "pertinence_editoriale": null,
+      "epoque_reelle": null,
+      "titre_commons": null,
+      "licence": null,
+      "famille_source": null
+    },
+    {
+      "page": 3,
+      "image_source_sha256": "59c66e0d1db03ffd188c7d49cb701f2085f22b152ca834df6e6439caadf6dc15",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "LA PLANCHE RÉVERSIBLE",
+      "pertinence_editoriale": "Une autre planche réversible originale de la série.",
+      "epoque_reelle": "historique",
+      "titre_commons": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The wonderful cure of the waterfall.jpg",
+      "licence": "Domaine public : Gustave Verbeek (1867–1937), planches parues en 1904",
+      "famille_source": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The wonderful cure of the waterfall.jpg"
+    },
+    {
+      "page": 4,
+      "image_source_sha256": "be65c4ef39a920958c86a7f6ef512dabdba342c29994022e61b63a4f9dbc0d74",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "AUTRE PLANCHE, 1904",
+      "pertinence_editoriale": "Autre exemple de cette technique narrative.",
+      "epoque_reelle": "historique",
+      "titre_commons": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The bad snake and the good wizard.jpg",
+      "licence": "Domaine public : Gustave Verbeek (1867–1937), planches parues en 1904",
+      "famille_source": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The bad snake and the good wizard.jpg"
+    },
+    {
+      "page": 5,
+      "image_source_sha256": null,
+      "type_page": "composition_graphique_sans_photo",
+      "role_visuel": null,
+      "pertinence_editoriale": null,
+      "epoque_reelle": null,
+      "titre_commons": null,
+      "licence": null,
+      "famille_source": null
+    }
+  ],
+  "photos_recues": 3,
+  "photos_dedoublonnees": 3,
+  "photos_utilisees": 3,
+  "photos_repetees": 0,
+  "identification_couverture": "ANECDOTE DU 9e ART grand bandeau jaune",
+  "narration_verifiee": true,
+  "etapes_avec_photographie": [
+    1,
+    3,
+    4
+  ],
+  "principe": "Aucune image generative, aucune meme photographie sur deux pages."
+}

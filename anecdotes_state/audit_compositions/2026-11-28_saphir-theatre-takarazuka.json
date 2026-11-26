@@ -1,0 +1,73 @@
+{
+  "version": "BD_ANECDOTE_V5_IMAGES_SCENARISEES",
+  "fact_id": "saphir-theatre-takarazuka",
+  "pages": [
+    {
+      "page": 1,
+      "image_source_sha256": "bc6270ee7d424bad74e4c75b7777ac19b9616c85ade2c3438347d38041f261a7",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "REVUE TAKARAZUKA, 1928",
+      "pertinence_editoriale": "Finale d'une revue en 1928, illustration du théâtre qui inspira Tezuka.",
+      "epoque_reelle": "historique",
+      "titre_commons": "Mon Paris-Takarazuka1928.jpg",
+      "licence": "Domaine public : Photographies anonymes publiées au Japon avant 1931, domaine public",
+      "famille_source": "Mon Paris-Takarazuka1928.jpg"
+    },
+    {
+      "page": 2,
+      "image_source_sha256": null,
+      "type_page": "composition_graphique_sans_photo",
+      "role_visuel": null,
+      "pertinence_editoriale": null,
+      "epoque_reelle": null,
+      "titre_commons": null,
+      "licence": null,
+      "famille_source": null
+    },
+    {
+      "page": 3,
+      "image_source_sha256": "e1bb473eddfd188df7dd36fd464628dcd4797215cdcd3adba7fdd6e343dec83c",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "REVUE TAKARAZUKA, 1914",
+      "pertinence_editoriale": "Une des représentations historiques de la troupe féminine.",
+      "epoque_reelle": "historique",
+      "titre_commons": "Donburako-Takarazuka1914.jpg",
+      "licence": "Domaine public : Photographies anonymes publiées au Japon avant 1931, domaine public",
+      "famille_source": "Donburako-Takarazuka1914.jpg"
+    },
+    {
+      "page": 4,
+      "image_source_sha256": "7d6788b17f10669e82ac01f408d749c46597f6ba428908231744b5201c9aacaa",
+      "type_page": "photographie_reelle_unique",
+      "role_visuel": "REVUE TAKARAZUKA, 1930",
+      "pertinence_editoriale": "Spectacle d'époque de la troupe ; pas une image du manga.",
+      "epoque_reelle": "historique",
+      "titre_commons": "Paris Sette-Takarazuka1930.jpg",
+      "licence": "Domaine public : Photographies anonymes publiées au Japon avant 1931, domaine public",
+      "famille_source": "Paris Sette-Takarazuka1930.jpg"
+    },
+    {
+      "page": 5,
+      "image_source_sha256": null,
+      "type_page": "composition_graphique_sans_photo",
+      "role_visuel": null,
+      "pertinence_editoriale": null,
+      "epoque_reelle": null,
+      "titre_commons": null,
+      "licence": null,
+      "famille_source": null
+    }
+  ],
+  "photos_recues": 3,
+  "photos_dedoublonnees": 3,
+  "photos_utilisees": 3,
+  "photos_repetees": 0,
+  "identification_couverture": "ANECDOTE DU 9e ART grand bandeau jaune",
+  "narration_verifiee": true,
+  "etapes_avec_photographie": [
+    1,
+    3,
+    4
+  ],
+  "principe": "Aucune image generative, aucune meme photographie sur deux pages."
+}

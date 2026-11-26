@@ -1,0 +1,58 @@
+{
+  "photos": [
+    {
+      "titre_commons": "Upside-Downs of Little Lady Lovekins and Old Man Muffaroo (1904-12-18).gif",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Upside-Downs_of_Little_Lady_Lovekins_and_Old_Man_Muffaroo_(1904-12-18).gif",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Upside-Downs_of_Little_Lady_Lovekins_and_Old_Man_Muffaroo_%281904-12-18%29.gif?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "licence": "Domaine public : Gustave Verbeek (1867–1937), planches parues en 1904",
+      "auteur": "Gustave Verbeek",
+      "description": "The text in this image should be transcribed and included in the description on this page. \n\nReplace this template with {{Transcription}} after transcription. See also Converting from image formats to text (optical character recognition).",
+      "sha256": "3ced2d31777ce020a0c7812cf2ea631d5bfe5f617e99ff78e95621bb709b9052",
+      "date_collecte": "2026-11-26T17:21:38.894624+00:00",
+      "illustration_IA": false,
+      "page": 1,
+      "role": "PLANCHE RÉVERSIBLE, 1904",
+      "pertinence": "Exemple complet de la planche à retourner.",
+      "epoque": "historique",
+      "famille_source": "Upside-Downs of Little Lady Lovekins and Old Man Muffaroo (1904-12-18).gif",
+      "fact_id": "verbeek-bd-a-retourner",
+      "intention_editoriale": "Archives authentiques directement liées au récit : verbeek-bd-a-retourner"
+    },
+    {
+      "titre_commons": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The wonderful cure of the waterfall.jpg",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Ambigrams_by_Gustave_Verbeek_(1904)_-_comics_The_Upside_Downs_of_Little_Lady_Lovekins_and_Old_Man_Muffaroo_-_The_wonderful_cure_of_the_waterfall.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Ambigrams_by_Gustave_Verbeek_%281904%29_-_comics_The_Upside_Downs_of_Little_Lady_Lovekins_and_Old_Man_Muffaroo_-_The_wonderful_cure_of_the_waterfall.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "licence": "Domaine public : Gustave Verbeek (1867–1937), planches parues en 1904",
+      "auteur": "Gustave Verbeek",
+      "description": "Ambigrams by Gustave Verbeek - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The wonderful cure of the waterfall (1904). The ambigram sentences are \"punos dery ery apew poom serlem big\" (invented language) / \"big waters wood made her heap sound\".",
+      "sha256": "29c3ca40bef32a5a988ad935b77a29aaa6e8cbd5e039d0ea20461dc1dfe69d48",
+      "date_collecte": "2026-11-26T17:21:39.214667+00:00",
+      "illustration_IA": false,
+      "page": 3,
+      "role": "LA PLANCHE RÉVERSIBLE",
+      "pertinence": "Une autre planche réversible originale de la série.",
+      "epoque": "historique",
+      "famille_source": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The wonderful cure of the waterfall.jpg",
+      "fact_id": "verbeek-bd-a-retourner",
+      "intention_editoriale": "Archives authentiques directement liées au récit : verbeek-bd-a-retourner"
+    },
+    {
+      "titre_commons": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The bad snake and the good wizard.jpg",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Ambigrams_by_Gustave_Verbeek_(1904)_-_comics_The_Upside_Downs_of_Little_Lady_Lovekins_and_Old_Man_Muffaroo_-_The_bad_snake_and_the_good_wizard.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/01/Ambigrams_by_Gustave_Verbeek_%281904%29_-_comics_The_Upside_Downs_of_Little_Lady_Lovekins_and_Old_Man_Muffaroo_-_The_bad_snake_and_the_good_wizard.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "licence": "Domaine public : Gustave Verbeek (1867–1937), planches parues en 1904",
+      "auteur": "Gustave Verbeek",
+      "description": "Ambigrams by Gustave Verbeek - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The bad snake and the good wizard (1904). The ambigram sentences are \"how do you do\" / \"op noh op may\" (panel 3) and \"yes furders on\" / \"no serpent sah\" (panel 5).",
+      "sha256": "81df566af73766fe4956509d74bbf3292651186a06561797e067b36e9c902f93",
+      "date_collecte": "2026-11-26T17:21:39.759199+00:00",
+      "illustration_IA": false,
+      "page": 4,
+      "role": "AUTRE PLANCHE, 1904",
+      "pertinence": "Autre exemple de cette technique narrative.",
+      "epoque": "historique",
+      "famille_source": "Ambigrams by Gustave Verbeek (1904) - comics The Upside Downs of Little Lady Lovekins and Old Man Muffaroo - The bad snake and the good wizard.jpg",
+      "fact_id": "verbeek-bd-a-retourner",
+      "intention_editoriale": "Archives authentiques directement liées au récit : verbeek-bd-a-retourner"
+    }
+  ]
+}
