@@ -37,6 +37,8 @@ jobs:
       - name: Tester l'agent comics sans envoyer de post
         run: python -m unittest discover -s tests -p 'test_comics_periodiques.py' -v
       - name: Vérifier séparément les deux classements et produire les visuels
+        env:
+          ILLYADERA_MULTI_COVER_ON: '1'
         run: |
           python comics_pipeline_periodique.py --cadence TOUS \
             --sortie sorties/comics_periodique --historique comics_history
