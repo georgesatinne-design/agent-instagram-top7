@@ -1,7 +1,7 @@
 {
   "date": "2026-11-27",
   "due": "2026-11-27T19:00:00.000Z",
-  "etat": "EN_COURS",
+  "etat": "PROGRAMME",
   "id_post_principal": "6b08495702d874faa50589d4",
   "revision": "605c4af3a547698af1",
   "text": "📲 STORY ILLYADERA — 2026-11-27 — TOP 7 BD — original",
@@ -11,5 +11,7 @@
     "id_buffer": "6b08e45070e2a88e2ceaf39f",
     "text": "📲 STORY ILLYADERA — 2026-11-27 — TOP 7 BD",
     "due": "2026-11-27T19:00:00.000Z"
-  }
+  },
+  "id_buffer": "6b08e45070e2a88e2ceaf39f",
+  "confirmation_utc": "2026-11-27T16:28:55.384125+00:00"
 }
