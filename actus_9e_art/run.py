@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 from PIL import Image,ImageDraw
 from anecdotes_auto.visuels import font,text_fit,NIGHT,CREAM,YELLOW,PURPLE
-from anecdotes_auto.buffer import Buffer,CREATE,EDIT,is_anecdote,is_story,parse
+from anecdotes_auto.buffer import Buffer,CREATE,EDIT,is_anecdote,parse
 from calendrier_editorial import next_weekly,parse_due,validate_slot
 from illyadera_queue import free_capacity_for_priority,read_registry,save_registry,REGISTRY
 from journal_publication import checkpoint
@@ -88,7 +88,7 @@ def send(*,buffer=None,now=None):
     due=validate_slot('ACTUS',plan['due'],now=now);date=plan['date']
     path=STATE/(date+'.json');prior=read(path,{})
     posts=buffer.list_scheduled()
-    same=[p for p in posts if not is_story(p) and parse_due(p['dueAt']).date().isoformat()==date]
+    same=[p for p in posts if parse_due(p['dueAt']).date().isoformat()==date]
     exact=[p for p in same if p['text'].strip()==plan['text'].strip() and parse(p['dueAt'])==parse(due)]
     if len(exact)==1 and len(same)==1:
         plan.update(etat='PROGRAMME',id_buffer=exact[0]['id']);write(path,plan)
@@ -137,7 +137,7 @@ def send(*,buffer=None,now=None):
     result=(buffer.call(query,{'input':payload}).get(key) or {})
     post=result.get('post') or {}
     if result.get('message') or not post.get('id') or post.get('status')!='scheduled' or parse(post['dueAt'])!=parse(due):raise RuntimeError('Buffer sans confirmation')
-    live=[p for p in buffer.list_scheduled() if not is_story(p) and parse_due(p['dueAt']).date().isoformat()==date]
+    live=[p for p in buffer.list_scheduled() if parse_due(p['dueAt']).date().isoformat()==date]
     if len(live)!=1 or live[0]['id']!=post['id'] or live[0]['text'].strip()!=plan['text'].strip():raise RuntimeError('Relecture Buffer non confirmée')
     plan.update(etat='PROGRAMME',id_buffer=post['id'],confirmation_utc=dt.datetime.now(dt.timezone.utc).isoformat());write(path,plan)
     if owned:

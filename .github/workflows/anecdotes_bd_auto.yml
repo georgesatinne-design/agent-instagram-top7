@@ -20,8 +20,6 @@ jobs:
   anecdotes:
     if: github.ref == 'refs/heads/main' && vars.ILLYADERA_PAUSE_PUBLICATION != '1'
     runs-on: ubuntu-latest
-    env:
-      ILLYADERA_STORIES_ENABLED: '1'
     timeout-minutes: 35
     steps:
       - name: Copier le dépôt principal

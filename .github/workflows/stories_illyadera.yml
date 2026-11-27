@@ -1,31 +1,22 @@
-name: Story quotidienne - mettre en avant le post du jour
+name: Annulation story indépendante - unique
 on:
   push:
     branches: [main]
     paths: ['stories_illyadera.py', '.github/workflows/stories_illyadera.yml']
-  workflow_dispatch:
-  schedule:
-    - cron: '46 15 * * *'
-      timezone: 'Europe/Paris'
-    - cron: '46 18 * * *'
-      timezone: 'Europe/Paris'
-    - cron: '16 19 * * *'
-      timezone: 'Europe/Paris'
 permissions:
   contents: write
 concurrency:
   group: illyadera-buffer-operations
   cancel-in-progress: false
 jobs:
-  story:
-    if: github.ref == 'refs/heads/main' && vars.ILLYADERA_PAUSE_PUBLICATION != '1'
+  annulation:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 8
     env:
       BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
       BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
       BUFFER_ORGANIZATION_ID: ${{ secrets.BUFFER_ORGANIZATION_ID }}
-      ILLYADERA_DURABLE_JOURNAL: '1'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,17 +26,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install -r requirements.txt
-      - name: Vérifier les invariants story et le calendrier
-        run: python -m unittest discover -s tests -p 'test_stories_illyadera.py' -v
-      - name: Préparer le visuel du véritable post du jour
-        run: |
+      - run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          python -m stories_illyadera prepare
-          if [ -d public_media/stories_illyadera ]; then git add public_media/stories_illyadera; fi
-          if ! git diff --cached --quiet; then
-            git commit -m 'Story - média du post du jour'
-            git push origin HEAD:main
-          fi
-      - name: Programmer la story à 20 h et vérifier Buffer
-        run: python -m stories_illyadera send
+          python stories_illyadera.py

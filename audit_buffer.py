@@ -3,7 +3,7 @@ import json
 from collections import Counter
 import re
 from calendrier_editorial import parse_due,reserved_kind,slot_on
-from anecdotes_auto.buffer import Buffer,is_story
+from anecdotes_auto.buffer import Buffer
 
 def category(text):
     m=re.match(r'^\s*(?:📚\s*)?TOP\s*(5|7)\s*(BD|MANGA|COMICS)\b',text,re.I)
@@ -18,11 +18,7 @@ def category(text):
 def report(posts):
     dates=Counter();categories=Counter();off_calendar=0
     for p in posts:
-        due=parse_due(p['dueAt']);kind='STORY' if is_story(p) else category(p['text'])
-        if kind=='STORY':
-            categories[kind]+=1
-            if due.hour!=20 or due.minute!=0:off_calendar+=1
-            continue
+        due=parse_due(p['dueAt']);kind=category(p['text'])
         dates[due.date()]+=1;categories[kind]+=1
         if kind!='AUTRE' and (due!=slot_on(due.date()) or (kind!='ANECDOTE' and reserved_kind(due.date())!=kind)):
             off_calendar+=1

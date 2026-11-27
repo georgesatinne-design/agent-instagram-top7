@@ -12,7 +12,7 @@ ORG_QUERY='query Organizations { account { organizations { id } } }'
 DAY_QUERY='''query Posts($organizationId: OrganizationId!, $channelId: ChannelId!, $slotStart: DateTime!, $slotEnd: DateTime!) {
   posts(first: 40, input: {organizationId: $organizationId, filter: { status: [scheduled], channelIds: [$channelId], dueAt: {start: $slotStart, end: $slotEnd}}}) {
     pageInfo { hasNextPage }
-    edges { node { id text dueAt status channelId metadata { ... on InstagramPostMetadata { type } } } }
+    edges { node { id text dueAt status channelId } }
   }
 }'''
 CREATE='''mutation CreatePost($input: CreatePostInput!) {createPost(input:$input) {
@@ -70,7 +70,7 @@ class Buffer:
             filter: {status: [scheduled], channelIds: [$channelId]}
           }) {
             pageInfo {hasNextPage endCursor}
-            edges {node {id text dueAt status channelId metadata { ... on InstagramPostMetadata { type } }}}
+            edges {node {id text dueAt status channelId}}
           }
         }"""
         items=[];cursor=None;seen=set()
@@ -81,7 +81,7 @@ class Buffer:
                 raise BufferError('Liste Buffer illisible : aucune publication autorisée')
             for edge in result['edges']:
                 node=(edge or {}).get('node') or {}
-                if not all(node.get(k) for k in ('id','dueAt','status','channelId')) or not isinstance(node.get('text'),str):
+                if not all(node.get(k) for k in ('id','text','dueAt','status','channelId')):
                     raise BufferError('Publication Buffer incomplète : aucune création autorisée')
                 if node['status']!='scheduled' or node['channelId']!=self.channel_id:continue
                 if node['id'] not in seen:
@@ -107,9 +107,9 @@ class Buffer:
         out=[]
         for edge in ans['edges']:
             node=(edge or {}).get('node') or {}
-            if not all(node.get(k) for k in ('id','dueAt','channelId','status')) or not isinstance(node.get('text'),str):
+            if not all(node.get(k) for k in ('id','dueAt','text','channelId','status')):
                 raise BufferError('Une publication Buffer est illisible')
-            if node['channelId']==self.channel_id and node['status']=='scheduled' and not is_story(node):out.append(node)
+            if node['channelId']==self.channel_id and node['status']=='scheduled':out.append(node)
         return out
     def verify_images(self,base_url,names,folder):
         p=urlparse(base_url)
@@ -170,7 +170,3 @@ def is_top(post):
     return bool(re.match(r'^(?:📚\s*)?TOP\s*(?:5|7)\s*(?:BD|MANGA|COMICS)\b',t,re.I))
 
 def is_anecdote(post):return str(post.get('text','')).startswith(('📚 ANECDOTE BD','📚 ANECDOTE DU 9e ART'))
-
-
-def is_story(post):
-    return (post.get('metadata') or {}).get('type')=='story'

@@ -14,7 +14,7 @@ from .politique_editoriale import accepte
 def editorial_eligible(fact):return _editorial_eligible(fact) and accepte(fact)
 from .photos_reelles import PhotosIndisponibles
 from .recherche_images import resolve_avance as resolve
-from .buffer import Buffer,BufferError,is_top,is_anecdote,is_story,utc,parse
+from .buffer import Buffer,BufferError,is_top,is_anecdote,utc,parse
 
 PUBLIC=ROOT_REPO/'public_media'/'anecdotes_bd'
 REPORT=ROOT_REPO/'sorties'/'anecdotes_bd'
@@ -119,7 +119,6 @@ def _day_snapshot(buffer, now):
         raise RuntimeError('Queue Buffer illisible')
     byday={}
     for p in posts:
-        if is_story(p):continue
         day=parse(p['dueAt']).astimezone(PARIS).date().isoformat()
         byday.setdefault(day, []).append(p)
     return posts, byday
@@ -163,7 +162,7 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
         write(REPORT/'PLAN_BUFFER.json',[])
         write(REPORT/'REPRISES_A_FAIRE.json',[])
         raise
-    max_count=9 if os.environ.get('ILLYADERA_STORIES_ENABLED')=='1' else CONFIG['max_posts_programmes_canal']
+    max_count=CONFIG['max_posts_programmes_canal']
     results['queue_avant']=scheduled_count
     results['capacite_buffer']=max_count
     results['places_initiales']=max(0,max_count-scheduled_count)
@@ -456,14 +455,14 @@ def send(*,now=None,buffer=None):
             # Les images sont vérifiées AVANT toute éventuelle libération de place.
             if hasattr(buffer,'list_scheduled'):
                 live=buffer.list_scheduled()
-                if any(not is_story(p) and parse(p['dueAt']).astimezone(PARIS).date()==day for p in live):
+                if any(parse(p['dueAt']).astimezone(PARIS).date()==day for p in live):
                     rec['etat']='ANNULE_OCCUPE'
                     results['ignores'].append(key+' : UN_POST_A_PRIS_LE_CRENEAU')
                     continue
-                if len(live)>=(9 if os.environ.get('ILLYADERA_STORIES_ENABLED')=='1' else CONFIG['max_posts_programmes_canal']):
+                if len(live)>=CONFIG['max_posts_programmes_canal']:
                     from illyadera_queue import free_capacity_for_priority
                     freed = free_capacity_for_priority(rec['due_at'], buffer=buffer, registry=registry,
-                        registry_path=REGISTRY, max_posts=(9 if os.environ.get('ILLYADERA_STORIES_ENABLED')=='1' else CONFIG['max_posts_programmes_canal']),
+                        registry_path=REGISTRY, max_posts=CONFIG['max_posts_programmes_canal'],
                         now=now, priority='REMPLISSAGE')
                     if freed.get('action') not in ('ANECDOTE_LIBEREE','PLACE_DISPONIBLE'):
                         results['ignores'].append(key+' : QUEUE_PLEINE_SANS_POST_PLUS_LOINTAIN')

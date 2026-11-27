@@ -82,7 +82,7 @@ def free_capacity_for_priority(due_at, *, buffer, registry=None, registry_path=R
         raise RuntimeError('Créneau trop proche : arbitrage automatique suspendu')
     posts=buffer.list_scheduled()
     if not isinstance(posts,list):raise RuntimeError('File Buffer illisible')
-    if any(not isinstance(p,dict) or (not all(p.get(k) for k in ('id','status','dueAt','channelId')) or not isinstance(p.get('text'),str)) for p in posts):
+    if any(not isinstance(p,dict) or not all(p.get(k) for k in ('id','status','dueAt','text','channelId')) for p in posts):
         raise RuntimeError('Post Buffer incomplet, arbitrage suspendu')
     registry=registry if registry is not None else read_registry(registry_path)
     from journal_publication import reconcile_intents,checkpoint
@@ -91,15 +91,14 @@ def free_capacity_for_priority(due_at, *, buffer, registry=None, registry_path=R
         checkpoint(registry_path)
     # Les entrées incertaines ne sont jamais éligibles à une suppression.
     # La vérification du créneau et de la capacité reste locale : les autres jours continuent.
-    from anecdotes_auto.buffer import is_story
     target=due.astimezone(PARIS).date().isoformat()
-    existing_top=[p for p in posts if p['status']=='scheduled' and not is_story(p) and
+    existing_top=[p for p in posts if p['status']=='scheduled' and
                   _dt(p['dueAt']).astimezone(PARIS).date().isoformat()==target and
                   p['text'].lstrip('📚 ').upper().startswith(('TOP 7 BD','TOP 7 MANGA','TOP 5 COMICS','TOP 7 COMICS'))]
     if existing_top:
         prefixes={'BD':('TOP 7 BD',),'MANGA':('TOP 7 MANGA',),'COMICS':('TOP 5 COMICS','TOP 7 COMICS'),
                   'COMICS_HEBDO':('TOP 5 COMICS',),'COMICS_MENSUEL':('TOP 7 COMICS',)}
-        same_day=[p for p in posts if not is_story(p) and _dt(p['dueAt']).astimezone(PARIS).date().isoformat()==target]
+        same_day=[p for p in posts if _dt(p['dueAt']).astimezone(PARIS).date().isoformat()==target]
         if len(same_day)!=1 or len(existing_top)!=1 or priority=='REMPLISSAGE' or (priority in prefixes and not existing_top[0]['text'].lstrip('📚 ').upper().startswith(prefixes[priority])):
             raise RuntimeError('Créneau occupé par un autre classement : arbitrage interdit')
         return {'action':'TOP_DEJA_PREVU','file':len(posts),'date':target}
@@ -107,7 +106,7 @@ def free_capacity_for_priority(due_at, *, buffer, registry=None, registry_path=R
         raise RuntimeError('File au-delà du plafond gratuit : aucune suppression automatique')
     owned=_eligible_owned(posts,registry,now)
     owned_ids={item[2]['id'] for item in owned}
-    unknown_at_target=[p for p in posts if not is_story(p) and
+    unknown_at_target=[p for p in posts if
         _dt(p['dueAt']).astimezone(PARIS).date().isoformat()==target
         and p['id'] not in owned_ids]
     if unknown_at_target:
