@@ -8,7 +8,7 @@ import os
 from . import run
 from .catalogue import bank
 from .storytelling import editorial_eligible
-from .buffer import Buffer,is_anecdote,parse
+from .buffer import Buffer,is_story,is_anecdote,parse
 from calendrier_editorial import validate_slot
 from controle_file import final_guard
 from journal_publication import checkpoint
@@ -25,7 +25,7 @@ CANDIDATES=list(dict.fromkeys([x[1] for x in DATES.values()]+['dore-cinq-cents-g
 PLAN=run.REPORT/'RENOUVELLEMENT.json'
 
 def match(posts,date,old):
-    same=[p for p in posts if parse(p['dueAt']).astimezone(run.PARIS).date().isoformat()==date]
+    same=[p for p in posts if not is_story(p) and parse(p['dueAt']).astimezone(run.PARIS).date().isoformat()==date]
     if len(same)!=1:return None
     p=same[0]
     if p['id']!=old.get('id_buffer') or p['status']!='scheduled' or not is_anecdote(p):return None

@@ -9,7 +9,7 @@ from pathlib import Path
 from . import run
 from .catalogue import bank,read,write
 from .storytelling import editorial_eligible
-from .buffer import Buffer,parse,is_anecdote
+from .buffer import Buffer,is_story,parse,is_anecdote
 from calendrier_editorial import validate_slot
 from controle_file import final_guard
 
@@ -22,7 +22,7 @@ PLAN=run.REPORT/'EXEMPLE_9_DECEMBRE.json'
 
 def matching(buffer,old):
     posts=buffer.list_scheduled()
-    same=[p for p in posts if parse(p['dueAt']).astimezone(run.PARIS).date().isoformat()==DATE]
+    same=[p for p in posts if not is_story(p) and parse(p['dueAt']).astimezone(run.PARIS).date().isoformat()==DATE]
     if len(same)!=1:raise RuntimeError('Créneau absent ou en conflit')
     p=same[0]
     if p['id']!=POST_ID or p['status']!='scheduled' or not is_anecdote(p) or parse(p['dueAt'])!=parse(DUE):
