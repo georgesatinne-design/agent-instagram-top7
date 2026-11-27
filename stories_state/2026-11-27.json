@@ -1,12 +1,15 @@
 {
   "date": "2026-11-27",
   "due": "2026-11-27T19:00:00.000Z",
-  "etat": "PROGRAMME",
+  "etat": "EN_COURS",
   "id_post_principal": "6b08495702d874faa50589d4",
-  "revision": "a9fadeedec9f010598",
-  "text": "📲 STORY ILLYADERA — 2026-11-27 — TOP 7 BD",
-  "file": "public_media/stories_illyadera/2026-11-27/a9fadeedec9f010598/story.png",
-  "url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/stories_illyadera/2026-11-27/a9fadeedec9f010598/story.png",
-  "id_buffer": "6b08e45070e2a88e2ceaf39f",
-  "confirmation_utc": "2026-11-27T02:00:49.088145+00:00"
+  "revision": "605c4af3a547698af1",
+  "text": "📲 STORY ILLYADERA — 2026-11-27 — TOP 7 BD — original",
+  "file": "public_media/BD_2026-11-15/BD/08_recapitulatif.png",
+  "url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/BD_2026-11-15/BD/08_recapitulatif.png",
+  "previous": {
+    "id_buffer": "6b08e45070e2a88e2ceaf39f",
+    "text": "📲 STORY ILLYADERA — 2026-11-27 — TOP 7 BD",
+    "due": "2026-11-27T19:00:00.000Z"
+  }
 }
