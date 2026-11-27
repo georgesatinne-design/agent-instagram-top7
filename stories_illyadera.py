@@ -1,41 +1,186 @@
-"""Annulation unique de la story indépendante du 27 novembre; aucune création."""
-import json,datetime as dt,subprocess
+"""Une story Instagram par jour à 20 h Paris, promotion du post réel.
+Aucune création sans publication principale identifiée par reçu + API Buffer.
+Aucun changement de date, aucune suppression de post principal.
+"""
+from __future__ import annotations
+import argparse
+import datetime as dt
+import hashlib
+import json
+import os
+import subprocess
 from pathlib import Path
-from anecdotes_auto.buffer import Buffer,parse
+from PIL import Image
+from anecdotes_auto.buffer import Buffer,CREATE,EDIT,is_story,parse
+
+from audit_buffer import category
+from calendrier_editorial import aware,PARIS,utc,slot_on
+from media_preflight import verify_public_assets
+
 ROOT=Path(__file__).resolve().parent
-RECEIPT=ROOT/'stories_state'/'2026-11-27.json'
-ID='6b08e45070e2a88e2ceaf39f'
-TEXT='📲 STORY ILLYADERA — 2026-11-27 — TOP 7 BD'
-DUE='2026-11-27T19:00:00.000Z'
-QUERY="""query CleanupStory($organizationId: OrganizationId!, $channelId: ChannelId!) {
- posts(first: 80,input:{organizationId:$organizationId,filter:{channelIds:[$channelId],status:[scheduled]}}) {
- pageInfo {hasNextPage} edges {node {id text dueAt status channelId metadata {... on InstagramPostMetadata {type}}}}
+STATE=ROOT/'stories_state'
+PLAN=ROOT/'sorties'/'stories_illyadera'/'plan.json'
+PUBLIC=ROOT/'public_media'/'stories_illyadera'
+PREFIX='📲 STORY ILLYADERA'
+# Query the exact day including the published feed; status 'sent' and automatic
+# distinguishes actually published content from reminders.
+QUERY="""query StoryDay($organizationId: OrganizationId!, $channelId: ChannelId!, $start: DateTime!, $end: DateTime!) {
+ posts(first: 80,input:{organizationId:$organizationId,filter:{channelIds:[$channelId],status:[scheduled,sent,error,sending],dueAt:{start:$start,end:$end}}}) {
+ pageInfo {hasNextPage} edges {node {id text dueAt status channelId schedulingType metadata {... on InstagramPostMetadata {type}}}}
  }
 }"""
-def lookup(buf):
-    a=buf.call(QUERY,{'organizationId':buf.organization(),'channelId':buf.channel_id}).get('posts')
-    if not isinstance(a,dict) or (a.get('pageInfo') or {}).get('hasNextPage') is not False:raise RuntimeError('Lecture incomplète')
-    return [p for e in a['edges'] if (p:=e['node']).get('id')==ID]
-def save(r,state):
-    r['etat']=state;r['confirmation_annulation_utc']=dt.datetime.now(dt.timezone.utc).isoformat()
-    RECEIPT.write_text(json.dumps(r,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
-    rel=RECEIPT.relative_to(ROOT).as_posix()
-    def git(*args):subprocess.run(['git',*args],cwd=ROOT,check=True,timeout=60)
-    git('add','--',rel);git('commit','-m','Annulation story indépendante sur demande','--',rel);git('push','origin','HEAD:main')
+def read(p,default=None):
+    return json.loads(p.read_text(encoding='utf8')) if p.is_file() else default
+def write(p,v):
+    p.parent.mkdir(parents=True,exist_ok=True)
+    t=p.with_suffix('.tmp');t.write_text(json.dumps(v,ensure_ascii=False,indent=2)+'\n',encoding='utf8');t.replace(p)
+def checkpoint(p):
+    if os.environ.get('ILLYADERA_DURABLE_JOURNAL')!='1':return
+    if os.environ.get('GITHUB_REF')!='refs/heads/main':raise RuntimeError('Journal hors main')
+    rel=p.relative_to(ROOT).as_posix()
+    def git(*args):return subprocess.run(['git',*args],cwd=ROOT,check=True,capture_output=True,text=True,timeout=60)
+    git('add','--',rel)
+    if git('status','--porcelain','--',rel).stdout.strip():git('commit','--only','-m','Journal story Illyadera','--',rel)
+    git('push','origin','HEAD:main')
+def today_posts(buffer,day):
+    start=dt.datetime.combine(day,dt.time.min,tzinfo=PARIS)
+    result=buffer.call(QUERY,{'organizationId':buffer.organization(),'channelId':buffer.channel_id,'start':utc(start),'end':utc(start+dt.timedelta(days=1))}).get('posts')
+    if not isinstance(result,dict) or (result.get('pageInfo') or {}).get('hasNextPage') is not False:raise RuntimeError('Lecture du jour incomplète')
+    out=[]
+    for edge in result.get('edges',[]):
+        p=edge.get('node') or {}
+        if p.get('channelId')!=buffer.channel_id or not p.get('dueAt'):continue
+        if parse(p['dueAt']).astimezone(PARIS).date()==day:out.append(p)
+    return out
+def source_record(post,day):
+    k=category(post.get('text',''));d=day.isoformat();pid=post['id']
+    if k=='ANECDOTE':
+        r=(read(ROOT/'anecdotes_state'/'programmes.json',{}) or {}).get(d,{})
+        if r.get('etat')!='PROGRAMME' or r.get('id_buffer')!=pid or r.get('texte_public','').strip()!=post['text'].strip():return None
+        return r['dossier'],r['images'][0]
+    if k=='ACTUS':
+        r=read(ROOT/'actus_state'/(d+'.json'),{}) or {}
+        if r.get('etat')!='PROGRAMME' or r.get('id_buffer')!=pid or r.get('text','').strip()!=post['text'].strip():return None
+        return r['folder'],r['names'][0]
+    roots={'BD':'buffer_receipts','MANGA':'manga_buffer_receipts','COMICS_HEBDO':'comics_buffer_receipts','COMICS_MENSUEL':'comics_buffer_receipts'}
+    if k not in roots:return None
+    for file in (ROOT/roots[k]).glob('*.json'):
+        r=read(file,{})
+        if r.get('statut')!='POST_PROGRAMME' or r.get('id_buffer')!=pid or not r.get('date_programmee_utc') or parse(r['date_programmee_utc'])!=parse(post['dueAt']):continue
+        folder=ROOT/'public_media'/r['edition']
+        if k=='BD':choices=[folder/'BD']
+        elif k=='MANGA':choices=[folder/(r.get('version_contenu') and 'MANGA_sans_sources_v1' or 'MANGA')]
+        else:choices=sorted(folder.glob('COMICS_*'))
+        # If multiple revisions cannot be resolved, use the actual caption
+        # without copying an unverified old visual.
+        if len(choices)!=1:return ('','')
+        recaps=sorted(choices[0].glob('*recap*.png'))
+        images=recaps or sorted(choices[0].glob('*.png'))
+        if not images:return ('','')
+        return choices[0].relative_to(ROOT).as_posix(),images[-1 if recaps else 0].name
+    return None
+def select(posts,day,now):
+    main=[p for p in posts if not is_story(p) and category(p.get('text',''))!='AUTRE' and parse(p['dueAt']).astimezone(PARIS)==slot_on(day)]
+    if len(main)!=1:return None
+    p=main[0]
+    if now>=slot_on(day)+dt.timedelta(minutes=30):
+        if p.get('status')!='sent' or p.get('schedulingType')!='automatic':return None
+    elif p.get('status') not in ('scheduled','sent'):return None
+    r=source_record(p,day)
+    return (p,r) if r is not None else None
+def title(post):
+    k=category(post['text'])
+    if k=='ANECDOTE':
+        lines=[x.strip() for x in post['text'].splitlines() if x.strip()]
+        return ('ANECDOTE DU 9e ART',lines[1] if len(lines)>1 else 'Le savais-tu ?')
+    if k=='ACTUS':return ('LES 5 ACTUS DU 9e ART','Cinq informations à découvrir')
+    return ({'BD':'TOP 7 BD','MANGA':'TOP 7 MANGA','COMICS_HEBDO':'TOP 5 COMICS','COMICS_MENSUEL':'TOP 7 COMICS'}[k],'Les meilleures ventes')
+def original_media(source):
+    # No design, border, overlay, crop, recompression or newly created file.
+    if not source[0] or not source[1]:raise RuntimeError('Visuel original non identifié')
+    src=(ROOT/source[0]/source[1]).resolve()
+    if not src.is_relative_to((ROOT/'public_media').resolve()):raise ValueError('Média hors dépôt')
+    with Image.open(src) as img:
+        if img.format not in ('PNG','JPEG') or not 0.75<=img.width/img.height<=1.91:
+            raise ValueError('Format original incompatible')
+    if src.stat().st_size>8_000_000:raise ValueError('Original trop volumineux')
+    return src
+def prepare(repo,*,buffer=None,now=None):
+    now=aware(now);day=now.date();due=utc(dt.datetime.combine(day,dt.time(20),tzinfo=PARIS))
+    if parse(due)<=now+dt.timedelta(minutes=15):write(PLAN,{'skip':'créneau trop proche'});return
+    buffer=buffer or Buffer();posts=today_posts(buffer,day);candidate=select(posts,day,now)
+    rec=read(STATE/(day.isoformat()+'.json'),{}) or {}
+    if not candidate:
+        write(PLAN,{'skip':'aucun post principal confirmé','date':day.isoformat(),'cancel':bool(rec.get('etat')=='PROGRAMME' and now>=slot_on(day)+dt.timedelta(minutes=30))});return
+    post,source=candidate
+    digest=hashlib.sha256(('ORIGINAL_V2|'+post['id']+'|'+post['text']+'|'+str(source)).encode()).hexdigest()[:18]
+    if rec.get('etat')=='PROGRAMME' and rec.get('revision')==digest:
+        if any(is_story(p) and p['id']==rec.get('id_buffer') and p['status']=='scheduled' and parse(p['dueAt'])==parse(due) for p in posts):
+            write(PLAN,{'skip':'story déjà confirmée'});print('STORY_DEJA_PROGRAMMEE',day);return
+        if any(p['id']==rec.get('id_buffer') and p['status']=='sent' for p in posts):
+            write(PLAN,{'skip':'story déjà publiée'});return
+        raise RuntimeError('Story antérieure absente : pas de doublon')
+    if rec.get('etat')=='EN_COURS':
+        write(PLAN,rec);return
+    dest=original_media(source)
+    text=PREFIX+' — '+day.isoformat()+' — '+title(post)[0]+' — original'
+    plan={'date':day.isoformat(),'due':due,'etat':'PRET','id_post_principal':post['id'],'revision':digest,'text':text,
+          'file':dest.relative_to(ROOT).as_posix(),'url':f'https://raw.githubusercontent.com/{repo}/main/{dest.relative_to(ROOT).as_posix()}'}
+    if rec.get('etat')=='PROGRAMME':
+        live=[p for p in posts if is_story(p) and p['id']==rec.get('id_buffer') and p['status']=='scheduled']
+        if live:plan['previous']={k:rec[k] for k in ('id_buffer','text','due')}
+        elif any(is_story(p) for p in posts):raise RuntimeError('Autre story déjà présente')
+    write(PLAN,plan)
+def send(*,buffer=None,now=None):
+    now=aware(now);buffer=buffer or Buffer();plan=read(PLAN,{})
+    if plan.get('skip'):
+        if plan.get('cancel'):
+            path=STATE/(plan['date']+'.json');r=read(path,{})
+            q=buffer.list_scheduled()
+            matching=[p for p in q if is_story(p) and p['id']==r.get('id_buffer') and parse(p['dueAt'])==parse(r['due']) and p['text'] in ('',r['text'])]
+            if len(matching)==1:
+                r['etat']='ANNULATION_EN_COURS';write(path,r);checkpoint(path)
+                buffer.delete_own(matching[0]['id']);r['etat']='ANNULE_POST_PRINCIPAL_NON_CONFIRME';write(path,r);checkpoint(path)
+        print('STORY_SKIP',plan['skip']);return
+    day=dt.date.fromisoformat(plan['date']);due=plan['due'];path=STATE/(plan['date']+'.json')
+    if day!=now.date() or parse(due)<=now+dt.timedelta(minutes=15):raise RuntimeError('Créneau story expiré')
+    current=today_posts(buffer,day);candidate=select(current,day,now)
+    if not candidate or candidate[0]['id']!=plan['id_post_principal']:raise RuntimeError('Post principal modifié')
+    post,source=candidate
+    revision=hashlib.sha256(('ORIGINAL_V2|'+post['id']+'|'+post['text']+'|'+str(source)).encode()).hexdigest()[:18]
+    if revision!=plan['revision']:raise RuntimeError('Contenu principal modifié')
+    prior=read(path,{}) or {};queue=buffer.list_scheduled()
+    stories=[p for p in queue if is_story(p) and parse(p['dueAt']).astimezone(PARIS).date()==day]
+    # Real story metadata is mandatory; no duplicates even if text is stripped.
+    if prior.get('etat')=='EN_COURS':
+        exact=[p for p in stories if parse(p['dueAt'])==parse(due) and p['text']==plan['text']]
+        if len(exact)==1 and (not plan.get('previous') or exact[0]['id']==plan['previous']['id_buffer']):
+            plan.update(etat='PROGRAMME',id_buffer=exact[0]['id']);write(path,plan);checkpoint(path);print('STORY_PROGRAMMEE_RECONCILIEE',day);return
+        raise RuntimeError('Mutation incertaine : aucun doublon')
+    assets=[{'image':{'url':plan['url']}}]
+    src=original_media(source)
+    if src.relative_to(ROOT).as_posix()!=plan['file']:raise RuntimeError('Visuel source modifié')
+    verify_public_assets(assets)
+    previous=plan.get('previous')
+    if previous:
+        owned=[p for p in stories if p['id']==previous['id_buffer'] and parse(p['dueAt'])==parse(previous['due']) and p['text'] in ('',previous['text'])]
+        if len(stories)!=1 or len(owned)!=1:raise RuntimeError('Story à modifier non identifiée')
+        payload={'id':owned[0]['id']};query=EDIT;key='editPost'
+    else:
+        if stories:raise RuntimeError('Une story existe déjà aujourd’hui')
+        if len(queue)>=10:print('STORY_SKIP plafond gratuit, réessai après le post');return
+        payload={'channelId':buffer.channel_id,'needsApproval':False};query=CREATE;key='createPost'
+    payload.update(text=plan['text'],assets=assets,mode='customScheduled',dueAt=due,schedulingType='automatic',metadata={'instagram':{'type':'story','shouldShareToFeed':False}})
+    if buffer.list_scheduled()!=queue:raise RuntimeError('File modifiée pendant le contrôle')
+    plan['etat']='EN_COURS';write(path,plan);checkpoint(path)
+    result=buffer.call(query,{'input':payload}).get(key) or {};saved=result.get('post') or {}
+    if result.get('message') or saved.get('status')!='scheduled' or not saved.get('id') or parse(saved['dueAt'])!=parse(due):raise RuntimeError('Buffer story refusée : '+str(result.get('message','réponse incomplète'))[:180])
+    live=[p for p in buffer.list_scheduled() if p['id']==saved['id'] and is_story(p) and parse(p['dueAt'])==parse(due)]
+    if len(live)!=1 or live[0]['text'] not in ('',plan['text']):raise RuntimeError('Story non confirmée par relecture Buffer')
+    plan.update(etat='PROGRAMME',id_buffer=saved['id'],confirmation_utc=dt.datetime.now(dt.timezone.utc).isoformat());write(path,plan);checkpoint(path)
+    print('STORY_PROGRAMMEE',day,'20h Paris','original',plan['file'],'type story vérifié dans Buffer')
 def main():
-    r=json.loads(RECEIPT.read_text(encoding='utf8'))
-    if r['id_buffer']!=ID or r['text']!=TEXT or parse(r['due'])!=parse(DUE):raise RuntimeError('Reçu inattendu')
-    b=Buffer();posts=lookup(b)
-    if not posts:
-        if r['etat']=='ANNULEE':print('STORY_ANNULEE_VERIFIEE');return
-        if parse(DUE)<=dt.datetime.now(dt.timezone.utc):raise RuntimeError('Story possiblement déjà publiée, aucune suppression')
-        save(r,'ABSENTE_DE_LA_FILE');print('STORY_ABSENTE_FILE');return
-    if len(posts)!=1:raise RuntimeError('Identité ambiguë')
-    p=posts[0]
-    if p.get('status')!='scheduled' or p.get('channelId')!=b.channel_id or p.get('text') not in ('',TEXT) or parse(p['dueAt'])!=parse(DUE) or (p.get('metadata') or {}).get('type')!='story':raise RuntimeError('Story non identifiée')
-    if lookup(b)!=posts:raise RuntimeError('Story modifiée')
-    save(r,'ANNULATION_EN_COURS')
-    b.delete_own(ID)
-    if lookup(b):raise RuntimeError('Annulation non confirmée')
-    save(r,'ANNULEE');print('STORY_ANNULEE_VERIFIEE',ID)
+    p=argparse.ArgumentParser();p.add_argument('action',choices=['prepare','send']);a=p.parse_args()
+    if a.action=='prepare':prepare(os.environ['GITHUB_REPOSITORY'])
+    else:send()
 if __name__=='__main__':main()

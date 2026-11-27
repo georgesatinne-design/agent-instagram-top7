@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 from PIL import Image,ImageDraw
 from . import run
-from .buffer import Buffer,is_anecdote,parse
+from .buffer import Buffer,is_story,is_anecdote,parse
 from .visuels import font,NIGHT,YELLOW,_footer,_mini_brand
 from calendrier_editorial import validate_slot
 from controle_file import final_guard
@@ -42,7 +42,7 @@ def rebrand(source,dest,number):
     im.save(dest,optimize=True)
 
 def matching(posts,date,old):
-    same=[p for p in posts if parse(p['dueAt']).astimezone(run.PARIS).date().isoformat()==date]
+    same=[p for p in posts if not is_story(p) and parse(p['dueAt']).astimezone(run.PARIS).date().isoformat()==date]
     if len(same)!=1:return None
     p=same[0]
     if p['id']!=old.get('id_buffer') or p['status']!='scheduled' or not is_anecdote(p):return None
