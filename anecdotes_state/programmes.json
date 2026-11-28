@@ -248,7 +248,7 @@
   "2026-12-01": {
     "fact_id": "fenouillard-feuilleton",
     "sujet": "fenouillard",
-    "etat": "EN_ATTENTE",
+    "etat": "PROGRAMME",
     "date": "2026-12-01",
     "due_at": "2026-12-01T17:00:00.000Z",
     "dossier": "public_media/anecdotes_bd/2026-12-01/fenouillard-feuilleton_487039cd1ac47a0717",
@@ -263,6 +263,9 @@
     "revision": "487039cd1ac47a0717",
     "date_preparation": "2026-11-28T02:14:20.586946+00:00",
     "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nUne famille de bd née dans un journal pour enfants\n\nChristophe fait vivre les aventures de la Famille Fenouillard en feuilleton à partir de 1889.\n\nQuel feuilleton BD aimerais-tu retrouver ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
-    "empreinte_fait": "d6cfdf85a18df97d7e"
+    "empreinte_fait": "d6cfdf85a18df97d7e",
+    "id_buffer": "6b0a395eeada83daa6b98a0f",
+    "date_confirmation": "2026-11-28T02:15:57.245532+00:00",
+    "version_visuelle": "BD_STORY_PHOTOS_V7_MULTI_SOURCES_2026_11_9E_ART"
   }
 }
