@@ -179,7 +179,7 @@ class ImageDiscoveryV7(unittest.TestCase):
               neighbour:{'etat':'PROGRAMME','fact_id':'bruxelles-1984','sujet':'bruxelles',
                        'id_buffer':'post-30','texte_public':'📚 ANECDOTE BD — LE SAVAIS-TU ?\nDéjà valide',
                        'version_visuelle':'BD_STORY_PHOTOS_V5_NARRATION_SEMANTIQUE_2026_11'}})
-            catalogue.write(state/'stock_photos_verifiees.json',{'bruxelles-horta':{'statut':'PRET'}})
+            catalogue.write(state/'stock_photos_verifiees.json',{'saphir-theatre-takarazuka':{'statut':'PRET'}})
             originals=[];proofs=[]
             for i,page in enumerate((1,3,4)):
                 p=root/f'photo-{i}.jpg';p.write_bytes(photo(100+i));originals.append(p)
@@ -204,7 +204,7 @@ class ImageDiscoveryV7(unittest.TestCase):
                     return {'id':post_id,'dueAt':due,'status':'scheduled'}
             buff=BufferStub()
             def media(f):
-                if f['id']=='bruxelles-horta':return originals,proofs
+                if f['id']=='saphir-theatre-takarazuka':return originals,proofs
                 raise photos_reelles.PhotosIndisponibles('Pas de photo correspondant au fait')
             now=dt.datetime(2026,11,29,0,tzinfo=dt.timezone.utc)
             with (patch.object(run,'ROOT_REPO',root),patch.object(run,'STATE',state),
@@ -216,7 +216,7 @@ class ImageDiscoveryV7(unittest.TestCase):
                 prep=run.prepare('owner/public',now=now,buffer=buff,collect=False)
                 self.assertEqual(prep['remplacements_non_effectues'],[])
                 chosen=catalogue.read(state/'programmes.json')[current]
-                self.assertEqual(chosen['fact_id'],'bruxelles-horta')
+                self.assertEqual(chosen['fact_id'],'saphir-theatre-takarazuka')
                 self.assertEqual(chosen['etat'],'EN_ATTENTE_MAJ')
                 report=run.send(now=now,buffer=buff)
             self.assertEqual(report['remplacements_non_effectues'],[])

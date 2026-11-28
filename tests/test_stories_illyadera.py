@@ -1,10 +1,20 @@
 import unittest
 import datetime as dt
-from stories_illyadera import original_media,select
+from stories_illyadera import original_media,select,safe_canvas
+from PIL import Image
 from anecdotes_auto.buffer import is_story
 from audit_buffer import report
 from calendrier_editorial import PARIS
 class StoryTests(unittest.TestCase):
+    def test_no_overflow(self):
+        for size in [(1080,1350),(1920,1080),(1080,1920),(200,300)]:
+            canvas=safe_canvas(Image.new('RGB',size,'#ffffff'))
+            self.assertEqual(canvas.size,(1080,1920))
+            from PIL import ImageChops
+            bounds=ImageChops.difference(canvas,Image.new('RGB',canvas.size,'#181818')).getbbox()
+            self.assertGreaterEqual(bounds[0],80);self.assertLessEqual(bounds[2],1000)
+            self.assertGreaterEqual(bounds[1],200);self.assertLessEqual(bounds[3],1720)
+            self.assertAlmostEqual((bounds[2]-bounds[0])/(bounds[3]-bounds[1]),size[0]/size[1],places=2)
     def test_no_artificial_media(self):
         with self.assertRaises(RuntimeError):original_media(('',''))
     def test_story_distincte(self):

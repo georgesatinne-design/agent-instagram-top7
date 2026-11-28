@@ -10,7 +10,7 @@ import json
 import os
 import subprocess
 from pathlib import Path
-from PIL import Image
+from PIL import Image,ImageOps
 from anecdotes_auto.buffer import Buffer,CREATE,EDIT,is_story,parse
 
 from audit_buffer import category
@@ -96,7 +96,7 @@ def title(post):
     if k=='ACTUS':return ('LES 5 ACTUS DU 9e ART','Cinq informations à découvrir')
     return ({'BD':'TOP 7 BD','MANGA':'TOP 7 MANGA','COMICS_HEBDO':'TOP 5 COMICS','COMICS_MENSUEL':'TOP 7 COMICS'}[k],'Les meilleures ventes')
 def original_media(source):
-    # No design, border, overlay, crop, recompression or newly created file.
+    # Source verified; adaptation only scales and centres the original.
     if not source[0] or not source[1]:raise RuntimeError('Visuel original non identifié')
     src=(ROOT/source[0]/source[1]).resolve()
     if not src.is_relative_to((ROOT/'public_media').resolve()):raise ValueError('Média hors dépôt')
@@ -105,6 +105,27 @@ def original_media(source):
             raise ValueError('Format original incompatible')
     if src.stat().st_size>8_000_000:raise ValueError('Original trop volumineux')
     return src
+STORY_VERSION='CONTAIN_SAFE_V3'
+def safe_canvas(image):
+    # 80px minimum lateral margin and 200px vertical safety zone.
+    # Never crop, stretch, add text or upscale.
+    original=image.convert('RGB')
+    scale=min(1,920/original.width,1520/original.height)
+    size=(max(1,int(original.width*scale)),max(1,int(original.height*scale)))
+    original=original.resize(size,Image.Resampling.LANCZOS) if size!=original.size else original
+    canvas=Image.new('RGB',(1080,1920),'#181818')
+    canvas.paste(original,((1080-size[0])//2,(1920-size[1])//2))
+    return canvas
+def adapted_media(source,day,digest):
+    src=original_media(source)
+    dest=PUBLIC/day.isoformat()/digest/'story.png'
+    dest.parent.mkdir(parents=True,exist_ok=True)
+    with Image.open(src) as im:canvas=safe_canvas(ImageOps.exif_transpose(im))
+    canvas.save(dest,optimize=True)
+    return dest
+def revision_for(post,source):
+    src=original_media(source)
+    return hashlib.sha256((STORY_VERSION+'|'+post['id']+'|'+post['text']+'|'+str(source)).encode()+src.read_bytes()).hexdigest()[:18]
 def prepare(repo,*,buffer=None,now=None):
     now=aware(now);day=now.date();due=utc(dt.datetime.combine(day,dt.time(20),tzinfo=PARIS))
     if parse(due)<=now+dt.timedelta(minutes=15):write(PLAN,{'skip':'créneau trop proche'});return
@@ -113,7 +134,7 @@ def prepare(repo,*,buffer=None,now=None):
     if not candidate:
         write(PLAN,{'skip':'aucun post principal confirmé','date':day.isoformat(),'cancel':bool(rec.get('etat')=='PROGRAMME' and now>=slot_on(day)+dt.timedelta(minutes=30))});return
     post,source=candidate
-    digest=hashlib.sha256(('ORIGINAL_V2|'+post['id']+'|'+post['text']+'|'+str(source)).encode()).hexdigest()[:18]
+    digest=revision_for(post,source)
     if rec.get('etat')=='PROGRAMME' and rec.get('revision')==digest:
         if any(is_story(p) and p['id']==rec.get('id_buffer') and p['status']=='scheduled' and parse(p['dueAt'])==parse(due) for p in posts):
             write(PLAN,{'skip':'story déjà confirmée'});print('STORY_DEJA_PROGRAMMEE',day);return
@@ -122,8 +143,8 @@ def prepare(repo,*,buffer=None,now=None):
         raise RuntimeError('Story antérieure absente : pas de doublon')
     if rec.get('etat')=='EN_COURS':
         write(PLAN,rec);return
-    dest=original_media(source)
-    text=PREFIX+' — '+day.isoformat()+' — '+title(post)[0]+' — original'
+    dest=adapted_media(source,day,digest)
+    text=PREFIX+' — '+day.isoformat()+' — '+title(post)[0]+' — image entière'
     plan={'date':day.isoformat(),'due':due,'etat':'PRET','id_post_principal':post['id'],'revision':digest,'text':text,
           'file':dest.relative_to(ROOT).as_posix(),'url':f'https://raw.githubusercontent.com/{repo}/main/{dest.relative_to(ROOT).as_posix()}'}
     if rec.get('etat')=='PROGRAMME':
@@ -147,7 +168,7 @@ def send(*,buffer=None,now=None):
     current=today_posts(buffer,day);candidate=select(current,day,now)
     if not candidate or candidate[0]['id']!=plan['id_post_principal']:raise RuntimeError('Post principal modifié')
     post,source=candidate
-    revision=hashlib.sha256(('ORIGINAL_V2|'+post['id']+'|'+post['text']+'|'+str(source)).encode()).hexdigest()[:18]
+    revision=revision_for(post,source)
     if revision!=plan['revision']:raise RuntimeError('Contenu principal modifié')
     prior=read(path,{}) or {};queue=buffer.list_scheduled()
     stories=[p for p in queue if is_story(p) and parse(p['dueAt']).astimezone(PARIS).date()==day]
@@ -158,8 +179,10 @@ def send(*,buffer=None,now=None):
             plan.update(etat='PROGRAMME',id_buffer=exact[0]['id']);write(path,plan);checkpoint(path);print('STORY_PROGRAMMEE_RECONCILIEE',day);return
         raise RuntimeError('Mutation incertaine : aucun doublon')
     assets=[{'image':{'url':plan['url']}}]
-    src=original_media(source)
+    src=PUBLIC/day.isoformat()/revision/'story.png'
     if src.relative_to(ROOT).as_posix()!=plan['file']:raise RuntimeError('Visuel source modifié')
+    with Image.open(src) as im:
+        if im.size!=(1080,1920):raise ValueError('Format story incorrect')
     verify_public_assets(assets)
     previous=plan.get('previous')
     if previous:

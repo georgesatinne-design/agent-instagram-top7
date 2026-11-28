@@ -65,7 +65,7 @@ class TestStoryV3(unittest.TestCase):
             catalogue.write(state/'programmes.json',current)
             def photo(fact,*args,**kwargs):
                 # l’ancienne anecdote n’a pas de photo validée ; une autre en a une
-                if fact['id']=='bruxelles-horta':return [BASE],[{'licence':'CC0 1.0','titre_commons':'sample'}]
+                if fact['id']=='saphir-theatre-takarazuka':return [BASE],[{'licence':'CC0 1.0','titre_commons':'sample'}]
                 raise photos_reelles.PhotosIndisponibles('Pas de photo approuvée pour cet album')
             with patch.object(run,'ROOT_REPO',root),patch.object(run,'STATE',state),\
                  patch.object(run,'REGISTRY',state/'programmes.json'),\
@@ -78,7 +78,7 @@ class TestStoryV3(unittest.TestCase):
                 receipt=json.loads((state/'programmes.json').read_text())['2026-11-25']
                 self.assertEqual(receipt['etat'],'EN_ATTENTE_MAJ')
                 self.assertEqual(receipt['ancien_fact_id'],'urban-superman-vo')
-                self.assertEqual(receipt['fact_id'],'bruxelles-horta')
+                self.assertEqual(receipt['fact_id'],'saphir-theatre-takarazuka')
                 end=run.send(now=now,buffer=fake)
                 self.assertEqual(len(end['programmes']),1)
                 self.assertEqual(len(fake.edits),1)

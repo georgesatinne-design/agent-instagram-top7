@@ -354,8 +354,9 @@ def render(fact,folder,photos=None,*,audit_path=None,scenes=None):
 
 
 def caption(fact):
+    from marketing_illyadera import cta,tags
     s=story(fact)
     return ('📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\n'+
             s['hook'].capitalize().rstrip(' .')+'\n\n'+
             s['revelation']+'\n\n'+
-            s['question']+' 👇\n\n#BandeDessinee #BD #9eArt #PassionBD')
+            cta('ANECDOTE',s['question'])+' 👇\n\n'+tags('ANECDOTE'))

@@ -55,7 +55,9 @@ def render(items,folder,day):
 def caption(items,day):
     t=PREFIX+' — '+day.strftime('%d/%m/%Y')+'\n\n'
     for i,x in enumerate(items,1):t+=f"{i}. {x['title']}\nSource : {x['source']} — {x['url']}\n\n"
-    t+='#BD #Manga #Comics #9eArt #ActualitesBD'
+    from marketing_illyadera import cta,tags
+    if len(t)+len(cta('ACTUS'))+len(tags('ACTUS'))+4<=2200:t+=cta('ACTUS')+'\n\n'
+    t+=tags('ACTUS')
     if len(t)>2200:raise ValueError('Légende trop longue')
     return t
 def prepare(repo,*,now=None,buffer=None):

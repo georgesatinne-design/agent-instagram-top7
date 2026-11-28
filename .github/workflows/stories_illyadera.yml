@@ -1,4 +1,4 @@
-name: Story quotidienne - visuel original du post
+name: Story quotidienne - image entière sans recadrage
 on:
   push:
     branches: [main]
@@ -42,5 +42,10 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           python -m stories_illyadera prepare
+          if [ -d public_media/stories_illyadera ]; then git add public_media/stories_illyadera; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'Story - image entière centrée 1080x1920'
+            git push origin HEAD:main
+          fi
       - name: Programmer la story à 20 h et vérifier Buffer
         run: python -m stories_illyadera send

@@ -85,4 +85,8 @@ La migration du bandeau des anecdotes déjà programmées réutilise uniquement 
 
 ## Story du jour
 
-À 20 h Paris, une story utilise directement un fichier du carrousel réellement prévu ou publié le jour même (couverture pour les anecdotes et actus, récapitulatif pour les classements). Aucun dessin, recadrage ni fichier nouveau. Il s'agit d'une story indépendante, non d'un partage natif cliquable du post. Le plafond Buffer Free de dix éléments est conservé ; une place est réservée par le remplissage anecdotes et aucune publication principale n'est supprimée pour créer une story.
+À 20 h Paris, une story utilise directement un fichier du carrousel réellement prévu ou publié le jour même (couverture pour les anecdotes et actus, récapitulatif pour les classements). Aucun nouveau design ni texte. Le visuel entier est réduit et centré sur fond neutre 1080×1920, zone sûre 920×1520, sans recadrage. Il s'agit d'une story indépendante, non d'un partage natif cliquable du post. Le plafond Buffer Free de dix éléments est conservé ; une place est réservée par le remplissage anecdotes et aucune publication principale n'est supprimée pour créer une story.
+
+## Agent marketing
+
+Analyse automatique hebdomadaire des métriques post-level Buffer disponibles avec la clé existante, lecture seule. Les statistiques brutes ne sont pas archivées dans le dépôt public. Comparaison des posts âgés de 2 à 28 jours, quatre échantillons comparables minimum, décision prudente de CTA par format. Les nouveaux contenus appliquent les légendes et hashtags pertinents ; le calendrier reste stable en l'absence de preuve. Pas d'achat de trafic, automatisation d'interactions ou abonnement. Les signaux manquants restent déclarés indisponibles.

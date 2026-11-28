@@ -131,7 +131,7 @@ class TestRepriseV6(unittest.TestCase):
                  'pertinence':'Photographie d’archive des créateurs de Lucky Luke',
                  'licence':'CC0 1.0','famille_source':f'original-{n}'})
             def fake_resolve(fact):
-                if fact['id']=='lucky-luke-morris':return images,proofs
+                if fact['id']=='saphir-theatre-takarazuka':return images,proofs
                 raise photos_reelles.PhotosIndisponibles('Photo absente')
             now=dt.datetime(2026,11,28,10,tzinfo=PARIS)
             with patch.object(run,'ROOT_REPO',root),patch.object(run,'STATE',state),\
@@ -145,7 +145,7 @@ class TestRepriseV6(unittest.TestCase):
                 self.assertEqual(prepared['remplacements_non_effectues'],[])
                 current=json.loads((state/'programmes.json').read_text())
                 self.assertEqual(current[date]['etat'],'EN_ATTENTE_MAJ')
-                self.assertEqual(current[date]['fact_id'],'lucky-luke-morris')
+                self.assertEqual(current[date]['fact_id'],'saphir-theatre-takarazuka')
                 result=run.send(now=now,buffer=fake)
                 self.assertEqual(len(result['programmes']),1)
                 self.assertEqual(result['remplacements_non_effectues'],[])
