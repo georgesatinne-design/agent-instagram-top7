@@ -11,8 +11,8 @@ from pathlib import Path
 from collections import defaultdict
 ROOT=Path(__file__).resolve().parent
 STATE=ROOT/'marketing_state'/'strategie.json'
-KINDS=('BD','MANGA','COMICS_HEBDO','COMICS_MENSUEL','ACTUS','ANECDOTE')
-DEFAULT={'BD':'save','MANGA':'comment','COMICS_HEBDO':'comment','COMICS_MENSUEL':'save','ACTUS':'share','ANECDOTE':'comment'}
+KINDS=('BD','MANGA','COMICS_HEBDO','COMICS_MENSUEL','ACTUS','ANECDOTE','REEL','STORY')
+DEFAULT={'BD':'save','MANGA':'comment','COMICS_HEBDO':'comment','COMICS_MENSUEL':'save','ACTUS':'share','ANECDOTE':'comment','REEL':'share','STORY':'comment'}
 CTA={
  'BD':{'save':'Garde ce classement pour ta prochaine visite en librairie.','share':'Partage ce classement avec un lecteur de BD.','comment':'Quel album de ce classement as-tu envie de lire ?'},
  'MANGA':{'save':'Garde ce classement pour ta prochaine lecture.','share':'Partage ce classement avec un fan de manga.','comment':'Quel manga de ce classement recommandes-tu ?'},
@@ -21,12 +21,16 @@ CTA={
  'ACTUS':{'save':'Garde ces cinq infos pour retrouver les sources.','share':'Partage cette sélection avec un passionné du 9e art.','comment':'Laquelle de ces cinq actualités te semble la plus marquante ?'},
  'ANECDOTE':{'save':'Garde cette anecdote pour la raconter plus tard.','share':'Partage cette anecdote avec un passionné du 9e art.'},
 }
+CTA['REEL']=CTA['ANECDOTE']
+CTA['STORY']={}
 TAGS={'BD':['BandeDessinee','BD','9eArt','LectureBD'],
 'MANGA':['Manga','MangaFrance','LectureManga','9eArt'],
 'COMICS_HEBDO':['Comics','ComicsFrance','LectureComics','9eArt'],
 'COMICS_MENSUEL':['Comics','ComicsFrance','LectureComics','9eArt'],
 'ACTUS':['ActualitesBD','BandeDessinee','Manga','Comics','9eArt'],
 'ANECDOTE':['BandeDessinee','BD','9eArt','PassionBD']}
+TAGS['REEL']=TAGS['ANECDOTE']
+TAGS['STORY']=[]
 QUERY="""query Marketing($org: OrganizationId!, $channel: ChannelId!, $cursor: String) {
  posts(first:50,after:$cursor,input:{organizationId:$org,filter:{status:[sent],channelIds:[$channel]}}){
  edges{node{id text dueAt channelId metadata{... on InstagramPostMetadata{type}} metrics{type name value unit} metricsUpdatedAt}}
@@ -55,7 +59,7 @@ def tags(kind,topic=None):
 def key(s):
     return ''.join(c for c in unicodedata.normalize('NFKD',str(s).lower()) if not unicodedata.combining(c) and c.isalnum())
 def metrics(post):
-    aliases={'reach':'reach','accountsreached':'reach','portee':'reach','impressions':'views','views':'views','likes':'likes','likecount':'likes','comments':'comment','commentcount':'comment','shares':'share','sharecount':'share','saves':'save','saved':'save','savecount':'save','savedcount':'save'}
+    aliases={'reach':'reach','accountsreached':'reach','portee':'reach','impressions':'views','views':'views','likes':'likes','likecount':'likes','comments':'comment','commentcount':'comment','shares':'share','sharecount':'share','saves':'save','saved':'save','savecount':'save','savedcount':'save','follows':'follows','followersgained':'follows','followscount':'follows','nonfollowersreach':'nonfollowers_reach','nonfollowerreach':'nonfollowers_reach','sends':'sends','sendcount':'sends','profilevisits':'profile_visits','plays':'plays','averagewatchtime':'watch_time','avgwatchtime':'watch_time','averagetimewatched':'watch_time','viewthroughrate':'completion'}
     out={}
     for item in post.get('metrics') or []:
         k=aliases.get(key(item.get('type',''))) or aliases.get(key(item.get('name','')))
@@ -66,39 +70,41 @@ def metrics(post):
     return out
 def classify(post):
     from audit_buffer import category
-    if (post.get('metadata') or {}).get('type')=='story':return 'STORY'
-    return category(post.get('text') or '')
+    kind=(post.get('metadata') or {}).get('type','').lower()
+    if kind=='story':return 'STORY'
+    k=category(post.get('text') or '')
+    return 'REEL' if k=='ANECDOTE' and kind in ('reel','reels') else k
 def summarize(posts,now):
-    groups=defaultdict(list);seen=set()
+    from marketing_experiences import evaluate,variant,START
+    groups=defaultdict(list);seen=set();experiment=[]
     for post in posts:
         if not post.get('id') or post['id'] in seen:continue
-        seen.add(post['id'])
-        k=classify(post)
+        seen.add(post['id']);k=classify(post)
         if k not in KINDS:continue
         try:
             date=dt.datetime.fromisoformat(post['dueAt'].replace('Z','+00:00'))
             age=(now-date).total_seconds()/86400
         except (ValueError,TypeError,KeyError):continue
-        if not 2<=age<=28:continue
         m=metrics(post)
-        if m.get('reach',0)>0:groups[k].append(m)
+        if 3<=age<=56 and date.date()>=START and k=='ANECDOTE' and m.get('reach',0)>0 and 'share' in m:
+            arm=variant(post.get('text'))
+            if arm:experiment.append((arm,m['share']/m['reach']))
+        if 2<=age<=28 and m:groups[k].append(m)
     formats={}
     for k in KINDS:
         rows=groups[k];counts={};rates={}
-        for a in ('save','share','comment'):
-            ratios=[m[a]/m['reach'] for m in rows if a in m]
-            counts[a]=len(ratios)
-            if len(ratios)>=4:rates[a]=statistics.median(ratios)
-        default=DEFAULT[k];winner=default
-        # require at least 4 matched samples and a meaningful relative uplift;
-        # do not infer causality or change timing on a small observational sample.
-        if len(rates)==3 and rates.get(default,0)>0:
-            best=max(rates,key=rates.get)
-            if rates[best]>=1.35*rates[default] and rates[best]-rates[default]>=.002:winner=best
-        formats[k]={'cta':winner,'echantillon':len(rows),'preuve':'SIGNAL_OBSERVATIONNEL' if winner!=default else 'REGLE_EDITORIALE',
-                    'mesures_comparables':counts}
-    return {'date':now.date().isoformat(),'status':'MESURES_DISPONIBLES' if any(groups.values()) else 'AUCUNE_MESURE_EXPLOITABLE','formats':formats,
-            'calendrier':'INCHANGE','notes':'Mesures observationnelles; aucun effet causal supposé. Aucun chiffre individuel publié.'}
+        for metric in ('likes','save','share','comment','sends','follows','profile_visits','nonfollowers_reach'):
+            ratios=[m[metric]/m['reach'] for m in rows if metric in m and m.get('reach',0)>0]
+            counts[metric]=len(ratios)
+            if len(ratios)>=4:rates[metric]=round(statistics.median(ratios),5)
+        for metric in ('reach','views','plays','watch_time','completion'):
+            counts[metric]=sum(metric in m for m in rows)
+        formats[k]={'cta':DEFAULT[k],'echantillon':len(rows),'preuve':'REGLE_EDITORIALE',
+                    'mesures_comparables':counts,'medianes_par_portee':rates,
+                    'mediane_portee':round(statistics.median([m['reach'] for m in rows if 'reach' in m])) if counts['reach']>=4 else None}
+    return {'date':now.date().isoformat(),'status':'MESURES_DISPONIBLES' if any(groups.values()) else 'AUCUNE_MESURE_EXPLOITABLE',
+            'formats':formats,'experience_anecdotes':evaluate(experiment),'calendrier':'INCHANGE',
+            'notes':'Réels, stories et carrousels séparés. Mesures absentes non assimilées à zéro. Aucun chiffre individuel publié.'}
 def collect(buffer):
     cursor=None;out=[]
     for i in range(5):
@@ -116,6 +122,10 @@ def main():
     try:result=summarize(collect(Buffer()),now)
     except Exception as exc:
         result=summarize([],now);result['status']='ACCES_METRIQUES_NON_CONFIRME';result['cause']=type(exc).__name__
+    from marketing_veille import collect_watch
+    from pilotage_illyadera import health
+    result['veille']=collect_watch()
+    result['production']=health()
     STATE.parent.mkdir(parents=True,exist_ok=True)
     tmp=STATE.with_suffix('.tmp');tmp.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf8');tmp.replace(STATE)
     print('MARKETING',result['status'],'formats',[(k,v['echantillon'],v['cta']) for k,v in result['formats'].items()])

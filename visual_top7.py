@@ -244,8 +244,9 @@ def render_top7(data,destination,cover_directory,*,use_watermark=False):
         if mv!='ÉVOLUTION NON DISPONIBLE':
             caption+=f' ({mv})'
         caption+='\n'
-    caption+='\nEt toi, lequel as-tu lu ? 👇\n\n'
-    caption+=f'\n#BD #BandesDessinees #TopBD #Lecture #ClassementBD' if data['categorie']=='BD' else ('\n#Manga #ClassementManga #Lecture' if data['categorie']=='MANGA' else '\n#Comics #ClassementComics #Lecture')
+    from marketing_illyadera import cta,tags
+    kind=data['categorie'] if data['categorie'] in ('BD','MANGA') else 'COMICS_MENSUEL'
+    caption+='\n'+cta(kind)+' 👇\n\n'+tags(kind)
     (target/'legende_instagram.txt').write_text(caption,encoding='utf-8')
     # Dossier de publication : aucune référence bibliographique ou URL n'est exposée.
     public_data={key:value for key,value in data.items() if key not in ('source','url_source','perimetre')}

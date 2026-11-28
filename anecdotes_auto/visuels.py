@@ -353,10 +353,11 @@ def render(fact,folder,photos=None,*,audit_path=None,scenes=None):
     return names
 
 
-def caption(fact):
-    from marketing_illyadera import cta,tags
+def caption(fact,day=None):
+    from marketing_illyadera import cta,tags,read_policy
+    from marketing_experiences import experiment_caption
     s=story(fact)
     return ('📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\n'+
             s['hook'].capitalize().rstrip(' .')+'\n\n'+
             s['revelation']+'\n\n'+
-            cta('ANECDOTE',s['question'])+' 👇\n\n'+tags('ANECDOTE'))
+            (experiment_caption(day,read_policy()) or cta('ANECDOTE',s['question']))+' 👇\n\n'+tags('ANECDOTE'))

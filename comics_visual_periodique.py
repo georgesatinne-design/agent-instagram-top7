@@ -89,7 +89,9 @@ def render(data,folder,covers,*,watermark=False):
         caption+=f'#{b["rang"]} {b["titre"]} — {b["editeur"]}'
         if m!='ÉVOLUTION NON DISPONIBLE':caption+=' ('+m+')'
         caption+='\n'
-    caption+='\nEt toi, lequel as-tu lu ? 👇\n\n#Comics #ClassementComics #Lecture\n'
+    from marketing_illyadera import cta,tags
+    kind='COMICS_HEBDO' if n==5 else 'COMICS_MENSUEL'
+    caption+='\n'+cta(kind)+' 👇\n\n'+tags(kind)+'\n'
     (folder/'legende_instagram.txt').write_text(caption,encoding='utf8')
     preview=Image.new('RGB',(4*282,2*364),'#e6e3ec')
     for i,p in enumerate(files):

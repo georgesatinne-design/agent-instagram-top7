@@ -87,7 +87,7 @@ def stage_fact(fact,day,repo,now):
     scene_plan=(media_proofs if all(m.get('page') for m in media_proofs) else None)
     images=render(fact,folder,photos=photos,scenes=scene_plan,
         audit_path=STATE/'audit_compositions'/f'{day.isoformat()}_{fact["id"]}.json')
-    text=caption(fact)
+    text=caption(fact,day=day if day.weekday()!=2 else None)
     (folder/'legende_instagram.txt').write_text(text+'\n',encoding='utf8')
     digest=hashlib.sha256(text.encode()+b''.join((folder/name).read_bytes() for name in images)).hexdigest()[:18]
     # Immutable publication URL for that fact/day/content revision.
