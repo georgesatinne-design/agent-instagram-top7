@@ -1,10 +1,12 @@
 {
   "date": "2026-11-28",
   "due": "2026-11-28T19:00:00.000Z",
-  "etat": "EN_COURS",
+  "etat": "PROGRAMME",
   "id_post_principal": "6b05551cc2cc76a6ce6a4ad5",
   "revision": "c08a284fb4bcfa44c1",
   "text": "📲 STORY ILLYADERA — 2026-11-28 — ANECDOTE DU 9e ART — image entière",
   "file": "public_media/stories_illyadera/2026-11-28/c08a284fb4bcfa44c1/story.png",
-  "url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/stories_illyadera/2026-11-28/c08a284fb4bcfa44c1/story.png"
+  "url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/stories_illyadera/2026-11-28/c08a284fb4bcfa44c1/story.png",
+  "id_buffer": "6b0af2c34ebef2b6d4e6236e",
+  "confirmation_utc": "2026-11-28T15:26:59.693681+00:00"
 }
