@@ -7,62 +7,337 @@
       "echantillon": 1,
       "preuve": "REGLE_EDITORIALE",
       "mesures_comparables": {
+        "likes": 0,
         "save": 1,
         "share": 1,
-        "comment": 1
-      }
+        "comment": 1,
+        "sends": 0,
+        "follows": 1,
+        "profile_visits": 0,
+        "nonfollowers_reach": 0,
+        "reach": 1,
+        "views": 1,
+        "plays": 0,
+        "watch_time": 0,
+        "completion": 0
+      },
+      "medianes_par_portee": {},
+      "mediane_portee": null
     },
     "MANGA": {
       "cta": "comment",
       "echantillon": 1,
       "preuve": "REGLE_EDITORIALE",
       "mesures_comparables": {
+        "likes": 0,
         "save": 1,
         "share": 1,
-        "comment": 1
-      }
+        "comment": 1,
+        "sends": 0,
+        "follows": 1,
+        "profile_visits": 0,
+        "nonfollowers_reach": 0,
+        "reach": 1,
+        "views": 1,
+        "plays": 0,
+        "watch_time": 0,
+        "completion": 0
+      },
+      "medianes_par_portee": {},
+      "mediane_portee": null
     },
     "COMICS_HEBDO": {
       "cta": "comment",
-      "echantillon": 0,
+      "echantillon": 1,
       "preuve": "REGLE_EDITORIALE",
       "mesures_comparables": {
-        "save": 0,
-        "share": 0,
-        "comment": 0
-      }
+        "likes": 0,
+        "save": 1,
+        "share": 1,
+        "comment": 1,
+        "sends": 0,
+        "follows": 1,
+        "profile_visits": 0,
+        "nonfollowers_reach": 0,
+        "reach": 1,
+        "views": 1,
+        "plays": 0,
+        "watch_time": 0,
+        "completion": 0
+      },
+      "medianes_par_portee": {},
+      "mediane_portee": null
     },
     "COMICS_MENSUEL": {
       "cta": "save",
       "echantillon": 0,
       "preuve": "REGLE_EDITORIALE",
       "mesures_comparables": {
+        "likes": 0,
         "save": 0,
         "share": 0,
-        "comment": 0
-      }
+        "comment": 0,
+        "sends": 0,
+        "follows": 0,
+        "profile_visits": 0,
+        "nonfollowers_reach": 0,
+        "reach": 0,
+        "views": 0,
+        "plays": 0,
+        "watch_time": 0,
+        "completion": 0
+      },
+      "medianes_par_portee": {},
+      "mediane_portee": null
     },
     "ACTUS": {
       "cta": "share",
       "echantillon": 0,
       "preuve": "REGLE_EDITORIALE",
       "mesures_comparables": {
+        "likes": 0,
         "save": 0,
         "share": 0,
-        "comment": 0
-      }
+        "comment": 0,
+        "sends": 0,
+        "follows": 0,
+        "profile_visits": 0,
+        "nonfollowers_reach": 0,
+        "reach": 0,
+        "views": 0,
+        "plays": 0,
+        "watch_time": 0,
+        "completion": 0
+      },
+      "medianes_par_portee": {},
+      "mediane_portee": null
     },
     "ANECDOTE": {
       "cta": "comment",
       "echantillon": 1,
       "preuve": "REGLE_EDITORIALE",
       "mesures_comparables": {
+        "likes": 0,
         "save": 1,
         "share": 1,
-        "comment": 1
-      }
+        "comment": 1,
+        "sends": 0,
+        "follows": 1,
+        "profile_visits": 0,
+        "nonfollowers_reach": 0,
+        "reach": 1,
+        "views": 1,
+        "plays": 0,
+        "watch_time": 0,
+        "completion": 0
+      },
+      "medianes_par_portee": {},
+      "mediane_portee": null
+    },
+    "REEL": {
+      "cta": "share",
+      "echantillon": 0,
+      "preuve": "REGLE_EDITORIALE",
+      "mesures_comparables": {
+        "likes": 0,
+        "save": 0,
+        "share": 0,
+        "comment": 0,
+        "sends": 0,
+        "follows": 0,
+        "profile_visits": 0,
+        "nonfollowers_reach": 0,
+        "reach": 0,
+        "views": 0,
+        "plays": 0,
+        "watch_time": 0,
+        "completion": 0
+      },
+      "medianes_par_portee": {},
+      "mediane_portee": null
+    },
+    "STORY": {
+      "cta": "comment",
+      "echantillon": 0,
+      "preuve": "REGLE_EDITORIALE",
+      "mesures_comparables": {
+        "likes": 0,
+        "save": 0,
+        "share": 0,
+        "comment": 0,
+        "sends": 0,
+        "follows": 0,
+        "profile_visits": 0,
+        "nonfollowers_reach": 0,
+        "reach": 0,
+        "views": 0,
+        "plays": 0,
+        "watch_time": 0,
+        "completion": 0
+      },
+      "medianes_par_portee": {},
+      "mediane_portee": null
     }
   },
+  "experience_anecdotes": {
+    "indicateur": "partages_par_compte_touche",
+    "effectifs": {
+      "A": 0,
+      "B": 0
+    },
+    "choix": null,
+    "etat": "COLLECTE",
+    "maturite_jours": [
+      3,
+      56
+    ],
+    "limite": "Comparaison prospective non randomisée; effet causal non démontré."
+  },
   "calendrier": "INCHANGE",
-  "notes": "Mesures observationnelles; aucun effet causal supposé. Aucun chiffre individuel publié."
+  "notes": "Réels, stories et carrousels séparés. Mesures absentes non assimilées à zéro. Aucun chiffre individuel publié.",
+  "veille": {
+    "date": "2026-11-28",
+    "etat": "OBSERVATIONS_PUBLIQUES",
+    "sources_observees": 4,
+    "sources": [
+      {
+        "source": "Bubble BD",
+        "url": "https://www.bubblebd.com/9emeart/bd",
+        "segment": "lectures",
+        "etat": "OBSERVE",
+        "titres_analyses": 2,
+        "formats_visibles": {
+          "actualite": 1
+        }
+      },
+      {
+        "source": "Bubble Manga",
+        "url": "https://www.bubblebd.com/9emeart/mangas",
+        "segment": "manga",
+        "etat": "OBSERVE",
+        "titres_analyses": 2,
+        "formats_visibles": {
+          "actualite": 1
+        }
+      },
+      {
+        "source": "ActuaBD",
+        "url": "https://www.actuabd.com/",
+        "segment": "actualites",
+        "etat": "HTTP_403"
+      },
+      {
+        "source": "Manga-news",
+        "url": "https://www.manga-news.com/",
+        "segment": "manga",
+        "etat": "OBSERVE",
+        "titres_analyses": 6,
+        "formats_visibles": {
+          "actualite": 2,
+          "selection": 1
+        }
+      },
+      {
+        "source": "Comicsblog",
+        "url": "https://www.comicsblog.fr/",
+        "segment": "comics",
+        "etat": "OBSERVE",
+        "titres_analyses": 31,
+        "formats_visibles": {
+          "actualite": 4,
+          "selection": 1,
+          "entretien": 6,
+          "video": 1,
+          "curiosite": 1
+        }
+      }
+    ],
+    "formats_visibles": {
+      "actualite": 8,
+      "selection": 2,
+      "entretien": 6,
+      "video": 1,
+      "curiosite": 1
+    },
+    "limites": "Pages éditoriales publiques, pas de statistiques privées, pas de prétention à mesurer la performance Instagram des concurrents.",
+    "positionnement": "Découvrir, comprendre et choisir ses lectures BD, manga et comics. Des faits sourcés, des classements avec périmètre exact et des récits courts originaux.",
+    "pistes": [
+      {
+        "format": "classements",
+        "objectif": "aide au choix et enregistrement"
+      },
+      {
+        "format": "actus",
+        "objectif": "sélection utile, diversité et source explicite"
+      },
+      {
+        "format": "reels",
+        "objectif": "curiosité, révélation rapide et partage"
+      },
+      {
+        "format": "anecdotes",
+        "objectif": "récit précis et mémorable"
+      }
+    ]
+  },
+  "production": {
+    "etat": "LECTURE_DIRECTE",
+    "workflows": {
+      "anecdotes_bd_auto.yml": {
+        "etat": "OK",
+        "resultat": "success",
+        "age_heures": 9.4,
+        "run_id": 46126197139
+      },
+      "anecdotes_bd_phototheque.yml": {
+        "etat": "OK",
+        "resultat": "success",
+        "age_heures": 12.3,
+        "run_id": 46113068824
+      },
+      "stories_illyadera.yml": {
+        "etat": "OK",
+        "resultat": "success",
+        "age_heures": 2.5,
+        "run_id": 46159899201
+      },
+      "reels_illyadera.yml": {
+        "etat": "OK",
+        "resultat": "success",
+        "age_heures": 1.4,
+        "run_id": 46165585650
+      },
+      "audit_buffer_lecture_seule.yml": {
+        "etat": "OK",
+        "resultat": "success",
+        "age_heures": 4.9,
+        "run_id": 46147309854
+      },
+      "manga_top7_collecte.yml": {
+        "etat": "A_CONTROLER",
+        "resultat": "failure",
+        "age_heures": 7.9,
+        "run_id": 46133010084
+      },
+      "hebdomadaire.yml": {
+        "etat": "OK",
+        "resultat": "success",
+        "age_heures": 7.7,
+        "run_id": 46134265015
+      },
+      "comics_top7_auto.yml": {
+        "etat": "A_CONTROLER",
+        "resultat": "failure",
+        "age_heures": 51.3,
+        "run_id": 45840432816
+      },
+      "actus_9e_art.yml": {
+        "etat": "OK",
+        "resultat": "success",
+        "age_heures": 16.3,
+        "run_id": 46094217709
+      }
+    },
+    "politique": "Pas de relance après mutation incertaine sans réconciliation des reçus. Aucun secret ni log brut conservé."
+  }
 }
