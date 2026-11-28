@@ -1,0 +1,31 @@
+{
+  "when": "2026-11-28T08:31:42.357124+00:00",
+  "results": [
+    {
+      "provider": "openverse",
+      "title": "Charlie Brown",
+      "description": "america art artwork california cartoon cute peanuts publicart sculpture shoppingmall sonomacounty statue unitedstates usa",
+      "meta_text": "Charlie Brown america art artwork california cartoon cute peanuts publicart sculpture shoppingmall sonomacounty statue unitedstates usa",
+      "url": "https://live.staticflickr.com/65535/55087829246_38ee452e17_b.jpg",
+      "page_url": "https://www.flickr.com/photos/7633518@N08/55087829246",
+      "license_label": "cc0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "creator": "sarahstierch",
+      "source": "flickr",
+      "id": "bcf482f7-90b0-4f85-9f3a-367e78efef06"
+    },
+    {
+      "provider": "openverse",
+      "title": "Devon and abalone diver Charlie Brown",
+      "description": "america bodegabay california charliebrown female peanuts person publicart sonomacounty statue tourist unitedstates usa woman",
+      "meta_text": "Devon and abalone diver Charlie Brown america bodegabay california charliebrown female peanuts person publicart sonomacounty statue tourist unitedstates usa woman",
+      "url": "https://live.staticflickr.com/65535/53970228513_7bc2d7cb7f_b.jpg",
+      "page_url": "https://www.flickr.com/photos/7633518@N08/53970228513",
+      "license_label": "cc0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "creator": "sarahstierch",
+      "source": "flickr",
+      "id": "ecb8f81a-26dc-4746-82cc-a0a8b1940023"
+    }
+  ]
+}
