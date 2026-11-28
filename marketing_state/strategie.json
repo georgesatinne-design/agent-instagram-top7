@@ -1,0 +1,68 @@
+{
+  "date": "2026-11-28",
+  "status": "MESURES_DISPONIBLES",
+  "formats": {
+    "BD": {
+      "cta": "save",
+      "echantillon": 1,
+      "preuve": "REGLE_EDITORIALE",
+      "mesures_comparables": {
+        "save": 1,
+        "share": 1,
+        "comment": 1
+      }
+    },
+    "MANGA": {
+      "cta": "comment",
+      "echantillon": 1,
+      "preuve": "REGLE_EDITORIALE",
+      "mesures_comparables": {
+        "save": 1,
+        "share": 1,
+        "comment": 1
+      }
+    },
+    "COMICS_HEBDO": {
+      "cta": "comment",
+      "echantillon": 0,
+      "preuve": "REGLE_EDITORIALE",
+      "mesures_comparables": {
+        "save": 0,
+        "share": 0,
+        "comment": 0
+      }
+    },
+    "COMICS_MENSUEL": {
+      "cta": "save",
+      "echantillon": 0,
+      "preuve": "REGLE_EDITORIALE",
+      "mesures_comparables": {
+        "save": 0,
+        "share": 0,
+        "comment": 0
+      }
+    },
+    "ACTUS": {
+      "cta": "share",
+      "echantillon": 0,
+      "preuve": "REGLE_EDITORIALE",
+      "mesures_comparables": {
+        "save": 0,
+        "share": 0,
+        "comment": 0
+      }
+    },
+    "ANECDOTE": {
+      "cta": "comment",
+      "echantillon": 1,
+      "preuve": "REGLE_EDITORIALE",
+      "mesures_comparables": {
+        "save": 1,
+        "share": 1,
+        "comment": 1
+      }
+    }
+  },
+  "calendrier": "INCHANGE",
+  "notes": "Mesures observationnelles; aucun effet causal supposé. Aucun chiffre individuel publié."
+}
