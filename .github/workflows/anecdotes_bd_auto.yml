@@ -2,6 +2,9 @@ name: Anecdotes BD - remplissage automatique Buffer
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/anecdotes_bd_auto.yml']
   schedule:
     # Un remplissage quotidien, puis une relance de secours les jours de Top.
     - cron: '37 8 * * *'
@@ -45,8 +48,12 @@ jobs:
 
       - name: Tester le moteur anecdotes sans aucune publication
         run: |
-          python -m unittest discover -s tests -p 'test_anecdotes*.py' -v
-          python -m unittest discover -s tests -p 'test_illyadera_queue.py' -v
+          testdir=$(mktemp -d)
+          trap 'rm -rf "$testdir"' EXIT
+          git archive HEAD | tar -x -C "$testdir"
+          cd "$testdir"
+          env -u ILLYADERA_DURABLE_JOURNAL -u ILLYADERA_STORIES_ENABLED python -m unittest discover -s tests -p 'test_anecdotes*.py' -v
+          env -u ILLYADERA_DURABLE_JOURNAL python -m unittest discover -s tests -p 'test_illyadera_queue.py' -v
 
       - name: Vérifier Buffer, chercher les faits et produire les 5 images par jour
         env:
@@ -68,6 +75,7 @@ jobs:
           fi
 
       - name: Remplir Buffer et retirer nos anecdotes si un TOP a pris la place
+        id: publication
         env:
           ILLYADERA_DURABLE_JOURNAL: '1'
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
@@ -77,7 +85,7 @@ jobs:
         run: python -m anecdotes_auto.run send
 
       - name: Sauvegarder les confirmations Buffer sans modifier les TOP
-        if: always()
+        if: always() && steps.publication.outcome != 'skipped' && steps.publication.outcome != ''
         run: |
           if [ -d anecdotes_state ]; then
             git add anecdotes_state

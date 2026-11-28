@@ -110,6 +110,12 @@ def stage_fact(fact,day,repo,now):
             'base_url':base,'images':images,'revision':digest,'date_preparation':now.isoformat(),
             'texte_public':text,'empreinte_fait':fingerprint(fact)}
 
+def capacity_for(posts):
+    limit=CONFIG['max_posts_programmes_canal']
+    if os.environ.get('ILLYADERA_STORIES_ENABLED')=='1' and not any(is_story(p) for p in posts):
+        return min(limit,9)
+    return limit
+
 def _day_snapshot(buffer, now):
     """Une seule lecture paginée de la file ; les tests anciens restent compatibles."""
     if not hasattr(buffer, 'list_scheduled'):
@@ -163,7 +169,7 @@ def prepare(repo,*,now=None,buffer=None,collect=True):
         write(REPORT/'PLAN_BUFFER.json',[])
         write(REPORT/'REPRISES_A_FAIRE.json',[])
         raise
-    max_count=9 if os.environ.get('ILLYADERA_STORIES_ENABLED')=='1' else CONFIG['max_posts_programmes_canal']
+    max_count=capacity_for(all_scheduled or [])
     results['queue_avant']=scheduled_count
     results['capacite_buffer']=max_count
     results['places_initiales']=max(0,max_count-scheduled_count)
@@ -460,10 +466,10 @@ def send(*,now=None,buffer=None):
                     rec['etat']='ANNULE_OCCUPE'
                     results['ignores'].append(key+' : UN_POST_A_PRIS_LE_CRENEAU')
                     continue
-                if len(live)>=(9 if os.environ.get('ILLYADERA_STORIES_ENABLED')=='1' else CONFIG['max_posts_programmes_canal']):
+                if len(live)>=capacity_for(live):
                     from illyadera_queue import free_capacity_for_priority
                     freed = free_capacity_for_priority(rec['due_at'], buffer=buffer, registry=registry,
-                        registry_path=REGISTRY, max_posts=(9 if os.environ.get('ILLYADERA_STORIES_ENABLED')=='1' else CONFIG['max_posts_programmes_canal']),
+                        registry_path=REGISTRY, max_posts=capacity_for(live),
                         now=now, priority='REMPLISSAGE')
                     if freed.get('action') not in ('ANECDOTE_LIBEREE','PLACE_DISPONIBLE'):
                         results['ignores'].append(key+' : QUEUE_PLEINE_SANS_POST_PLUS_LOINTAIN')
