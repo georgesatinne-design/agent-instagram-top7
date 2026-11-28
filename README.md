@@ -90,3 +90,7 @@ La migration du bandeau des anecdotes déjà programmées réutilise uniquement 
 ## Agent marketing
 
 Analyse automatique hebdomadaire des métriques post-level Buffer disponibles avec la clé existante, lecture seule. Les statistiques brutes ne sont pas archivées dans le dépôt public. Comparaison des posts âgés de 2 à 28 jours, quatre échantillons comparables minimum, décision prudente de CTA par format. Les nouveaux contenus appliquent les légendes et hashtags pertinents ; le calendrier reste stable en l'absence de preuve. Pas d'achat de trafic, automatisation d'interactions ou abonnement. Les signaux manquants restent déclarés indisponibles.
+
+## Réel hebdomadaire du mercredi
+
+Mercredi 18 h Paris : conversion en place de l'anecdote réellement programmée, avec voix française locale eSpeak NG, sous-titres synchronisés, mouvement léger des cinq pages authentiques, MP4 H.264/AAC 1080×1920. Aucun service de génération payant ni musique tierce. Le carrousel reste intact si le rendu ou la vérification échoue; jamais de suppression ni de création supplémentaire. Relecture Buffer du même identifiant et du type reel. Le mercredi suivant est préparé dès que son anecdote est programmée. La story continue de reprendre la couverture du même sujet. Les fichiers vidéo sont immuables et publics pour Buffer.
