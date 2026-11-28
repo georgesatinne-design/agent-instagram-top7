@@ -1,115 +1,32 @@
 {
-  "bruxelles-1984": {
-    "statut": "PRET",
-    "date_controle": "2026-11-25T05:40:30.476891+00:00",
-    "photos": 4,
-    "pages_illustrees": [
-      1,
-      2,
-      3,
-      4
-    ]
+  "asterix-idefix-lecteurs": {
+    "statut": "INDISPONIBLE",
+    "date_controle": "2026-11-28T05:39:21.606370+00:00",
+    "raison": "Scènes approuvées: Aucun scénario illustré vérifié pour asterix-idefix-lecteurs (ne pas utiliser de photo générique) ; recherche 3 sources: Photothèque multi-sources insuffisante pour asterix-idefix-lecteurs: 1/3 photographies distinctes ; commons p3: PhotosIndisponibles Licence sans attribution publique non prouvée : public domain | commons p3: PhotosIndisponibles Licence sans attribution publiqu",
+    "echecs": 1
   },
-  "bruxelles-1989": {
-    "statut": "PRET",
-    "date_controle": "2026-11-25T05:40:30.476891+00:00",
-    "photos": 4,
-    "pages_illustrees": [
-      1,
-      2,
-      3,
-      4
-    ]
+  "peanuts-spike-snoopy": {
+    "statut": "INDISPONIBLE",
+    "date_controle": "2026-11-28T05:39:21.606370+00:00",
+    "raison": "Scènes approuvées: Aucun scénario illustré vérifié pour peanuts-spike-snoopy (ne pas utiliser de photo générique) ; recherche 3 sources: Photothèque multi-sources insuffisante pour peanuts-spike-snoopy: 1/3 photographies distinctes ; openverse p1: PhotosIndisponibles Origine image hors liste autorisée | loc p1: HTTPError | p1: image pertinente introuvable | p3: image pertinente introuvable | commo",
+    "echecs": 1
   },
-  "bruxelles-centre-doc": {
-    "statut": "PRET",
-    "date_controle": "2026-11-25T05:40:30.476891+00:00",
-    "photos": 4,
-    "pages_illustrees": [
-      1,
-      2,
-      3,
-      4
-    ]
+  "astro-figurant-vedette": {
+    "statut": "INDISPONIBLE",
+    "date_controle": "2026-11-28T05:39:21.606370+00:00",
+    "raison": "Scènes approuvées: Aucun scénario illustré vérifié pour astro-figurant-vedette (ne pas utiliser de photo générique) ; recherche 3 sources: Photothèque multi-sources insuffisante pour astro-figurant-vedette: 0/3 photographies distinctes ; loc p1: HTTPError | p1: image pertinente introuvable | loc p3: HTTPError | p3: image pertinente introuvable | loc p4: HTTPError | p4: image pertinente introuvable",
+    "echecs": 1
   },
-  "bruxelles-horta": {
-    "statut": "PRET",
-    "date_controle": "2026-11-25T05:40:30.476891+00:00",
-    "photos": 4,
-    "pages_illustrees": [
-      1,
-      2,
-      3,
-      4
-    ]
+  "tintin-chromos-savoirs": {
+    "statut": "INDISPONIBLE",
+    "date_controle": "2026-11-28T05:39:21.606370+00:00",
+    "raison": "Scènes approuvées: Aucun scénario illustré vérifié pour tintin-chromos-savoirs (ne pas utiliser de photo générique) ; recherche 3 sources: Photothèque multi-sources insuffisante pour tintin-chromos-savoirs: 0/3 photographies distinctes ; commons p1: HTTPError | loc p1: HTTPError | p1: image pertinente introuvable | commons p3: HTTPError | loc p3: HTTPError | p3: image pertinente introuvable | comm",
+    "echecs": 1
   },
-  "bruxelles-textile": {
-    "statut": "PRET",
-    "date_controle": "2026-11-25T05:40:30.476891+00:00",
-    "photos": 4,
-    "pages_illustrees": [
-      1,
-      2,
-      3,
-      4
-    ]
-  },
-  "lucky-luke-80": {
-    "statut": "PRET",
-    "date_controle": "2026-11-26T05:40:22.426111+00:00",
-    "photos": 5,
-    "pages_illustrees": [
-      1,
-      2,
-      3,
-      4,
-      5
-    ]
-  },
-  "lucky-luke-goscinny": {
-    "statut": "PRET",
-    "date_controle": "2026-11-26T05:40:22.426111+00:00",
-    "photos": 5,
-    "pages_illustrees": [
-      1,
-      2,
-      3,
-      4,
-      5
-    ]
-  },
-  "lucky-luke-morris": {
-    "statut": "PRET",
-    "date_controle": "2026-11-26T05:40:22.426111+00:00",
-    "photos": 5,
-    "pages_illustrees": [
-      1,
-      2,
-      3,
-      4,
-      5
-    ]
-  },
-  "topffer-geneve": {
-    "statut": "PRET",
-    "date_controle": "2026-11-26T05:40:22.426111+00:00",
-    "photos": 4,
-    "pages_illustrees": [
-      1,
-      2,
-      3,
-      4
-    ]
-  },
-  "topffer-professeur": {
-    "statut": "PRET",
-    "date_controle": "2026-11-26T05:40:22.426111+00:00",
-    "photos": 4,
-    "pages_illustrees": [
-      1,
-      2,
-      3,
-      4
-    ]
+  "zigpuce-reprise-greg": {
+    "statut": "INDISPONIBLE",
+    "date_controle": "2026-11-28T05:39:21.606370+00:00",
+    "raison": "Scènes approuvées: Aucun scénario illustré vérifié pour zigpuce-reprise-greg (ne pas utiliser de photo générique) ; recherche 3 sources: Photothèque multi-sources insuffisante pour zigpuce-reprise-greg: 0/3 photographies distinctes ; commons p1: HTTPError | loc p1: HTTPError | p1: image pertinente introuvable | commons p3: HTTPError | loc p3: HTTPError | p3: image pertinente introuvable | commons ",
+    "echecs": 1
   }
 }
