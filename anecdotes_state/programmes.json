@@ -244,5 +244,25 @@
     "date_liberation_utc": "2026-11-26T14:59:29.770056+00:00",
     "raison_liberation": "Priorité BD pour 2026-11-27",
     "ancien_id_buffer": "6b080d9bd91bf307683683a1"
+  },
+  "2026-12-01": {
+    "fact_id": "fenouillard-feuilleton",
+    "sujet": "fenouillard",
+    "etat": "EN_ATTENTE",
+    "date": "2026-12-01",
+    "due_at": "2026-12-01T17:00:00.000Z",
+    "dossier": "public_media/anecdotes_bd/2026-12-01/fenouillard-feuilleton_487039cd1ac47a0717",
+    "base_url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/anecdotes_bd/2026-12-01/fenouillard-feuilleton_487039cd1ac47a0717/",
+    "images": [
+      "01_anecdote.png",
+      "02_anecdote.png",
+      "03_anecdote.png",
+      "04_anecdote.png",
+      "05_anecdote.png"
+    ],
+    "revision": "487039cd1ac47a0717",
+    "date_preparation": "2026-11-28T02:14:20.586946+00:00",
+    "texte_public": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nUne famille de bd née dans un journal pour enfants\n\nChristophe fait vivre les aventures de la Famille Fenouillard en feuilleton à partir de 1889.\n\nQuel feuilleton BD aimerais-tu retrouver ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
+    "empreinte_fait": "d6cfdf85a18df97d7e"
   }
 }

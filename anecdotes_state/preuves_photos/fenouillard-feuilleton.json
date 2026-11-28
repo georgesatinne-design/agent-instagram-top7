@@ -1,0 +1,58 @@
+{
+  "photos": [
+    {
+      "titre_commons": "Famille Cornouillet, future famille Fenouillard.JPEG",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Famille_Cornouillet,_future_famille_Fenouillard.JPEG",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Famille_Cornouillet%2C_future_famille_Fenouillard.JPEG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "licence": "Domaine public : Georges Colomb dit Christophe (1856–1945), œuvres publiées en 1889–1895",
+      "auteur": "Georges Colomb",
+      "description": "Première apparition de la famille Cornouillet (qui va devenir 7 mois plus tard la famille Fenouillard) dans Le Journal de la jeunesse n° 841, du 12 janvier 1889. Auteur et dessinateur : Christophe.",
+      "sha256": "c9cc12a3197e3071be888eb6f6da99ba775786ea19f0401f42ba4556798b3519",
+      "date_collecte": "2026-11-28T02:14:33.435293+00:00",
+      "illustration_IA": false,
+      "page": 1,
+      "role": "JANVIER 1889",
+      "pertinence": "Première apparition dans le Journal de la jeunesse sous le nom Cornouillet.",
+      "epoque": "historique",
+      "famille_source": "Famille Cornouillet, future famille Fenouillard.JPEG",
+      "fact_id": "fenouillard-feuilleton",
+      "intention_editoriale": "Archives authentiques directement liées au récit : fenouillard-feuilleton"
+    },
+    {
+      "titre_commons": "Christophe - La Famille Fenouillard, 1895 (page 1 crop).jpg",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Christophe_-_La_Famille_Fenouillard,_1895_(page_1_crop).jpg",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Christophe_-_La_Famille_Fenouillard%2C_1895_%28page_1_crop%29.jpg/1920px-Christophe_-_La_Famille_Fenouillard%2C_1895_%28page_1_crop%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "licence": "Domaine public : Georges Colomb dit Christophe (1856–1945), œuvres publiées en 1889–1895",
+      "auteur": "",
+      "description": "La Famille Fenouillard, (5e éd.)",
+      "sha256": "647c7eec05b17aecdd4510bcf2d1ebc36d49d028c7dbb93909e894314deb7925",
+      "date_collecte": "2026-11-26T17:21:42.310973+00:00",
+      "illustration_IA": false,
+      "page": 3,
+      "role": "L’ALBUM, 1895",
+      "pertinence": "Page numérisée de l'album de Christophe.",
+      "epoque": "historique",
+      "famille_source": "Christophe - La Famille Fenouillard, 1895 (page 1 crop).jpg",
+      "fact_id": "fenouillard-feuilleton",
+      "intention_editoriale": "Archives authentiques directement liées au récit : fenouillard-feuilleton"
+    },
+    {
+      "titre_commons": "Colomb - La Famille Fenouillard, 1895.jpg",
+      "url_commons": "https://commons.wikimedia.org/wiki/File:Colomb_-_La_Famille_Fenouillard,_1895.jpg",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Colomb_-_La_Famille_Fenouillard%2C_1895.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "licence": "Domaine public : Georges Colomb dit Christophe (1856–1945), œuvres publiées en 1889–1895",
+      "auteur": "Georges Colomb",
+      "description": "Illustration pour La Famille Fenouillard, de Georges Colomb (Christophe)",
+      "sha256": "0dade2ea51523aeee5e39d0673a7331f3c8a8063e6c219fcaf0bb4e4a6d8b474",
+      "date_collecte": "2026-11-28T02:14:33.833708+00:00",
+      "illustration_IA": false,
+      "page": 4,
+      "role": "L’ALBUM DE CHRISTOPHE",
+      "pertinence": "Autre illustration de l'album.",
+      "epoque": "historique",
+      "famille_source": "Colomb - La Famille Fenouillard, 1895.jpg",
+      "fact_id": "fenouillard-feuilleton",
+      "intention_editoriale": "Archives authentiques directement liées au récit : fenouillard-feuilleton"
+    }
+  ]
+}

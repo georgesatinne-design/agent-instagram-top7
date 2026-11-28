@@ -1,0 +1,117 @@
+{
+  "note": "Pistes à lire et vérifier. Jamais publiées directement.",
+  "pistes": [
+    {
+      "url": "https://www.bnf.fr/fr/bnf-archives-et-manuscrits",
+      "titre": "BnF Archives et manuscrits",
+      "priorite": 2,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://www.bnf.fr/fr/les-archives-institutionnelles-de-la-bnf",
+      "titre": "Les archives institutionnelles de la BnF",
+      "priorite": 2,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://www.dupuis.com/les-secrets-des-soeurs-gremillet/bd/les-secrets-des-soeurs-gremillet-reves-chats-et-princesses/143558",
+      "titre": "Ce petit recueil d'histoires fait par différents illustrateurs fait grave plaisir !",
+      "priorite": 2,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://schulzmuseum.org/timeline/",
+      "titre": "Click to open the search input field Click to open the search input field Search",
+      "priorite": 1,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://schulzmuseum.org/visit/adult-tours/research-center-tour/",
+      "titre": "Behind the Scenes Tour",
+      "priorite": 1,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://www.bnf.fr/fr/comite-dhistoire-de-la-bnf",
+      "titre": "Comité d'histoire de la BnF",
+      "priorite": 1,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://www.bnf.fr/fr/departement-philosophie-histoire-sciences-homme",
+      "titre": "Philosophie, histoire, sciences de l'homme",
+      "priorite": 1,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://www.bnf.fr/fr/histoire-de-la-bibliotheque-nationale-de-france",
+      "titre": "Histoire de la BnF",
+      "priorite": 1,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://www.bnf.fr/fr/pour-une-histoire-de-la-bande-dessinee",
+      "titre": "Aller au contenu principal",
+      "priorite": 1,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://www.bnf.fr/fr/utiliser-le-studio-de-creation-audiovisuelle",
+      "titre": "Studio de création audiovisuelle",
+      "priorite": 1,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://www.citebd.org/agenda/lgbtqomics-lettres-damour-la-bande-dessinee",
+      "titre": "Entrez dans une autre histoire de la bande dessinée longtemps restée à l’ombre de la grande histoire du 9e art, et qui n’attend que d’être dévoilée.",
+      "priorite": 1,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://www.citebd.org/agenda/visite-waou-guidee-distance-interactive-lhistoire-et-patrimoine-du-9e-art",
+      "titre": "Visite Waou! guidée à distance interactive \"L'histoire et patrimoine du 9e art\": nouveau!",
+      "priorite": 1,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://www.dupuis.com/actualites/FR/gagnants-du-concours-kid-paddle/6028",
+      "titre": "Concours Gagnants du concours Kid Paddle Lire l'article",
+      "priorite": 1,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://www.dupuis.com/seriebd/les-secrets-des-soeurs-gremillet/33457",
+      "titre": "Les secrets des soeurs Grémillet",
+      "priorite": 1,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://www.institut-goscinny.org/geo-histoire-hors-serie-celebre-les-100-ans-de-goscinny/",
+      "titre": "GEO Histoire Hors-Série célèbre les 100 ans de Goscinny",
+      "priorite": 1,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    },
+    {
+      "url": "https://www.institut-goscinny.org/retour-sur-la-ceremonie-dhommage-a-rene-goscinny-a-linstitut-de-france-et-remise-de-prix-rene-goscinny-pour-le-centieme-anniversaire-de-sa-naissance/",
+      "titre": "Retour sur la Cérémonie d’hommage à René Goscinny à l’Institut de France et Remise des Prix René Goscinny pour le centième anniversaire de sa naissance",
+      "priorite": 1,
+      "statut": "A_VERIFIER",
+      "date_detection": "2026-11-28T02:14:20.586946+00:00"
+    }
+  ]
+}

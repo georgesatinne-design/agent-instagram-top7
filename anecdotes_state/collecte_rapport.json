@@ -1,7 +1,19 @@
 {
-  "pages_consultees": 18,
+  "mode": "PISTES_EDITORIALES",
+  "pages_consultees": 9,
   "nouveaux_faits": 0,
-  "total_decouvertes": 0,
-  "erreurs": [],
-  "controle_date_utc": "2026-11-26T08:35:28.426580+00:00"
+  "decouverte_structuree": {
+    "jour": "2026-11-28",
+    "nouveaux": 0,
+    "pages": 0,
+    "offset_suivant": 0,
+    "faits_inutilises": 37,
+    "statut": "RESERVE_SUFFISANTE"
+  },
+  "nouvelles_pistes": 16,
+  "total_pistes": 16,
+  "erreurs": [
+    "www.loc.gov: HTTPError"
+  ],
+  "controle_date_utc": "2026-11-28T02:14:20.586946+00:00"
 }
