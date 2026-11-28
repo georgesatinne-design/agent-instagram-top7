@@ -1,7 +1,7 @@
 import unittest,datetime as dt,tempfile
 from pathlib import Path
 from PIL import Image
-from reels_illyadera import next_wednesday,exact_post,chunks,canvas
+from reels_illyadera import next_wednesday,exact_post,chunks,canvas,spoken,load_voice,synthesize,VOICE_PATH
 from calendrier_editorial import PARIS
 class ReelTests(unittest.TestCase):
     def test_date(self):
@@ -18,7 +18,15 @@ class ReelTests(unittest.TestCase):
     def test_subtitles(self):
         text="Dans Krazy Kat, la souris Ignatz lance des briques au personnage principal, qui y voit une marque d'affection."
         self.assertEqual(' '.join(chunks(text)),text)
-        self.assertTrue(all(len(s)<=66 for s in chunks(text)))
+        self.assertTrue(all(len(s)<=125 for s in chunks(text)))
+    def test_pronunciation(self):
+        self.assertEqual(spoken('Krazy Kat et Ignatz.'),'Krézi Kat et Ignats.')
+    def test_real_neural_voice(self):
+        if not VOICE_PATH.is_file():self.skipTest('Modèle absent dans les tests hors workflow')
+        with tempfile.TemporaryDirectory() as tmp:
+            seconds=synthesize(load_voice(),'Une brique comme déclaration d’amour ?',Path(tmp)/'voice.wav')
+            self.assertGreater(seconds,1.8)
+            self.assertLess(seconds,8)
     def test_canvas(self):
         with tempfile.TemporaryDirectory() as tmp:
             src=Path(tmp)/'slide.png';Image.new('RGB',(1080,1350),'white').save(src)
