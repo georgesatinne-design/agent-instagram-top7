@@ -5,12 +5,18 @@
   "text": "📚 ANECDOTE DU 9e ART — LE SAVAIS-TU ?\n\nUne brique comme déclaration d'amour ?\n\nDans Krazy Kat, la souris Ignatz lance des briques au personnage principal, qui y voit une marque d'affection.\n\nQuel duo improbable de bande dessinée te fait rire ? 👇\n\n#BandeDessinee #BD #9eArt #PassionBD",
   "fact_id": "krazykat-brique-amour",
   "record_revision": "b6b2b4297c01c99abe",
-  "revision": "71d5ffc59c75921d95",
-  "file": "public_media/reels_illyadera/2026-12-02/71d5ffc59c75921d95/reel.mp4",
-  "sha256": "7669e1961e81b949203f969149941c6287e64781c6cb9b7e6d5bb194e1a0ccc7",
-  "duration": 24.54,
-  "url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/reels_illyadera/2026-12-02/71d5ffc59c75921d95/reel.mp4",
-  "etat": "PROGRAMME",
-  "version": "REEL_FR_LOCAL_V1",
-  "confirmation_utc": "2026-11-28T11:53:11.671813+01:00"
+  "revision": "d0795ed471eb1683fe",
+  "file": "public_media/reels_illyadera/2026-12-02/d0795ed471eb1683fe/reel.mp4",
+  "sha256": "4723f906319695659835c89bff8c919d2b17d8a465e61f42802538688d54eaa2",
+  "duration": 22.02,
+  "url": "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/reels_illyadera/2026-12-02/d0795ed471eb1683fe/reel.mp4",
+  "etat": "EN_COURS",
+  "version": "REEL_FR_NEURAL_STUDIO_V3",
+  "type_avant": "reel",
+  "ancienne_revision": "71d5ffc59c75921d95",
+  "voix": "fr_FR-siwis-medium",
+  "model_revision": "49a0d23f04e055f1766e5ad15ea2d121a90fa17a",
+  "sources_avant": [
+    "https://raw.githubusercontent.com/georgesatinne-design/agent-instagram-top7/main/public_media/reels_illyadera/2026-12-02/71d5ffc59c75921d95/reel.mp4"
+  ]
 }
